@@ -4,7 +4,7 @@ defmodule Githome.Mixfile do
   def project do
     [
       app: :githome,
-      version: "0.0.1",
+      version: "1.0.0",
       elixir: "~> 1.4",
       elixirc_paths: elixirc_paths(Mix.env),
       compilers: [:phoenix, :gettext] ++ Mix.compilers,
@@ -41,6 +41,7 @@ defmodule Githome.Mixfile do
       {:phoenix_live_reload, "~> 1.0", only: :dev},
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
+      {:plug_cowboy, "~> 1.0"},
       {:cabbage, "~> 0.3.0"}, # cucumber
       {:wallaby, "~> 0.20.0", [runtime: false, only: :test]}  # capybara
     ]
@@ -56,7 +57,7 @@ defmodule Githome.Mixfile do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      "test": ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"]
     ]
   end
 end
