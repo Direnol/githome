@@ -52,6 +52,9 @@ deb: docker-req
 		${USE_TTY} ${TOOLCHAIN} \
 		/usr/bin/make raw-deb
 
+compile: init
+	@${MIX} compile
+
 init: docker-req
 	@${DOCKER} run \
 		${PARAM} \
@@ -68,7 +71,7 @@ clean:
 raw-init: req
 	@mix deps.get
 	@cd assets && npm install
-	@mix ecto.create
+	# @mix ecto.create
 
 raw-deb: req
 	@${MIX} release

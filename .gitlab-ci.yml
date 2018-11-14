@@ -1,0 +1,33 @@
+stages:
+  - toolchain
+  - compile
+  - test
+  - build
+
+tc:
+  stage: toolchain
+  script:
+    - make tc
+
+compile:
+  stage: compile
+  script:
+    - make compile
+  cache: &build-cache
+    key: ${CI_COMMIT_SHA}-build
+    paths:
+      - "_build/"
+
+test:
+  stage: test
+  script:
+    - make test
+  cache: *build-cache
+
+build:
+  stage: build
+  script:
+    - make deb
+  artifacts:
+      paths:
+        - "rel/*.deb"
