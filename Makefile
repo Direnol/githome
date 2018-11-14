@@ -6,6 +6,7 @@ VSN=$(shell ${MIX} ex_app_info.version.get)
 TOOLCHAIN="${PROJECT_NAME}-build-toolchain:${VSN}"
 TESTS="${PROJECT_NAME}-test-toolchain:${VSN}"
 DOCKER=$(shell which docker)
+MAKE=$(shell which make)
 
 USE_TTY = -ti
 # При работе в контексте Gitlab-ci, нам не нужен интерактивный режим и эмуляция TTY
@@ -41,9 +42,20 @@ cli-toolchain: docker-req
 		--rm \
 		${USE_TTY} ${TOOLCHAIN}
 
+deb: docker-req
+	@${DOCKER} run \
+		--volume "${PWD}":/home/githome/project \
+		--volume "${HOME}"/.ssh:/home/githome/.ssh \
+		--tmpfs /tmp:exec,size=2G \
+		--env UID=$(shell id -u) \
+		--env GID=$(shell id -g) \
+		--privileged \
+		--rm \
+		${USE_TTY} ${TOOLCHAIN}
+		${MAKE} raw-deb
 
-deb: req
-	@mix release
+raw-deb: req
+	@${MIX} release
 
 clean:
 	@echo "Clean..."

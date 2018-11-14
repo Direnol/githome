@@ -51,8 +51,8 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :githome, Githome.Repo,
   adapter: Ecto.Adapters.MySQL,
-  username: "root",
-  password: "",
-  database: "githome_dev",
+  username: "githome",
+  password: "githome",
+  database: "githome",
   hostname: "localhost",
   pool_size: 10

@@ -1,0 +1,93 @@
+#!/bin/bash
+
+. /usr/share/debconf/confmodule
+. /usr/lib/ecss/ecss-autoprovision/db-deployment/deploy-database.sh
+
+db_input high ecss-autoprovision/mysql_host || true; db_go || true
+db_input high ecss-autoprovision/mysql_admin_login || true; db_go || true
+db_input high ecss-autoprovision/mysql_admin_password || true; db_go || true
+
+# TODO: Добавить возможность создания конфигурационного файла
+
+db_get ecss-autoprovision/mysql_host
+HOST_MYSQL="${RET}"
+db_get ecss-autoprovision/mysql_admin_login
+USER_MYSQL="${RET}"
+db_get ecss-autoprovision/mysql_admin_password
+PASSWORD_MYSQL="${RET}"
+
+log "Check mysql connection ..."
+echo "Check mysql connection ..."
+check_connect ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL}
+if [[ $? == 1 ]]; then
+    cancel_with_message "Mysql connection status: fail"
+    exit 1
+fi
+log "Mysql connection status: ok"
+echo "Mysql connection status: ok"
+
+db_input high ecss-autoprovision/mysql_autoprovision_login || true; db_go || true
+db_get ecss-autoprovision/mysql_autoprovision_login
+AUTOPROVISION_USER_MYSQL="${RET}"
+
+echo "Check user ${AUTOPROVISION_USER_MYSQL} ..."
+log "Check user ${AUTOPROVISION_USER_MYSQL} ..."
+check_autoprovision_mysql_user ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${AUTOPROVISION_USER_MYSQL} #Проверка существования пользователя
+if [[ $? == 0 ]]; then #Пользователь найден
+    echo "User ${AUTOPROVISION_USER_MYSQL} exist."
+    log "User ${AUTOPROVISION_USER_MYSQL} exist."
+    db_input high ecss-autoprovision/mysql_autoprovision_change_password || true; db_go || true
+    db_get ecss-autoprovision/mysql_autoprovision_change_password
+    if [[ "${RET}" == "true" ]]; then #Смена пароля
+        db_input high ecss-autoprovision/mysql_autoprovision_password || true; db_go || true
+        db_get ecss-autoprovision/mysql_autoprovision_password
+        AUTOPROVISION_PASSWORD_MYSQL="${RET}"
+        update_password ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${AUTOPROVISION_USER_MYSQL} ${AUTOPROVISION_PASSWORD_MYSQL}
+        if [[ $? == 1 ]]; then
+            cancel_with_message "Password for ${AUTOPROVISION_USER_MYSQL} not updated."
+        fi
+        echo "Password for ${AUTOPROVISION_USER_MYSQL} updated."
+        log "Password for ${AUTOPROVISION_USER_MYSQL} updated."
+    else
+        echo "Password for ${AUTOPROVISION_USER_MYSQL} not updated."
+        log "Password for ${AUTOPROVISION_USER_MYSQL} not updated."
+    fi
+else #Пользователь не найден
+    echo "User ${AUTOPROVISION_USER_MYSQL} not exist."
+    log "User ${AUTOPROVISION_USER_MYSQL} not exist."
+    db_input high ecss-autoprovision/mysql_autoprovision_user_not_exist || true; db_go || true
+    db_get ecss-autoprovision/mysql_autoprovision_user_not_exist
+    if [[ "${RET}" == "true" ]]; then #Cоздание пользователя
+        db_input high ecss-autoprovision/mysql_autoprovision_password || true; db_go || true
+        db_get ecss-autoprovision/mysql_autoprovision_password
+        AUTOPROVISION_PASSWORD_MYSQL="${RET}"
+        create_user ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${AUTOPROVISION_USER_MYSQL} ${AUTOPROVISION_PASSWORD_MYSQL}
+        if [[ $? == 1 ]]; then
+            cancel_with_message "User ${AUTOPROVISION_USER_MYSQL} for mysql autoprovision not created."
+        fi
+        echo "User ${AUTOPROVISION_USER_MYSQL} created."
+        log "User ${AUTOPROVISION_USER_MYSQL} created."
+    else #Выход с ошибкой
+        cancel_with_message "User ${AUTOPROVISION_USER_MYSQL} for mysql autoprovision not created."
+    fi
+fi
+
+check_autoprovision_mysql_database ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL}
+if [[ $? == 0 ]]; then
+    echo "Database ecss_autoprovision already exists."
+    log "Database ecss_autoprovision already exists."
+    update_grants ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${AUTOPROVISION_USER_MYSQL} ${AUTOPROVISION_PASSWORD_MYSQL}
+    echo "The rights to the database have been updated."
+    log "The rights to the database have been updated."
+else
+    echo "Database 'ecss_autoprovision' not exists. Creating ..."
+    log "Database 'ecss_autoprovision' not exists. Creating ..."
+    create_autoprovision_mysql_database ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL}
+    update_grants ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${AUTOPROVISION_USER_MYSQL} ${AUTOPROVISION_PASSWORD_MYSQL}
+    echo "The rights to the database have been updated."
+    log "The rights to the database have been updated."
+    echo "Database ecss_autoprovision is complete."
+    log "Database ecss_autoprovision is complete."
+fi
+
+exit 0

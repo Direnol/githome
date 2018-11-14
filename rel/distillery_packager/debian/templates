@@ -1,5 +1,40 @@
-Template: githome/mysql_login
+Template: githome/mysql_admin_login
 Type: string
-Default:
-Description: Input username for  MySQL:
-Description-ru.UTF-8: Введите имя пользователя MySQL:
+Default: root
+Description: Login for mysql root:
+Description-ru.UTF-8: Логин для администратора mysql:
+
+Template: githome/mysql_admin_password
+Type: password
+Description: Password for mysql root:
+Description-ru.UTF-8: Пароль для администратора mysql:
+
+Template: githome/mysql_host
+Type: string
+Default: localhost
+Description: Host for the database:
+Description-ru.UTF-8: Хост для базы данных:
+
+
+Template: githome/mysql_githome_login
+Type: string
+Default: githome
+Description: Login for mysql githome user:
+Description-ru.UTF-8: Логин для пользователя mysql githome:
+
+Template: githome/mysql_githome_password
+Type: password
+Description: Password for mysql githome user:
+Description-ru.UTF-8: Пароль для пользователя mysql githome:
+
+Template: githome/mysql_githome_user_not_exist
+Type: boolean
+Default: true
+Description: Mysql githome user not exists. Create?:
+Description-ru.UTF-8: Не найден пользователь mysql для githome. Создать?:
+
+Template: githome/mysql_githome_change_password
+Type: boolean
+Default: false
+Description: Mysql githome user exists. Would you like to change your password?:
+Description-ru.UTF-8: Пользователь для mysql githome найден. Хотите сменить пароль?:

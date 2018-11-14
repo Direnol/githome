@@ -12,8 +12,8 @@ config :logger, level: :warn
 # Configure your database
 config :githome, Githome.Repo,
   adapter: Ecto.Adapters.MySQL,
-  username: "root",
-  password: "",
-  database: "githome_test",
+  username: "githome",
+  password: "githome",
+  database: "githome",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox
