@@ -12,33 +12,34 @@ defmodule Githome.Mixfile do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
-      package: package()
+      deb_package: package()
     ]
   end
 
   def package do
     [
       maintainer_scripts: [
-        pre_install: "config/deb/preinstall",
-        post_install: "config/deb/postinstall",
-        templates: "config/deb/templates"
+        pre_install: "rel/distillery_packager/debian/preinstall",
+        post_install: "rel/distillery_packager/debian/postinstall",
+        templates: "rel/distillery_packager/debian/templates"
       ],
-      external_dependencies: ["bash-completion (>= 1:2.8)"],
+      external_dependencies: ["bash-completion (>= 1:2.8)", "mysql-server (>= 5.7)"],
       codename: lsb_release(),
       license_file: "MIT",
       files: ["lib", "mix.exs", "README*", "LICENSE"],
-      config_files: [""],
-      maintainers: ["Roman Mingazeev <direnol@yandex.ru>",
-                    "Evgeniy Kazartsev",
-                    "Michail Popov",
-                    "Roman Prokopenko"],
+      config_files: ["config.json"],
+      maintainers: [
+        "Roman Mingazeev <direnol@yandex.ru>",
+        "Evgeniy Kazartsev",
+        "Michail Popov",
+        "Roman Prokopenko"
+      ],
       licenses: ["MIT"],
       vendor: "Sibsutis Students",
-      links: %{
-        "GitHome" => "https://gitlab.com/evg-kazartseff/githome",
-        "Docs" => "https://gitlab.com/evg-kazartseff/githome",
-        "Homepage" => "https://gitlab.com/evg-kazartseff/githome"
-      }
+      homepage: "https://gitlab.com/evg-kazartseff/githome",
+      base_path: "/opt",
+      additional_files: [{"etc", "/etc/githome"}, {"data", "/var/lib/githome"}],
+      owner: [user: "root", group: "root"]
     ]
   end
 
@@ -52,7 +53,7 @@ defmodule Githome.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [
-      applications: [:exrm_deb, :phoenix],
+      applications: [:phoenix],
       mod: {Githome.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
@@ -82,7 +83,6 @@ defmodule Githome.Mixfile do
       {:wallaby, "~> 0.20.0", [runtime: false, only: :test]},
       {:exrm, "~> 1.0"},
       {:distillery_packager, "~> 1.0"},
-      {:exrm_deb, github: "johnhamelink/exrm_deb", branch: "feature/distillery-support"},
       {:artificery, "~> 0.2.6"}
     ]
   end

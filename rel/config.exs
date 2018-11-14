@@ -19,9 +19,8 @@ environment :prod do
 end
 
 release :githome do
-  plugin(ExrmDeb.Distillery)
   set(version: current_version(:githome))
-
+  plugin DistilleryPackager.Plugin
   set(
     applications: [
       :githome
