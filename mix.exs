@@ -6,12 +6,45 @@ defmodule Githome.Mixfile do
       app: :githome,
       version: "1.0.0",
       elixir: "~> 1.4",
-      elixirc_paths: elixirc_paths(Mix.env),
-      compilers: [:phoenix, :gettext] ++ Mix.compilers,
-      start_permanent: Mix.env == :prod,
+      description: "Git web",
+      elixirc_paths: elixirc_paths(Mix.env()),
+      compilers: [:phoenix, :gettext] ++ Mix.compilers(),
+      start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      package: package()
     ]
+  end
+
+  def package do
+    [
+      maintainer_scripts: [
+        pre_install: "config/deb/preinstall",
+        post_install: "config/deb/postinstall",
+        templates: "config/deb/templates"
+      ],
+      external_dependencies: ["bash-completion (>= 1:2.8)"],
+      codename: lsb_release(),
+      license_file: "MIT",
+      files: ["lib", "mix.exs", "README*", "LICENSE"],
+      config_files: [""],
+      maintainers: ["Roman Mingazeev <direnol@yandex.ru>",
+                    "Evgeniy Kazartsev",
+                    "Michail Popov",
+                    "Roman Prokopenko"],
+      licenses: ["MIT"],
+      vendor: "Sibsutis Students",
+      links: %{
+        "GitHome" => "https://gitlab.com/evg-kazartseff/githome",
+        "Docs" => "https://gitlab.com/evg-kazartseff/githome",
+        "Homepage" => "https://gitlab.com/evg-kazartseff/githome"
+      }
+    ]
+  end
+
+  def lsb_release do
+    {release, _} = System.cmd("lsb_release", ["-c", "-s"])
+    String.replace(release, "\n", "")
   end
 
   # Configuration for the OTP application.
@@ -19,6 +52,7 @@ defmodule Githome.Mixfile do
   # Type `mix help compile.app` for more information.
   def application do
     [
+      applications: [:exrm_deb, :phoenix],
       mod: {Githome.Application, []},
       extra_applications: [:logger, :runtime_tools]
     ]
@@ -26,7 +60,7 @@ defmodule Githome.Mixfile do
 
   # Specifies which paths to compile per environment.
   defp elixirc_paths(:test), do: ["lib", "test/support"]
-  defp elixirc_paths(_),     do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
   #
@@ -42,8 +76,13 @@ defmodule Githome.Mixfile do
       {:gettext, "~> 0.11"},
       {:cowboy, "~> 1.0"},
       {:plug_cowboy, "~> 1.0"},
-      {:cabbage, "~> 0.3.0"}, # cucumber
-      {:wallaby, "~> 0.20.0", [runtime: false, only: :test]}  # capybara
+      # cucumber
+      {:cabbage, "~> 0.3.0"},
+      # capybara
+      {:wallaby, "~> 0.20.0", [runtime: false, only: :test]},
+      {:exrm, "~> 1.0"},
+      {:distillery, "~> 1.4"},
+      {:exrm_deb, github: "johnhamelink/exrm_deb", branch: "feature/distillery-support"}
     ]
   end
 

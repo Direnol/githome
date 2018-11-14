@@ -1,7 +1,7 @@
 .PHONY: clean req
 
 PROJECT_NAME=githome
-VSN=$(grep -o version[^,]* mix.exs | awk '{ print $2}' |sed s/\"//g)
+VSN=$(grep -o version[^,]* mix.exs | awk '{ print $2 }' | sed s/\"//g)
 TOOLCHAIN=${PROJECT_NAME}:${VSN}
 
 USE_TTY = -ti

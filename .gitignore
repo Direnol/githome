@@ -28,3 +28,6 @@ npm-debug.log
 
 .vscode
 .elixir_ls
+
+rel/*.deb
+rel/githome

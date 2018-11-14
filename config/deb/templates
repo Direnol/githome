@@ -1,0 +1,5 @@
+Template: githome/mysql_login
+Type: string
+Default:
+Description: Input username for  MySQL:
+Description-ru.UTF-8: Введите имя пользователя MySQL:
