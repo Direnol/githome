@@ -81,8 +81,9 @@ defmodule Githome.Mixfile do
       # capybara
       {:wallaby, "~> 0.20.0", [runtime: false, only: :test]},
       {:exrm, "~> 1.0"},
-      {:distillery, "~> 1.4"},
-      {:exrm_deb, github: "johnhamelink/exrm_deb", branch: "feature/distillery-support"}
+      {:distillery_packager, "~> 1.0"},
+      {:exrm_deb, github: "johnhamelink/exrm_deb", branch: "feature/distillery-support"},
+      {:artificery, "~> 0.2.6"}
     ]
   end
 

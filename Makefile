@@ -23,6 +23,9 @@ tc: toolchain
 toolchain: docker-req
 	@docker build -t ${TOOLCHAIN} ./
 
+deb: req
+	@mix release
+
 cli: docker-req
 	@docker run \
 		--env UID=$(shell id -u) \
