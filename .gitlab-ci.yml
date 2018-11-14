@@ -1,12 +1,26 @@
 image: ubuntu:bionic
 
+services:
+  - docker:latest
+
+#variables:
+#  DOCKER_HOST: tcp://localhost:2375
+
+
 before_script:
+#  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   - apt update
-  - apt install make docker.io wget gnupg -y
-  - wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-  - dpkg -i erlang-solutions_1.0_all.deb
-  - apt update
-  - apt install esl-erlang elixir -y
+  - apt install make
+#  - wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+#  - dpkg -i erlang-solutions_1.0_all.deb
+#  - apt update
+#  - apt install esl-erlang elixir -y
+#  - apt-get update
+#  - apt-get install apt-transport-https ca-certificates curl software-properties-common -y
+#  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+#  - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+#  - apt-get update
+#  - apt-get install docker-ce -y
 
 stages:
   - toolchain
@@ -17,7 +31,7 @@ stages:
 tc:
   stage: toolchain
   script:
-    - make tc
+    - docker run hello-world
 
 compile:
   stage: compile
