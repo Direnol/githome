@@ -21,16 +21,19 @@ defmodule Githome.Mixfile do
       maintainer_scripts: [
         pre_install: "rel/distillery_packager/debian/preinstall",
         post_install: "rel/distillery_packager/debian/postinstall",
-        templates: "rel/distillery_packager/debian/templates"
+        pre_uninstall: "rel/distillery_packager/debian/prerm",
+        post_uninstall: "rel/distillery_packager/debian/postrm",
+        templates: "rel/distillery_packager/debian/templates",
+        config: "rel/distillery_packager/debian/config"
       ],
       external_dependencies: ["bash-completion (>= 1:2.8)", "mysql-server (>= 5.7)"],
       codename: lsb_release(),
       license_file: "MIT",
       files: ["lib", "mix.exs", "README*", "LICENSE"],
-      config_files: ["config.json"],
+      config_files: ["/etc/githome/config.json"],
       maintainers: [
         "Roman Mingazeev <direnol@yandex.ru>",
-        "Evgeniy Kazartsev",
+        "Evgeniy Kazartsev <evg.kazartseff@yandex.ru>",
         "Michail Popov",
         "Roman Prokopenko"
       ],
@@ -83,7 +86,8 @@ defmodule Githome.Mixfile do
       {:wallaby, "~> 0.20.0", [runtime: false, only: :test]},
       {:exrm, "~> 1.0"},
       {:distillery_packager, "~> 1.0"},
-      {:artificery, "~> 0.2.6"}
+      {:artificery, "~> 0.2.6"},
+      {:ex_app_info, "~> 0.3.0"}
     ]
   end
 

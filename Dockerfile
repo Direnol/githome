@@ -1,4 +1,4 @@
-FROM elixir:1.7.3
+FROM ubuntu:bionic
 LABEL author="Roman Mingazeev"
 LABEL email="direnol@yandex.ru"
 LABEL version="1.0.0"
