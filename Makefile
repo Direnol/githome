@@ -2,7 +2,7 @@
 
 PROJECT_NAME=githome
 MIX=$(shell which mix)
-VSN=$(shell ${MIX} ex_app_info.version.get)
+VSN=latest
 TOOLCHAIN="${PROJECT_NAME}-build-toolchain:${VSN}"
 TESTS="${PROJECT_NAME}-test-toolchain:${VSN}"
 DOCKER=$(shell which docker)
@@ -50,7 +50,13 @@ deb: docker-req
 	@${DOCKER} run \
 		${PARAM} \
 		${USE_TTY} ${TOOLCHAIN} \
-		/usr/bin/make raw-deb
+		${MAKE} raw-deb
+
+test: docker-req
+	@${DOCKER} run \
+		${PARAM} \
+		${TOOLCHAIN}
+		${MAKE} raw-test
 
 compile: init
 	@${MIX} compile
@@ -59,7 +65,7 @@ init: docker-req
 	@${DOCKER} run \
 		${PARAM} \
 		${USE_TTY} ${TOOLCHAIN} \
-		/usr/bin/make raw-init
+		${MAKE} raw-init
 
 clean:
 	@echo "Clean..."
@@ -67,11 +73,14 @@ clean:
 
 ####################################
 
+raw-test: req
+	@echo "Tests..."
+	# @${MIX} test
 
 raw-init: req
 	@mix deps.get
 	@cd assets && npm install
-	# @mix ecto.create
+	# @${MIX} ecto.create
 
 raw-deb: req
 	@${MIX} release

@@ -28,8 +28,8 @@ RUN \
     adduser ${USER} sudo && \
     locale-gen en_US.UTF-8 ru_RU.UTF-8 &&\
     update-locale LANG=en_US.UTF-8 &&\
-    sudo -u ${USER} mix local.hex --force && \
-    sudo -u ${USER} mix loca.rebar --force && \
+    sudo -EHu ${USER} mix local.hex --force && \
+    sudo -EHu ${USER} mix local.rebar --force && \
     mix archive.install https://github.com/phoenixframework/archives/raw/master/phx_new.ez --force
 
 USER ${USER}
