@@ -17,7 +17,8 @@ RUN \
     apt-get install gnupg -y && \
     dpkg -i /tmp/erlang-solutions_1.0_all.deb && \
     apt-get update && apt-get install -y \
-    make esl-erlang elixir=${ELIXIR_VSN} locales && \
+    make esl-erlang elixir=${ELIXIR_VSN} locales \
+    lsb-release && \
     rm -rf /var/cache/*
 
 RUN \

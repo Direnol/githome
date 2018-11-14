@@ -31,7 +31,7 @@ defmodule Githome.Mixfile do
         "mysql-server (>= 5.7)",
         "elixir (>= 1.7.3-1)"
       ],
-      codename: lsb_release(System.get_env("IN_DOCKER")),
+      codename: lsb_release(),
       license_file: "MIT",
       files: ["lib", "mix.exs", "README*", "LICENSE"],
       config_files: ["/etc/githome/config.json"],
@@ -53,15 +53,9 @@ defmodule Githome.Mixfile do
     ]
   end
 
-  def lsb_release(env) do
-    case env do
-      nil ->
-        {release, _} = System.cmd("lsb_release", ["-c", "-s"])
-        String.replace(release, "\n", "")
-
-      _ ->
-        "bionic"
-    end
+  def lsb_release do
+    {release, _} = System.cmd("lsb_release", ["-c", "-s"])
+    String.replace(release, "\n", "")
   end
 
   # Configuration for the OTP application.
