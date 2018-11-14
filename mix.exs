@@ -26,8 +26,12 @@ defmodule Githome.Mixfile do
         templates: "rel/distillery_packager/debian/templates",
         config: "rel/distillery_packager/debian/config"
       ],
-      external_dependencies: ["bash-completion (>= 1:2.8)", "mysql-server (>= 5.7)"],
-      codename: lsb_release(),
+      external_dependencies: [
+        "bash-completion (>= 1:2.8)",
+        "mysql-server (>= 5.7)",
+        "elixir (>= 1.7.3-1)"
+      ],
+      codename: lsb_release(System.get_env("IN_DOCKER")),
       license_file: "MIT",
       files: ["lib", "mix.exs", "README*", "LICENSE"],
       config_files: ["/etc/githome/config.json"],
@@ -41,14 +45,23 @@ defmodule Githome.Mixfile do
       vendor: "Sibsutis Students",
       homepage: "https://gitlab.com/evg-kazartseff/githome",
       base_path: "/opt",
-      additional_files: [{"etc", "/etc/githome"}, {"data", "/var/lib/githome"}],
+      additional_files: [
+        {"etc", "/etc/githome"},
+        {"data", "/var/lib/githome"}
+      ],
       owner: [user: "root", group: "root"]
     ]
   end
 
-  def lsb_release do
-    {release, _} = System.cmd("lsb_release", ["-c", "-s"])
-    String.replace(release, "\n", "")
+  def lsb_release(env) do
+    case env do
+      nil ->
+        {release, _} = System.cmd("lsb_release", ["-c", "-s"])
+        String.replace(release, "\n", "")
+
+      _ ->
+        "bionic"
+    end
   end
 
   # Configuration for the OTP application.

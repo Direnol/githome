@@ -7,6 +7,14 @@ TOOLCHAIN="${PROJECT_NAME}-build-toolchain:${VSN}"
 TESTS="${PROJECT_NAME}-test-toolchain:${VSN}"
 DOCKER=$(shell which docker)
 MAKE=$(shell which make)
+PARAM=--volume "${PWD}":/home/githome/project \
+		--volume "${HOME}"/.ssh:/home/githome/.ssh \
+		--tmpfs /tmp:exec,size=2G \
+		--env UID=$(shell id -u) \
+		--env GID=$(shell id -g) \
+		--privileged \
+		--cap-add=ALL \
+		--rm
 
 USE_TTY = -ti
 # При работе в контексте Gitlab-ci, нам не нужен интерактивный режим и эмуляция TTY
@@ -18,11 +26,6 @@ docker-req: req
 req:
 	@echo ""
 
-init: req
-	@mix deps.get
-	@cd assets && npm install
-	@mix ecto.create
-
 tc: toolchain
 toolchain: docker-req
 	@${DOCKER} build \
@@ -30,35 +33,42 @@ toolchain: docker-req
     		--rm \
     		./
 
-
+cli: cli-toolchain
 cli-toolchain: docker-req
 	@${DOCKER} run \
-		--volume "${PWD}":/home/githome/project \
-		--volume "${HOME}"/.ssh:/home/githome/.ssh \
-		--tmpfs /tmp:exec,size=2G \
-		--env UID=$(shell id -u) \
-		--env GID=$(shell id -g) \
-		--privileged \
-		--rm \
+		${PARAM} \
 		${USE_TTY} ${TOOLCHAIN}
+
+background: docker-req
+	@${DOCKER} run \
+		${PARAM} \
+		--detach \
+		${TOOLCHAIN} \
+		mix phx.server
 
 deb: docker-req
 	@${DOCKER} run \
-		--volume "${PWD}":/home/githome/project \
-		--volume "${HOME}"/.ssh:/home/githome/.ssh \
-		--tmpfs /tmp:exec,size=2G \
-		--env UID=$(shell id -u) \
-		--env GID=$(shell id -g) \
-		--privileged \
-		--rm \
-		${USE_TTY} ${TOOLCHAIN}
-		${MAKE} raw-deb
+		${PARAM} \
+		${USE_TTY} ${TOOLCHAIN} \
+		/usr/bin/make raw-deb
 
-raw-deb: req
-	@${MIX} release
+init: docker-req
+	@${DOCKER} run \
+		${PARAM} \
+		${USE_TTY} ${TOOLCHAIN} \
+		/usr/bin/make raw-init
 
 clean:
 	@echo "Clean..."
 
 
 ####################################
+
+
+raw-init: req
+	@mix deps.get
+	@cd assets && npm install
+	@mix ecto.create
+
+raw-deb: req
+	@${MIX} release
