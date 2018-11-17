@@ -46,8 +46,9 @@ defmodule Githome.Mixfile do
       homepage: "https://gitlab.com/evg-kazartseff/githome",
       base_path: "/opt",
       additional_files: [
-        {"etc", "/etc/githome"},
-        {"data", "/var/lib/githome"}
+        {"etc", "/etc"},
+        {"var", "/var"},
+        {"usr", "/usr"}
       ],
       owner: [user: "root", group: "root"]
     ]

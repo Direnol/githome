@@ -19,7 +19,7 @@ RUN \
     dpkg -i /tmp/erlang-solutions_1.0_all.deb && \
     apt-get update && apt-get install -y \
     make esl-erlang elixir=${ELIXIR_VSN} locales \
-    lsb-release npm sudo && \
+    lsb-release npm sudo bash-completion dialog && \
     rm -rf /var/cache/*
 
 RUN \

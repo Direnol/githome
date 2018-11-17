@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash
 
 . /usr/share/debconf/confmodule
 
@@ -9,35 +9,35 @@ Set_DB_Connection_config() {
     db_get githome/mysql_githome_login
     GITHOME_USER_MYSQL="${RET}"
     sed -i -e "s/LOGIN=.*/LOGIN=\"${GITHOME_USER_MYSQL}\"/g" /etc/githome/mysql.conf
-    db_get ecss-autoprovision/mysql_autoprovision_password
-    AUTOPROVISION_PASSWORD_MYSQL="${RET}"
-    sed -i -e "s/PASSWORD=.*/PASSWORD=\"${AUTOPROVISION_PASSWORD_MYSQL}\"/g" /etc/ecss/ecss-autoprovision/mysql.conf
-    db_get ecss-autoprovision/mysql_host
+    db_get githome/mysql_githome_password
+    githome_PASSWORD_MYSQL="${RET}"
+    sed -i -e "s/PASSWORD=.*/PASSWORD=\"${githome_PASSWORD_MYSQL}\"/g" /etc/githome/mysql.conf
+    db_get githome/mysql_host
     HOST_MYSQL="${RET}"
-    sed -i -e "s/HOST=.*/HOST=\"${HOST_MYSQL}\"/g" /etc/ecss/ecss-autoprovision/mysql.conf
-    DB_NAME="ecss_autoprovision"
-    sed -i -e "s/DB_NAME=.*/DB_NAME=\"${DB_NAME}\"/g" /etc/ecss/ecss-autoprovision/mysql.conf
+    sed -i -e "s/HOST=.*/HOST=\"${HOST_MYSQL}\"/g" /etc/githome/mysql.conf
+    DB_NAME="githome"
+    sed -i -e "s/DB_NAME=.*/DB_NAME=\"${DB_NAME}\"/g" /etc/githome/mysql.conf
 }
 
 case "${1}" in
     configure|reconfigure)
         # Не обрабатываем подкаталоги, т.к. база может быть весьма объемной и эта операция может занять десятки минут
-#        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /var/cache/ecss-autoprovision-simens-dhcp.conf/ecss-autoprovision-simens-dhcp.conf-ecss-autoprovision-simens-dhcp.conf-autoprovision-core #В будущем для кэширования
-        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /var/log/ecss/autoprovision
-        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /usr/lib/ecss/ecss-autoprovision/lua
-        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /usr/lib/ecss/ecss-autoprovision/nginx
-        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /usr/lib/ecss/ecss-autoprovision/dnsmasq.d
-        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /var/lib/ecss/ecss-autoprovision
-        chmod u+rw,g+rw,o+r -R /var/lib/ecss/ecss-autoprovision
-        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /etc/ecss/ecss-autoprovision
-        chown ${USER}:${GROUP} /usr/lib/ecss/ecss-autoprovision/lua/*.lua
-        chmod u+srwx,g+rwsx,o+s /usr/lib/ecss/ecss-autoprovision/lua/*.lua
-        chown ${USER}:${GROUP} /usr/lib/ecss/ecss-autoprovision/nginx/*
-        chmod u+rwx,g+rx,o+r /usr/lib/ecss/ecss-autoprovision/nginx/*
-        chown ${USER}:${GROUP} /etc/nginx/sites-available/ecss-autoprovision*
-        chmod u+rwx,g+rx,o+r /etc/nginx/sites-available/ecss-autoprovision*
-        chown ${USER}:${GROUP} /usr/lib/ecss/ecss-autoprovision/dnsmasq.d/*
-        chmod u+rwx,g+rx,o+r /usr/lib/ecss/ecss-autoprovision/dnsmasq.d/*
+#        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /var/cache/githome-simens-dhcp.conf/githome-simens-dhcp.conf-githome-simens-dhcp.conf-githome-core #В будущем для кэширования
+#        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /var/log/ecss/githome
+#         install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /usr/lib/githome/db-deployment/deploy-database.sh
+#         install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /etc/githome
+#        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /usr/lib/ecss/githome/dnsmasq.d
+#        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /var/lib/ecss/githome
+#        chmod u+rw,g+rw,o+r -R /var/lib/ecss/githome
+#        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /etc/ecss/githome
+#        chown ${USER}:${GROUP} /usr/lib/ecss/githome/lua/*.lua
+#        chmod u+srwx,g+rwsx,o+s /usr/lib/ecss/githome/lua/*.lua
+#        chown ${USER}:${GROUP} /usr/lib/ecss/githome/nginx/*
+#        chmod u+rwx,g+rx,o+r /usr/lib/ecss/githome/nginx/*
+#        chown ${USER}:${GROUP} /etc/nginx/sites-available/githome*
+#        chmod u+rwx,g+rx,o+r /etc/nginx/sites-available/githome*
+#        chown ${USER}:${GROUP} /usr/lib/ecss/githome/dnsmasq.d/*
+#        chmod u+rwx,g+rx,o+r /usr/lib/ecss/githome/dnsmasq.d/*
 
         Set_DB_Connection_config
     ;;

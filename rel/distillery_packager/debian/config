@@ -1,19 +1,138 @@
-#!/bin/bash
+#!/bin/bash -e
 
 . /usr/share/debconf/confmodule
-. /usr/lib/ecss/ecss-autoprovision/db-deployment/deploy-database.sh
 
-db_input high ecss-autoprovision/mysql_host || true; db_go || true
-db_input high ecss-autoprovision/mysql_admin_login || true; db_go || true
-db_input high ecss-autoprovision/mysql_admin_password || true; db_go || true
+####
+RES=''
+readonly PROGDIR=$(readlink -m "$(dirname "$0")")
+SQL_GITHOME_CREATOR="/usr/lib/ecss/ecss-githome/db-deployment/db-creator.sql"
+
+LOG_FILE=/tmp/ecss_githome_mysql_deploy-$(date --iso-8601).log
+
+log() {
+    echo "$1" >> "$LOG_FILE"
+}
+
+run_query() {
+    query="mysql ${1} ${2} ${3} -ss -q -e \"${4}\" 2>> ${LOG_FILE}"
+    log "Run query: ${query}"
+    RES=$(mysql "${1}" "${2}" "${3}" -ss -q -e "${4}" 2>> "${LOG_FILE}")
+    if [[ $? -ne 0 ]]; then
+        echo "Error: ${RES}"
+        log "Error: ${RES}"
+        exit 1
+    fi
+    log "DEBUG: |${RES}|"
+    return 0
+}
+
+run_batch() {
+    local BATCH_FILE=${4}
+    query="mysql ${1} ${2} ${3} -ss -B -q < $BATCH_FILE 2>> $LOG_FILE"
+    log "Run batch: ${query}"
+    RES=$(mysql "${1}" "${2}" "${3}" -ss -B -q < "$BATCH_FILE" 2>> "$LOG_FILE")
+    if [[ $? -ne 0 ]]; then
+        echo "Error. ${RES}"
+        log "Error. ${RES}"
+        exit 1
+    fi
+    return 0
+}
+
+cancel_with_message() {
+    log "${1}"
+    log "Installation is canceled."
+    echo "Installation is canceled."
+    exit 1
+}
+
+check_githome_mysql_user() {
+    run_query "-u${1}" "-p${2}" "-h${3}" "select distinct user from mysql.user where user='${4}'"
+    if [[ "${RES}" == "${4}" ]]; then
+        return 0
+    else
+        return 1
+    fi
+    return 1
+}
+
+create_user() {
+    run_query "-u${1}" "-p${2}" "-h${3}" "CREATE USER ${4} IDENTIFIED BY '${5}'"
+    if [[ $? -eq 0 ]]; then
+        return 0
+    fi
+    return 1
+}
+
+update_password() {
+    run_query "-u${1}" "-p${2}" "-h${3}" "UPDATE mysql.user SET authentication_string = PASSWORD('${5}') WHERE user = '${4}';"
+    if [[ $? -eq 1 ]]; then
+        return 1
+    fi
+    run_query "-u${1}" "-p${2}" "-h${3}" "flush privileges;"
+    if [[ $? -eq 1 ]]; then
+        return 1
+    fi
+    return 0
+}
+
+db_grants() {
+    local grants=${4}
+    local db=${5}
+    local host=${6}
+    local user=${7}
+    local password=${8}
+    log "Grant ${grants} for ${db}@${host}"
+    if [[ -n "${password}" ]]; then
+        run_query "-u${1}" "-p${2}" "-h${3}" "GRANT ${grants}  ON \`$db\`.* TO \`${user}\`@\`${host}\` IDENTIFIED BY '${password}';"
+    else
+        run_query "-u${1}" "-p${2}" "-h${3}" "GRANT ${grants}  ON \`$db\`.* TO \`${user}\`@\`${host}\`;"
+    fi
+    run_query "-u${1}" "-p${2}" "-h${3}" "flush privileges;"
+}
+
+check_connect() {
+    run_query "-u${1}" "-p${2}" "-h${3}" "exit"
+    if [[ $? -eq 0 ]]; then
+        return 0
+    fi
+    return 1
+}
+
+check_githome_mysql_database() {
+    run_query "-u${1}" "-p${2}" "-h${3}" "show databases like 'ecss_githome'"
+    if [[ -n "$RES" ]]; then
+        return 0
+    fi
+    return 1
+}
+
+create_githome_mysql_database() {
+    run_batch "-u${1}" "-p${2}" "-h${3}" "${SQL_githome_CREATOR}"
+    if [[ $? -eq 0 ]]; then
+        return 0
+    fi
+    return 1
+}
+
+update_grants() {
+    GRANTS="CREATE, DELETE, DROP, INSERT, SELECT, UPDATE, EXECUTE, EVENT, ALTER"
+    db_grants "${1}" "${2}" "${3}" "$GRANTS" "ecss_githome" "localhost" "${4}" "${5}"
+    db_grants "${1}" "${2}" "${3}" "$GRANTS" "ecss_githome" "127.0.0.1" "${4}" "${5}"
+}
+####
+
+db_input high githome/mysql_host || true; db_go || true
+db_input high githome/mysql_admin_login || true; db_go || true
+db_input high githome/mysql_admin_password || true; db_go || true
 
 # TODO: Добавить возможность создания конфигурационного файла
 
-db_get ecss-autoprovision/mysql_host
+db_get githome/mysql_host
 HOST_MYSQL="${RET}"
-db_get ecss-autoprovision/mysql_admin_login
+db_get githome/mysql_admin_login
 USER_MYSQL="${RET}"
-db_get ecss-autoprovision/mysql_admin_password
+db_get githome/mysql_admin_password
 PASSWORD_MYSQL="${RET}"
 
 log "Check mysql connection ..."
@@ -26,68 +145,72 @@ fi
 log "Mysql connection status: ok"
 echo "Mysql connection status: ok"
 
-db_input high ecss-autoprovision/mysql_autoprovision_login || true; db_go || true
-db_get ecss-autoprovision/mysql_autoprovision_login
-AUTOPROVISION_USER_MYSQL="${RET}"
+db_input high githome/mysql_githome_login || true; db_go || true
+db_get githome/mysql_githome_login
+githome_USER_MYSQL="${RET}"
 
-echo "Check user ${AUTOPROVISION_USER_MYSQL} ..."
-log "Check user ${AUTOPROVISION_USER_MYSQL} ..."
-check_autoprovision_mysql_user ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${AUTOPROVISION_USER_MYSQL} #Проверка существования пользователя
+echo "Check user ${githome_USER_MYSQL} ..."
+log "Check user ${githome_USER_MYSQL} ..."
+check_githome_mysql_user ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} #Проверка существования пользователя
 if [[ $? == 0 ]]; then #Пользователь найден
-    echo "User ${AUTOPROVISION_USER_MYSQL} exist."
-    log "User ${AUTOPROVISION_USER_MYSQL} exist."
-    db_input high ecss-autoprovision/mysql_autoprovision_change_password || true; db_go || true
-    db_get ecss-autoprovision/mysql_autoprovision_change_password
+    echo "User ${githome_USER_MYSQL} exist."
+    log "User ${githome_USER_MYSQL} exist."
+    db_input high githome/mysql_githome_change_password || true; db_go || true
+    db_get githome/mysql_githome_change_password
     if [[ "${RET}" == "true" ]]; then #Смена пароля
-        db_input high ecss-autoprovision/mysql_autoprovision_password || true; db_go || true
-        db_get ecss-autoprovision/mysql_autoprovision_password
-        AUTOPROVISION_PASSWORD_MYSQL="${RET}"
-        update_password ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${AUTOPROVISION_USER_MYSQL} ${AUTOPROVISION_PASSWORD_MYSQL}
+        db_input high githome/mysql_githome_password || true; db_go || true
+        db_get githome/mysql_githome_password
+        githome_PASSWORD_MYSQL="${RET}"
+        update_password ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} ${githome_PASSWORD_MYSQL}
         if [[ $? == 1 ]]; then
-            cancel_with_message "Password for ${AUTOPROVISION_USER_MYSQL} not updated."
+            cancel_with_message "Password for ${githome_USER_MYSQL} not updated."
         fi
-        echo "Password for ${AUTOPROVISION_USER_MYSQL} updated."
-        log "Password for ${AUTOPROVISION_USER_MYSQL} updated."
+        echo "Password for ${githome_USER_MYSQL} updated."
+        log "Password for ${githome_USER_MYSQL} updated."
     else
-        echo "Password for ${AUTOPROVISION_USER_MYSQL} not updated."
-        log "Password for ${AUTOPROVISION_USER_MYSQL} not updated."
+        echo "Password for ${githome_USER_MYSQL} not updated."
+        log "Password for ${githome_USER_MYSQL} not updated."
     fi
 else #Пользователь не найден
-    echo "User ${AUTOPROVISION_USER_MYSQL} not exist."
-    log "User ${AUTOPROVISION_USER_MYSQL} not exist."
-    db_input high ecss-autoprovision/mysql_autoprovision_user_not_exist || true; db_go || true
-    db_get ecss-autoprovision/mysql_autoprovision_user_not_exist
+    echo "User ${githome_USER_MYSQL} not exist."
+    log "User ${githome_USER_MYSQL} not exist."
+    db_input high githome/mysql_githome_user_not_exist || true; db_go || true
+    db_get githome/mysql_githome_user_not_exist
     if [[ "${RET}" == "true" ]]; then #Cоздание пользователя
-        db_input high ecss-autoprovision/mysql_autoprovision_password || true; db_go || true
-        db_get ecss-autoprovision/mysql_autoprovision_password
-        AUTOPROVISION_PASSWORD_MYSQL="${RET}"
-        create_user ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${AUTOPROVISION_USER_MYSQL} ${AUTOPROVISION_PASSWORD_MYSQL}
+        db_input high githome/mysql_githome_password || true; db_go || true
+        db_get githome/mysql_githome_password
+        githome_PASSWORD_MYSQL="${RET}"
+        create_user ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} ${githome_PASSWORD_MYSQL}
         if [[ $? == 1 ]]; then
-            cancel_with_message "User ${AUTOPROVISION_USER_MYSQL} for mysql autoprovision not created."
+            cancel_with_message "User ${githome_USER_MYSQL} for mysql githome not created."
         fi
-        echo "User ${AUTOPROVISION_USER_MYSQL} created."
-        log "User ${AUTOPROVISION_USER_MYSQL} created."
+        echo "User ${githome_USER_MYSQL} created."
+        log "User ${githome_USER_MYSQL} created."
     else #Выход с ошибкой
-        cancel_with_message "User ${AUTOPROVISION_USER_MYSQL} for mysql autoprovision not created."
+        cancel_with_message "User ${githome_USER_MYSQL} for mysql githome not created."
     fi
 fi
 
-check_autoprovision_mysql_database ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL}
-if [[ $? == 0 ]]; then
-    echo "Database ecss_autoprovision already exists."
-    log "Database ecss_autoprovision already exists."
-    update_grants ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${AUTOPROVISION_USER_MYSQL} ${AUTOPROVISION_PASSWORD_MYSQL}
-    echo "The rights to the database have been updated."
-    log "The rights to the database have been updated."
-else
-    echo "Database 'ecss_autoprovision' not exists. Creating ..."
-    log "Database 'ecss_autoprovision' not exists. Creating ..."
-    create_autoprovision_mysql_database ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL}
-    update_grants ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${AUTOPROVISION_USER_MYSQL} ${AUTOPROVISION_PASSWORD_MYSQL}
-    echo "The rights to the database have been updated."
-    log "The rights to the database have been updated."
-    echo "Database ecss_autoprovision is complete."
-    log "Database ecss_autoprovision is complete."
-fi
+update_grants ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} ${githome_PASSWORD_MYSQL}
+echo "The rights to the ${githome_USER_MYSQL} have been updated."
+log "The rights to the ${githome_USER_MYSQL} have been updated."
+
+#check_githome_mysql_database ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL}
+#if [[ $? == 0 ]]; then
+#    echo "Database ecss_githome already exists."
+#    log "Database ecss_githome already exists."
+#    update_grants ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} ${githome_PASSWORD_MYSQL}
+#    echo "The rights to the database have been updated."
+#    log "The rights to the database have been updated."
+#else
+#    echo "Database 'ecss_githome' not exists. Creating ..."
+#    log "Database 'ecss_githome' not exists. Creating ..."
+#    create_githome_mysql_database ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL}
+#    update_grants ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} ${githome_PASSWORD_MYSQL}
+#    echo "The rights to the database have been updated."
+#    log "The rights to the database have been updated."
+#    echo "Database ecss_githome is complete."
+#    log "Database ecss_githome is complete."
+#fi
 
 exit 0
