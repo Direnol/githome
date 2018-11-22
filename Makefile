@@ -52,6 +52,9 @@ deb: docker-req
 		${USE_TTY} ${TOOLCHAIN} \
 		${MAKE} raw-deb
 
+install: req
+	@sudo dpkg -i rel/githome_1.0.0_amd64.deb
+
 test: docker-req
 	@${DOCKER} run \
 		${PARAM} \

@@ -2,9 +2,8 @@
 
 RES=''
 readonly PROGDIR=$(readlink -m "$(dirname "$0")")
-SQL_GITHOME_CREATOR="/usr/lib/ecss/ecss-githome/db-deployment/db-creator.sql"
 
-LOG_FILE=/tmp/ecss_githome_mysql_deploy-$(date --iso-8601).log
+LOG_FILE=/tmp/githome_mysql_deploy-$(date --iso-8601).log
 
 log() {
     echo "$1" >> "$LOG_FILE"
@@ -97,7 +96,7 @@ check_connect() {
 }
 
 check_githome_mysql_database() {
-    run_query "-u${1}" "-p${2}" "-h${3}" "show databases like 'ecss_githome'"
+    run_query "-u${1}" "-p${2}" "-h${3}" "show databases like 'githome'"
     if [[ -n "$RES" ]]; then
         return 0
     fi
@@ -105,7 +104,7 @@ check_githome_mysql_database() {
 }
 
 create_githome_mysql_database() {
-    run_batch "-u${1}" "-p${2}" "-h${3}" "${SQL_githome_CREATOR}"
+
     if [[ $? -eq 0 ]]; then
         return 0
     fi
@@ -114,6 +113,6 @@ create_githome_mysql_database() {
 
 update_grants() {
     GRANTS="CREATE, DELETE, DROP, INSERT, SELECT, UPDATE, EXECUTE, EVENT, ALTER"
-    db_grants "${1}" "${2}" "${3}" "$GRANTS" "ecss_githome" "localhost" "${4}" "${5}"
-    db_grants "${1}" "${2}" "${3}" "$GRANTS" "ecss_githome" "127.0.0.1" "${4}" "${5}"
+    db_grants "${1}" "${2}" "${3}" "$GRANTS" "githome" "localhost" "${4}" "${5}"
+    db_grants "${1}" "${2}" "${3}" "$GRANTS" "githome" "127.0.0.1" "${4}" "${5}"
 }
