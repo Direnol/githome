@@ -32,14 +32,30 @@ case "${1}" in
 #        install -d -o ${USER} -g ${GROUP} -m ug+rwx,o+rx /etc/ecss/githome
 #        chown ${USER}:${GROUP} /usr/lib/ecss/githome/lua/*.lua
 #        chmod u+srwx,g+rwsx,o+s /usr/lib/ecss/githome/lua/*.lua
-#        chown ${USER}:${GROUP} /usr/lib/ecss/githome/nginx/*
-#        chmod u+rwx,g+rx,o+r /usr/lib/ecss/githome/nginx/*
+        chown ${USER}:${GROUP} /usr/lib/githome/*
+        chmod u+rwx,g+rx,o+r /usr/lib/githome/*
+        chown ${USER}:${GROUP} /opt/githome/*
+        chmod u+rwx,g+rx,o+r /opt/githome/*
+        chown ${USER}:${GROUP} /var/lib/githome/*
+        chmod u+rwx,g+rx,o+r /var/lib/githome/
+        chown ${USER}:${GROUP} /etc/githome/*
+        chmod u+rwx,g+rx,o+r /etc/githome/*
 #        chown ${USER}:${GROUP} /etc/nginx/sites-available/githome*
 #        chmod u+rwx,g+rx,o+r /etc/nginx/sites-available/githome*
 #        chown ${USER}:${GROUP} /usr/lib/ecss/githome/dnsmasq.d/*
 #        chmod u+rwx,g+rx,o+r /usr/lib/ecss/githome/dnsmasq.d/*
 
         Set_DB_Connection_config
+
+        COOKIE_FILE=/home/${USER}/.erlang.cookie
+
+        echo "Checking erlang distribution cookie..."
+        if ! [[ -f "${COOKIE_FILE}" ]]; then
+          echo "Initializing secure erlang distribution cookie..."
+          dd if=/dev/urandom bs=1 count=32 2>/dev/null | base64 -w 0 > ${COOKIE_FILE}
+          chown ${USER}:${GROUP} ${COOKIE_FILE}
+          chmod 0400 ${COOKIE_FILE}
+        fi
     ;;
     abort-upgrade|abort-deconfigure|abort-remove)
     ;;

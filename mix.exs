@@ -1,11 +1,11 @@
-defmodule Githome.Mixfile do
+defmodule Githome.MixProject do
   use Mix.Project
 
   def project do
     [
       app: :githome,
-      version: "1.0.0",
-      elixir: "~> 1.4",
+      version: "0.1.0",
+      elixir: "~> 1.5",
       description: "Git web",
       elixirc_paths: elixirc_paths(Mix.env()),
       compilers: [:phoenix, :gettext] ++ Mix.compilers(),
@@ -13,6 +13,16 @@ defmodule Githome.Mixfile do
       aliases: aliases(),
       deps: deps(),
       deb_package: package()
+    ]
+  end
+
+  # Configuration for the OTP application.
+  #
+  # Type `mix help compile.app` for more information.
+  def application do
+    [
+      mod: {Githome.Application, []},
+      extra_applications: [:logger, :runtime_tools]
     ]
   end
 
@@ -50,24 +60,13 @@ defmodule Githome.Mixfile do
         {"var", "/var"},
         {"usr", "/usr"}
       ],
-      owner: [user: "root", group: "root"]
+      owner: [user: "githome", group: "githome"]
     ]
   end
 
   def lsb_release do
     {release, _} = System.cmd("lsb_release", ["-c", "-s"])
     String.replace(release, "\n", "")
-  end
-
-  # Configuration for the OTP application.
-  #
-  # Type `mix help compile.app` for more information.
-  def application do
-    [
-      applications: [:phoenix],
-      mod: {Githome.Application, []},
-      extra_applications: [:logger, :runtime_tools]
-    ]
   end
 
   # Specifies which paths to compile per environment.
@@ -79,23 +78,17 @@ defmodule Githome.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:phoenix, "~> 1.3.4"},
-      {:phoenix_pubsub, "~> 1.0"},
-      {:phoenix_ecto, "~> 3.2"},
+      {:phoenix, "~> 1.4.0"},
+      {:phoenix_pubsub, "~> 1.1"},
+      {:phoenix_ecto, "~> 4.0"},
+      {:ecto_sql, "~> 3.0"},
       {:mariaex, ">= 0.0.0"},
-      {:phoenix_html, "~> 2.10"},
-      {:phoenix_live_reload, "~> 1.0", only: :dev},
+      {:phoenix_html, "~> 2.11"},
+      {:phoenix_live_reload, "~> 1.2", only: :dev},
       {:gettext, "~> 0.11"},
-      {:cowboy, "~> 1.0"},
-      {:plug_cowboy, "~> 1.0"},
-      # cucumber
-      {:cabbage, "~> 0.3.0"},
-      # capybara
-      {:wallaby, "~> 0.20.0", [runtime: false, only: :test]},
-      {:exrm, "~> 1.0"},
+      {:jason, "~> 1.0"},
+      {:plug_cowboy, "~> 2.0"},
       {:distillery_packager, "~> 1.0"},
-      {:artificery, "~> 0.2.6"},
-      {:ex_app_info, "~> 0.3.0"}
     ]
   end
 

@@ -2,4 +2,11 @@
 
 #. /usr/share/debconf/confmodule
 
+cat /etc/passwd | grep githome > /dev/null
+if [[ $? == 1 ]]; then
+    echo "Creating githome uset"
+    adduser --system --group githome
+fi
+echo "User githome created"
+
 exit 0

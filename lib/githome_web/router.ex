@@ -14,9 +14,20 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/", GithomeWeb do
-    pipe_through :browser # Use the default browser stack
+    pipe_through :browser
 
     get "/", PageController, :index
+  end
+  scope "/users", GithomeWeb do
+    pipe_through :browser
+
+    get "/", UserController, :index
+    get "/show", UserController, :show
+    get "/edit", UserController, :edit
+    delete "/delete", UserController, :delete
+    get "/new", UserController, :new
+    post "/create", UserController, :create
+    post "/update", UserController, :update
   end
 
   # Other scopes may use custom stacks.
