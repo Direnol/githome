@@ -20,7 +20,7 @@ RUN \
     apt-get update && apt-get install -y \
     make esl-erlang elixir=${ELIXIR_VSN} locales \
     lsb-release npm sudo bash-completion dialog && \
-    rm -rf /var/cache/*
+    rm -rf /var/cache/* /tmp/*
 
 RUN \
     adduser --disabled-password --gecos '' ${USER} && \
