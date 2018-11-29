@@ -7,7 +7,7 @@ case "${1}" in
 		rm -rf /opt/githome
 		rm -rf /var/lib/githome
 		rm -rf /usr/lib/githome
-		echo "remove SUCCESS!!!"
+		echo "remove done SUCCESS!!!"
 	;;
 	purge)
 		rm -rf /etc/githome
