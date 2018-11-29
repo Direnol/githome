@@ -53,7 +53,7 @@ deb: docker-req
 		${MAKE} raw-deb
 
 install: req
-	@sudo dpkg -i rel/githome_0.1.0_amd64.deb
+	@sudo dpkg -i rel/githome_0.1.0_all.deb
 
 test: docker-req
 	@${DOCKER} run \

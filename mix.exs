@@ -33,7 +33,7 @@ defmodule Githome.MixProject do
         post_install: "rel/distillery_packager/debian/postinstall",
         pre_uninstall: "rel/distillery_packager/debian/prerm",
         post_uninstall: "rel/distillery_packager/debian/postrm",
-        templates: "rel/distillery_packager/debian/templates",
+        templates: "rel/distillery_packager/debian/template",
         config: "rel/distillery_packager/debian/config"
       ],
       external_dependencies: [

@@ -25,7 +25,7 @@ end
 
 release :githome do
   set(version: current_version(:githome))
-  plugin DistilleryPackager.Plugin
+  plugin DistilleryPackager.Plugin, %{architecture: "all"}
   set(
     applications: [
       :runtime_tools,
