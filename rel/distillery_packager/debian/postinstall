@@ -1,10 +1,98 @@
 #!/bin/bash
 
 . /usr/share/debconf/confmodule
+. /usr/lib/githome/db-deployment/deploy-database.sh
 echo "${0} called with: ${*}"
 
 USER="githome"
 GROUP="githome"
+
+InitDataBase() {
+    db_get githome/mysql_host
+HOST_MYSQL="${RET}"
+db_get githome/mysql_admin_login
+USER_MYSQL="${RET}"
+db_get githome/mysql_admin_password
+PASSWORD_MYSQL="${RET}"
+
+log "Check mysql connection ..."
+echo "Check mysql connection ..."
+check_connect ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL}
+if [[ $? == 1 ]]; then
+    cancel_with_message "Mysql connection status: fail"
+    exit 1
+fi
+log "Mysql connection status: ok"
+echo "Mysql connection status: ok"
+
+db_input high githome/mysql_githome_login || true; db_go || true
+db_get githome/mysql_githome_login
+githome_USER_MYSQL="${RET}"
+
+echo "Check user ${githome_USER_MYSQL} ..."
+log "Check user ${githome_USER_MYSQL} ..."
+check_githome_mysql_user ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} #Проверка существования пользователя
+if [[ $? == 0 ]]; then #Пользователь найден
+    echo "User ${githome_USER_MYSQL} exist."
+    log "User ${githome_USER_MYSQL} exist."
+    db_input high githome/mysql_githome_change_password || true; db_go || true
+    db_get githome/mysql_githome_change_password
+    if [[ "${RET}" == "true" ]]; then #Смена пароля
+        db_input high githome/mysql_githome_password || true; db_go || true
+        db_get githome/mysql_githome_password
+        githome_PASSWORD_MYSQL="${RET}"
+        update_password ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} ${githome_PASSWORD_MYSQL}
+        if [[ $? == 1 ]]; then
+            cancel_with_message "Password for ${githome_USER_MYSQL} not updated."
+        fi
+        echo "Password for ${githome_USER_MYSQL} updated."
+        log "Password for ${githome_USER_MYSQL} updated."
+    else
+        echo "Password for ${githome_USER_MYSQL} not updated."
+        log "Password for ${githome_USER_MYSQL} not updated."
+    fi
+else #Пользователь не найден
+    echo "User ${githome_USER_MYSQL} not exist."
+    log "User ${githome_USER_MYSQL} not exist."
+    db_input high githome/mysql_githome_user_not_exist || true; db_go || true
+    db_get githome/mysql_githome_user_not_exist
+    if [[ "${RET}" == "true" ]]; then #Cоздание пользователя
+        db_input high githome/mysql_githome_password || true; db_go || true
+        db_get githome/mysql_githome_password
+        githome_PASSWORD_MYSQL="${RET}"
+        create_user ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} ${githome_PASSWORD_MYSQL}
+        if [[ $? == 1 ]]; then
+            cancel_with_message "User ${githome_USER_MYSQL} for mysql githome not created."
+        fi
+        echo "User ${githome_USER_MYSQL} created."
+        log "User ${githome_USER_MYSQL} created."
+    else #Выход с ошибкой
+        cancel_with_message "User ${githome_USER_MYSQL} for mysql githome not created."
+    fi
+fi
+
+update_grants ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} ${githome_PASSWORD_MYSQL}
+echo "The rights to the ${githome_USER_MYSQL} have been updated."
+log "The rights to the ${githome_USER_MYSQL} have been updated."
+
+check_githome_mysql_database ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL}
+if [[ $? == 0 ]]; then
+    echo "Database githome already exists."
+    log "Database githome already exists."
+    update_grants ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} ${githome_PASSWORD_MYSQL}
+    echo "The rights to the database have been updated."
+    log "The rights to the database have been updated."
+else
+    echo "Database 'githome' not exists. Creating ..."
+    log "Database 'githome' not exists. Creating ..."
+    create_githome_mysql_database ${USER_MYSQL} ${PASSWORD_MYSQL}
+    update_grants ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} ${githome_PASSWORD_MYSQL}
+    echo "The rights to the database have been updated."
+    log "The rights to the database have been updated."
+    echo "Database githome is complete."
+    log "Database githome is complete."
+fi
+}
 
 Set_DB_Connection_config() {
     db_get githome/mysql_githome_login
@@ -44,7 +132,7 @@ case "${1}" in
 #        chmod u+rwx,g+rx,o+r /etc/nginx/sites-available/githome*
 #        chown ${USER}:${GROUP} /usr/lib/ecss/githome/dnsmasq.d/*
 #        chmod u+rwx,g+rx,o+r /usr/lib/ecss/githome/dnsmasq.d/*
-
+        InitDataBase
         Set_DB_Connection_config
 
         COOKIE_FILE=/home/${USER}/.erlang.cookie

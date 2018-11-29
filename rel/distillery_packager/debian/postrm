@@ -5,10 +5,11 @@
 echo "${0} called with: ${*}"
 
 case "${1}" in
-remove) ;;
+remove)
 	rm -rf /opt/githome
 	rm -rf /var/lib/githome
 	rm -rf /usr/lib/githome
+	;;
 purge)
     rm -rf /etc/githome
     # userdel --remove-home --system --force githome || true
