@@ -8,35 +8,31 @@ services:
 
 
 before_script:
-#  - docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" $CI_REGISTRY
   - apt update
-  - apt install make
-#  - wget https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-#  - dpkg -i erlang-solutions_1.0_all.deb
-#  - apt update
-#  - apt install esl-erlang elixir -y
-#  - apt-get update
-#  - apt-get install apt-transport-https ca-certificates curl software-properties-common -y
-#  - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
-#  - add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-#  - apt-get update
-#  - apt-get install docker-ce -y
+  - apt install npm make curl gnupg build-essential lsb-release -y
+  - curl -O https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
+  - dpkg -i erlang-solutions_1.0_all.deb && apt install -f
+  - apt update && apt upgrade -y
+  - apt install esl-erlang elixir -y
+  - mix local.hex --force
+  - mix local.rebar --force
+  - mix archive.install https://github.com/phoenixframework/archives/raw/master/phx_new.ez --force
 
 stages:
-  - toolchain
+  - init
   - compile
   - test
   - build
 
-tc:
-  stage: toolchain
+prepare:
+  stage: init
   script:
-    - docker run hello-world
+    - make raw-init
 
 compile:
   stage: compile
   script:
-    - make compile
+    - make raw-compile
   cache: &build-cache
     key: ${CI_COMMIT_SHA}-build
     paths:
@@ -45,13 +41,14 @@ compile:
 test:
   stage: test
   script:
-    - make test
+    - make raw-test
   cache: *build-cache
 
 build:
   stage: build
   script:
-    - make deb
+    - make raw-init
+    - make raw-deb
   artifacts:
       paths:
         - "rel/*.deb"

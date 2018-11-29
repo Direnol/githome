@@ -67,14 +67,18 @@ test: docker-req
 		${TOOLCHAIN}
 		${MAKE} raw-test
 
-compile: init
-	@${MIX} compile
 
 init: docker-req
 	@${DOCKER} run \
 		${PARAM} \
 		${USE_TTY} ${TOOLCHAIN} \
 		${MAKE} raw-init
+
+compile: docker-req
+	@${DOCKER} run \
+		${PARAM} \
+		${TOOLCHAIN}
+		${MAKE} raw-compile
 
 clean:
 	@echo "Clean..."
@@ -93,5 +97,8 @@ raw-init: req
 	@mix phx.digest
 	# @${MIX} ecto.create
 
-raw-deb: req
+raw-deb: raw-init
 	@MIX_ENV=prod ${MIX} release
+
+raw-compile: raw-init
+	@${MIX} compile
