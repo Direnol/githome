@@ -2,22 +2,20 @@
 
 . /usr/share/debconf/confmodule
 
-case "${1}" in
-	remove)
-		rm -rf /opt/githome
-		rm -rf /var/lib/githome
-		rm -rf /usr/lib/githome
-		echo "remove done SUCCESS!!!"
-	;;
-	purge)
-		rm -rf /etc/githome
-		echo "purge SUCCESS!!!"
-		;;
-	*)
-	echo "Unknown argumetn ${*}"
-	;;
+echo "${0} called with: ${*}"
 
+case "${1}" in
+remove) ;;
+	rm -rf /opt/githome
+	rm -rf /var/lib/githome
+	rm -rf /usr/lib/githome
+purge)
+    rm -rf /etc/githome
+    # userdel --remove-home --system --force githome || true
+    # echo"User githome deleted"
+    ;;
+*)
+    echo "postrm called with: ${1}"
+    ;;
 esac
-#userdel --remove-home --system --force githome
-#echo "User githome deleted"
-exit 0
+		

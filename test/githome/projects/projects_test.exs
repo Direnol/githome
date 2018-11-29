@@ -7,7 +7,10 @@ defmodule Githome.ProjectsTest do
     alias Githome.Projects.Project
 
     @valid_attrs %{path_to_directory: "some path_to_directory", project_name: "some project_name"}
-    @update_attrs %{path_to_directory: "some updated path_to_directory", project_name: "some updated project_name"}
+    @update_attrs %{
+      path_to_directory: "some updated path_to_directory",
+      project_name: "some updated project_name"
+    }
     @invalid_attrs %{path_to_directory: nil, project_name: nil}
 
     def project_fixture(attrs \\ %{}) do

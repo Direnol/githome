@@ -4,7 +4,10 @@ defmodule GithomeWeb.ProjectControllerTest do
   alias Githome.Projects
 
   @create_attrs %{path_to_directory: "some path_to_directory", project_name: "some project_name"}
-  @update_attrs %{path_to_directory: "some updated path_to_directory", project_name: "some updated project_name"}
+  @update_attrs %{
+    path_to_directory: "some updated path_to_directory",
+    project_name: "some updated project_name"
+  }
   @invalid_attrs %{path_to_directory: nil, project_name: nil}
 
   def fixture(:project) do
@@ -75,6 +78,7 @@ defmodule GithomeWeb.ProjectControllerTest do
     test "deletes chosen project", %{conn: conn, project: project} do
       conn = delete(conn, Routes.project_path(conn, :delete, project))
       assert redirected_to(conn) == Routes.project_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.project_path(conn, :show, project))
       end

@@ -55,6 +55,12 @@ deb: docker-req
 install: req
 	@sudo dpkg -i rel/githome_0.1.0_all.deb
 
+remove: req
+	@sudo dpkg --remove githome
+
+purge: req
+	@sudo dpkg --purge githome
+
 test: docker-req
 	@${DOCKER} run \
 		${PARAM} \

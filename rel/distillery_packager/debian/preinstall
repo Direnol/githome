@@ -1,6 +1,8 @@
 #!/bin/bash
 
-#. /usr/share/debconf/confmodule
+. /usr/share/debconf/confmodule
+
+echo "${0} called with: ${*}"
 
 cat /etc/passwd | grep githome > /dev/null
 if [[ $? == 1 ]]; then

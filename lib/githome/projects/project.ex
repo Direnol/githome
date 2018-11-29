@@ -2,7 +2,6 @@ defmodule Githome.Projects.Project do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "projects" do
     field :path_to_directory, :string
     field :project_name, :string

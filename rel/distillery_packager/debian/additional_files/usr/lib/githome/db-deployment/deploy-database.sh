@@ -6,7 +6,7 @@ readonly PROGDIR=$(readlink -m "$(dirname "$0")")
 LOG_FILE=/tmp/githome_mysql_deploy-$(date --iso-8601).log
 
 log() {
-    echo "$1" >> "$LOG_FILE"
+    echo "$(date -R)=> $1" >> "$LOG_FILE"
 }
 
 run_query() {
@@ -104,7 +104,7 @@ check_githome_mysql_database() {
 }
 
 create_githome_mysql_database() {
-    /opt/githome/bin/githome db_init ${1} ${2}
+    /opt/githome/bin/githome db_init "${1}" "${2}"
     /opt/githome/bin/githome db_migrate
     if [[ $? -eq 0 ]]; then
         return 0

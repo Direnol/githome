@@ -30,7 +30,8 @@ release :githome do
         db_init:      "rel/commands/db-init.sh",
 #        db_reset:     "rel/commands/db-reset.sh",
 #        db_remove:    "rel/commands/db-remove.sh",
-        db_migrate:   "rel/commands/db-migrate.sh"
+        db_migrate:   "rel/commands/db-migrate.sh",
+        seed: "rel/commands/seed.sh"
 #        db_new_admin: "rel/commands/db-new-admin.sh",
 #        db_rm_admin:  "rel/commands/db-rm-admin.sh"
       ]

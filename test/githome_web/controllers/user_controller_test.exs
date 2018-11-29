@@ -3,8 +3,16 @@ defmodule GithomeWeb.UserControllerTest do
 
   alias Githome.Accounts
 
-  @create_attrs %{email: "some email", password_digest: "some password_digest", username: "some username"}
-  @update_attrs %{email: "some updated email", password_digest: "some updated password_digest", username: "some updated username"}
+  @create_attrs %{
+    email: "some email",
+    password_digest: "some password_digest",
+    username: "some username"
+  }
+  @update_attrs %{
+    email: "some updated email",
+    password_digest: "some updated password_digest",
+    username: "some updated username"
+  }
   @invalid_attrs %{email: nil, password_digest: nil, username: nil}
 
   def fixture(:user) do
@@ -75,6 +83,7 @@ defmodule GithomeWeb.UserControllerTest do
     test "deletes chosen user", %{conn: conn, user: user} do
       conn = delete(conn, Routes.user_path(conn, :delete, user))
       assert redirected_to(conn) == Routes.user_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.user_path(conn, :show, user))
       end
