@@ -72,6 +72,7 @@ init: docker-req
 
 clean:
 	@echo "Clean..."
+	@rm -rf ./_build ./deps
 
 
 ####################################
