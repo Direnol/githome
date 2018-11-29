@@ -12,6 +12,7 @@ config :githome,
 
 # Configures the endpoint
 config :githome, GithomeWeb.Endpoint,
+  server: true,
   url: [host: "localhost"],
   secret_key_base: "L3kLyd6du3zmX2VvOSyxt3GORrLtVz/Z7dgHOUVfsaFJEjpcQ/P73w/xS2KDGOdm",
   render_errors: [view: GithomeWeb.ErrorView, accepts: ~w(html json)],

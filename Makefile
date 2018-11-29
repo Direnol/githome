@@ -87,4 +87,4 @@ raw-init: req
 	# @${MIX} ecto.create
 
 raw-deb: req
-	@${MIX} release
+	@MIX_ENV=prod ${MIX} release
