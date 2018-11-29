@@ -86,7 +86,7 @@ if [[ $? == 0 ]]; then
 else
     echo "Database 'githome' not exists. Creating ..."
     log "Database 'githome' not exists. Creating ..."
-    create_githome_mysql_database
+    create_githome_mysql_database ${USER_MYSQL} ${PASSWORD_MYSQL}
     update_grants ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${githome_USER_MYSQL} ${githome_PASSWORD_MYSQL}
     echo "The rights to the database have been updated."
     log "The rights to the database have been updated."

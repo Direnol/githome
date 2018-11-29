@@ -1,7 +1,7 @@
 
-Path.join(["rel", "plugins", "*.exs"])
-|> Path.wildcard()
-|> Enum.map(&Code.eval_file(&1))
+#Path.join(["rel", "plugins", "*.exs"])
+#|> Path.wildcard()
+#|> Enum.map(&Code.eval_file(&1))
 
 use Mix.Releases.Config,
   # This sets the default release built by `mix release`
@@ -31,4 +31,12 @@ release :githome do
       :githome
     ]
   )
+  set commands: [
+        db_init:      "rel/commands/db-init.sh",
+#        db_reset:     "rel/commands/db-reset.sh",
+#        db_remove:    "rel/commands/db-remove.sh",
+        db_migrate:   "rel/commands/db-migrate.sh"
+#        db_new_admin: "rel/commands/db-new-admin.sh",
+#        db_rm_admin:  "rel/commands/db-rm-admin.sh"
+      ]
 end
