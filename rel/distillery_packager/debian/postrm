@@ -1,7 +1,23 @@
 #!/bin/bash
 
-#. /usr/share/debconf/confmodule
+. /usr/share/debconf/confmodule
 
+case "${1}" in
+	remove)
+		rm -rf /opt/githome
+		rm -rf /var/lib/githome
+		rm -rf /usr/lib/githome
+		echo "remove SUCCESS!!!"
+	;;
+	purge)
+		rm -rf /etc/githome
+		echo "purge SUCCESS!!!"
+		;;
+	*)
+	echo "Unknown argumetn ${*}"
+	;;
+
+esac
 #userdel --remove-home --system --force githome
 #echo "User githome deleted"
 exit 0
