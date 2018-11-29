@@ -28,6 +28,7 @@ release :githome do
   plugin DistilleryPackager.Plugin
   set(
     applications: [
+      :runtime_tools,
       :githome
     ]
   )

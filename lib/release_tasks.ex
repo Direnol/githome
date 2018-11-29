@@ -1,5 +1,11 @@
 defmodule Githome.ReleaseTasks do
 
+@start_apps [
+    :crypto,
+    :ssl,
+    :mariaex,
+    :ecto
+  ]
 
 @repos Application.get_env(:githome, :ecto_repos, [])
 
@@ -26,9 +32,9 @@ defmodule Githome.ReleaseTasks do
   end
 
   def migrate(_argv) do
-#    start_services()
+    start_services()
     run_migrations()
-#    stop_services()
+    stop_services()
   end
 
   defp run_migrations do
