@@ -10,8 +10,16 @@ use Mix.Config
 # which you should run after static files are built and
 # before starting your production server.
 config :githome, GithomeWeb.Endpoint,
+  server: true,
   http: [port: 4000],
   cache_static_manifest: "priv/static/cache_manifest.json"
+
+config :githome, Githome.Repo,
+  adapter: Ecto.Adapters.MySQL,
+  username: "githome",
+  password: "githome",
+  database: "githome",
+  pool_size: 10
 
 # Do not print debug messages in production
 config :logger, level: :info

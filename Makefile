@@ -83,7 +83,8 @@ raw-test: req
 
 raw-init: req
 	@mix deps.get
-	@cd assets && npm install
+	@cd assets && npm install && node node_modules/webpack/bin/webpack.js --mode development
+	@mix phx.digest
 	# @${MIX} ecto.create
 
 raw-deb: req
