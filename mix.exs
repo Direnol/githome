@@ -22,7 +22,7 @@ defmodule Githome.MixProject do
   def application do
     [
       mod: {Githome.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :ssl, :xmerl, :compile]
     ]
   end
 
