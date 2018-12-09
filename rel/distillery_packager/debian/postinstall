@@ -8,7 +8,7 @@ USER="githome"
 GROUP="githome"
 
 InitDataBase() {
-    db_get githome/mysql_host
+db_get githome/mysql_host
 HOST_MYSQL="${RET}"
 db_get githome/mysql_admin_login
 USER_MYSQL="${RET}"
@@ -127,6 +127,7 @@ case "${1}" in
         chmod u+rwx,g+rx,o+r /opt/githome/*
         chmod u+rwx,g+rx,o+r /var/lib/githome/
         chmod u+rwx,g+rx,o+r /etc/githome/*
+        chmod +x /etc/githome/mysql.conf
 
 #        chown ${USER}:${GROUP} /etc/nginx/sites-available/githome*
 #        chmod u+rwx,g+rx,o+r /etc/nginx/sites-available/githome*

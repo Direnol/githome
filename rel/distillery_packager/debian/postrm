@@ -11,9 +11,10 @@ remove)
 	rm -rf /usr/lib/githome
 	;;
 purge)
+    echo "Deleting githome user"
+    userdel --remove --force githome || true
+    echo "User githome deleted"
     rm -rf /etc/githome
-    # userdel --remove-home --system --force githome || true
-    # echo"User githome deleted"
     ;;
 *)
     echo "postrm called with: ${1}"

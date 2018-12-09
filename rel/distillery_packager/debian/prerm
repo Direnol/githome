@@ -4,4 +4,53 @@
 
 echo "${0} called with: ${*}"
 
-exit 0
+LOG_FILE=/tmp/githome_mysql_deploy-$(date --iso-8601).log
+
+log() {
+    echo "$(date -R)=> $1" >> "$LOG_FILE"
+}
+
+run_query() {
+    query="mysql ${1} ${2} ${3} -ss -q -e \"${4}\" 2>> ${LOG_FILE}"
+    log "Run query: ${query}"
+    RES=$(mysql "${1}" "${2}" "${3}" -ss -q -e "${4}" 2>> "${LOG_FILE}")
+    if [[ $? -ne 0 ]]; then
+        echo "Error: ${RES}"
+        log "Error: ${RES}"
+        exit 1
+    fi
+    log "DEBUG: |${RES}|"
+    return 0
+}
+
+drop_githome_mysql_database() {
+    run_query "-u${1}" "-p${2}" "-h${3}" "drop schema if exists ${4}"
+    if [[ -n "$RES" ]]; then
+        return 0
+    fi
+    return 1
+}
+
+DropDatabase() {
+    echo "Deleting database for githome user"
+    source /etc/githome/mysql.conf
+    HOST_MYSQL="${HOST}"
+    USER_MYSQL="${LOGIN}"
+    PASSWORD_MYSQL="${PASSWORD}"
+    DATABASE_NAME="${DB_NAME}"
+
+    drop_githome_mysql_database ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${DATABASE_NAME}
+}
+
+
+case "${1}" in
+remove)
+    DropDatabase
+    echo "Database for githome deleted"
+	;;
+purge)
+    ;;
+*)
+    echo "postrm called with: ${1}"
+    ;;
+esac
