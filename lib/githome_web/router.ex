@@ -16,7 +16,7 @@ defmodule GithomeWeb.Router do
   scope "/", GithomeWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
+    get "/", LoginController, :index
   end
 
   scope "/users", GithomeWeb do
