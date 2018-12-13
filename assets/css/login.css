@@ -1,7 +1,11 @@
 
 #regContainer{
-    /*position:fixed;
-    margin-top: 2%;*/
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+    left: 0;
+    margin-left: 8%;
+    margin-top: 0
 }
 
 .panel-login {
@@ -124,9 +128,3 @@
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
 }
-.general-form { 
-     position: absolute; 
-     top: 20px; 
-     left: 20px; 
-} 
-/* This file is for your main application css. */
