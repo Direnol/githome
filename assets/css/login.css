@@ -1,6 +1,7 @@
+
 #regContainer{
-    position:fixed;
-    margin-top: 10%;
+    /*position:fixed;
+    margin-top: 2%;*/
 }
 
 .panel-login {
@@ -58,8 +59,10 @@
     color: #fff;
     font-size: 14px;
     height: auto;
+    width: 80px;
+    margin-left: 35%;
     font-weight: normal;
-    padding: 14px 0;
+    padding: 14px;
     text-transform: uppercase;
     border-color: #2d92a9;
 }
@@ -73,7 +76,9 @@
     background-color: #17ae47;
     outline: none;
     color: #fff;
-    font-size: 14px;
+    width: 100px;
+    margin-left: 30%;
+    font-size: 12px;
     height: auto;
     font-weight: normal;
     padding: 14px 0;
@@ -119,3 +124,9 @@
     -webkit-text-fill-color: transparent;
     -webkit-background-clip: text;
 }
+.general-form { 
+     position: absolute; 
+     top: 20px; 
+     left: 20px; 
+} 
+/* This file is for your main application css. */
