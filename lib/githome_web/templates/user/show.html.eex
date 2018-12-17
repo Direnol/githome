@@ -8,11 +8,6 @@
   </li>
 
   <li>
-    <strong>Email:</strong>
-    <%= @user.email %>
-  </li>
-
-  <li>
     <strong>Password digest:</strong>
     <%= @user.password_digest %>
   </li>

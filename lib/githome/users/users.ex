@@ -1,12 +1,12 @@
-defmodule Githome.Accounts do
+defmodule Githome.Users do
   @moduledoc """
-  The Accounts context.
+  The Users context.
   """
 
   import Ecto.Query, warn: false
   alias Githome.Repo
 
-  alias Githome.Accounts.User
+  alias Githome.Users.User
 
   @doc """
   Returns the list of users.

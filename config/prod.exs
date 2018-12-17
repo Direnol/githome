@@ -24,6 +24,8 @@ config :githome, Githome.Repo,
 # Do not print debug messages in production
 config :logger, level: :info
 
+config :comeonin, bcrypt_log_rounds: 5 # 5 степень  шифровани пароля
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key

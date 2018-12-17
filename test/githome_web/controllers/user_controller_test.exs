@@ -1,7 +1,7 @@
 defmodule GithomeWeb.UserControllerTest do
   use GithomeWeb.ConnCase
 
-  alias Githome.Accounts
+  alias Githome.Users
 
   @create_attrs %{
     email: "some email",
@@ -16,7 +16,7 @@ defmodule GithomeWeb.UserControllerTest do
   @invalid_attrs %{email: nil, password_digest: nil, username: nil}
 
   def fixture(:user) do
-    {:ok, user} = Accounts.create_user(@create_attrs)
+    {:ok, user} = Users.create_user(@create_attrs)
     user
   end
 

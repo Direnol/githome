@@ -22,7 +22,7 @@ defmodule Githome.MixProject do
   def application do
     [
       mod: {Githome.Application, []},
-      extra_applications: [:logger, :runtime_tools, :ssl, :xmerl]
+      extra_applications: [:logger, :runtime_tools, :ssl, :xmerl, :comeonin]
     ]
   end
 
@@ -88,7 +88,8 @@ defmodule Githome.MixProject do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:distillery_packager, "~> 1.0"}
+      {:distillery_packager, "~> 1.0"},
+      {:comeonin, "~> 2.3"}
     ]
   end
 

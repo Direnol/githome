@@ -4,7 +4,6 @@ defmodule Githome.Repo.Migrations.CreateUsers do
   def change do
     create table(:users) do
       add :username, :string
-      add :email, :string
       add :password_digest, :string
 
       timestamps()
