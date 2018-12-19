@@ -3,7 +3,7 @@ defmodule GithomeWeb.LoginController do
 
   alias Githome.Users
   alias Githome.Users.User
-  import Comeonin.Bcrypt
+  import Comeonin.Bcrypt, only: [checkpw: 2]
 
   def index(conn, _params) do
     render(conn, "index.html", token: get_csrf_token(), info: get_flash(conn, :info))
@@ -25,7 +25,7 @@ defmodule GithomeWeb.LoginController do
 
     case ret do
       true ->
-        conn |> redirect(to: Routes.session_path(conn, :new))
+        conn |> redirect(to: Routes.session_path(conn, :new, username: param["username"], token: param["_csrf_token"]))
 
       _ ->
         conn
@@ -35,10 +35,10 @@ defmodule GithomeWeb.LoginController do
   end
 
   def register(conn, param) do
-    IO.inspect(param)
     login = param["username"]
     pass = param["password"]
     confirm_pass = param["confirm-password"]
+    token = param["_csrf_token"]
 
     case Users.get_user_by(username: login) do
       nil ->
@@ -50,7 +50,8 @@ defmodule GithomeWeb.LoginController do
                 :username => login,
                 :password => pass,
                 :password_confirmation => confirm_pass
-              }
+              },
+              "token" => token
             })
 
           _ ->
@@ -66,12 +67,12 @@ defmodule GithomeWeb.LoginController do
     end
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, %{"user" => user_params, "token" => token}) do
     case Users.create_user(user_params) do
       {:ok, user} ->
         conn
         |> put_flash(:info, "User created successfully")
-        |> redirect(to: Routes.session_path(conn, :new))
+        |> redirect(to: Routes.session_path(conn, :new, username: user_params["username"], token: token))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn

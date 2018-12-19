@@ -21,6 +21,18 @@ defmodule GithomeWeb.Router do
     post "/register", LoginController, :register
   end
 
+  scope "/session", GithomeWeb do
+    pipe_through :browser
+
+    get "/new", SessionController, :new
+  end
+
+  scope "/page", GithomeWeb do
+    pipe_through :browser
+
+    get "/", PageController, :index
+  end
+
   scope "/users", GithomeWeb do
     pipe_through :browser
 
@@ -31,12 +43,6 @@ defmodule GithomeWeb.Router do
     get "/new", UserController, :new
     post "/create", UserController, :create
     post "/update", UserController, :update
-  end
-
-  scope "/session", GithomeWeb do
-    pipe_through :browser
-
-    get "/new", SessionController, :new
   end
 
 #   Other scopes may use custom stacks.
