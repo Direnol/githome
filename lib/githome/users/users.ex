@@ -37,6 +37,8 @@ defmodule Githome.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def get_user_by!(search), do: Repo.get_by!(User, search)
+  def get_user_by(search), do: Repo.get_by(User, search)
   @doc """
   Creates a user.
 
@@ -101,4 +103,6 @@ defmodule Githome.Users do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
+  def hash(changeset), do: User.hash_password(changeset)
 end

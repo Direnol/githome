@@ -22,7 +22,7 @@ defmodule Githome.Users.User do
     |> hash_password
   end
 
-  defp hash_password(changeset) do
+  def hash_password(changeset) do
     if password = get_change(changeset, :password) do
       changeset
       |> put_change(:password_digest, hashpwsalt(password))
