@@ -9,6 +9,10 @@ defmodule GithomeWeb.Router do
     plug :put_secure_browser_headers
   end
 
+  pipeline :main_layout do
+    plug :put_layout, {GithomeWeb.LayoutView, :main}
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -25,10 +29,11 @@ defmodule GithomeWeb.Router do
     pipe_through :browser
 
     get "/new", SessionController, :new
+    get "/logout", SessionController, :logout
   end
 
   scope "/page", GithomeWeb do
-    pipe_through :browser
+    pipe_through [:browser, :main_layout]
 
     get "/", PageController, :index
   end

@@ -19,4 +19,10 @@ defmodule GithomeWeb.SessionController do
            |> redirect(to: Routes.page_path(conn, :index))
     end
   end
+
+  def logout(conn, params) do
+    conn
+      |> clear_session()
+      |> redirect(to: Routes.login_path(conn, :index))
+  end
 end
