@@ -14,8 +14,23 @@
         <title>Githome</title>
         <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/style.css") %>"/>
     </head>
-    <body>
+    <script type="text/javascript">
+    function show_snackbar_noti() {
+        // Get the snackbar DIV
+        var x = document.getElementById("snackbar");
+        // Add the "show" class to DIV
+        if(x.textContent) {
+            x.className = "show";
 
+            // After 3 seconds, remove the show class from DIV
+            setTimeout(function () {
+                x.className = x.className.replace("show", "");
+            }, 3000);
+        }
+    }
+    window.onload = show_snackbar_noti;
+    </script>
+    <body>
         <div class="navbar-wrapper">
             <div class="container-fluid">
                 <nav class="navbar navbar-fixed-top">
@@ -43,7 +58,11 @@
 
                                 <li class="<%= if @nav_active == :users do %>active <% else %> <% end %>"><a href="/users" class="">Users</a></li>
 
+                                <li class="<%= if @nav_active == :groups do %>active <% else %> <% end %>"><a href="/groups" class="">Groups</a></li>
+
+                                <%= if @user.admin do %>
                                 <li class="<%= if @nav_active == :settings do %>active <% else %> <% end %>"><a href="/settings">Settings</a></li>
+                                <% end %>
 
                                 <!-- <li class=" dropdown"><a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Managers <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
@@ -69,10 +88,10 @@
                             </ul>
                             <ul class="nav navbar-nav pull-right">
                                 <li class="<%= if @nav_active == :user_menu do %>active <% else %> <% end %> dropdown"><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <%= @username %>
+                                    <%= @user.username %>
                                     <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li><a href="#">Change Password</a></li>
+                                        <li><a href="/users/change_password">Change Password</a></li>
                                         <li><a href="#">My Profile</a></li>
                                     </ul>
                                 </li>

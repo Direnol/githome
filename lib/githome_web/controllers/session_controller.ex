@@ -12,7 +12,7 @@ defmodule GithomeWeb.SessionController do
       true ->
         conn
           |> put_session(:token, token)
-          |> put_session(:username, username)
+          |> put_session(:user, Users.get_user_by(username: username))
           |> redirect(to: Routes.page_path(conn, :index))
       _ ->
         conn

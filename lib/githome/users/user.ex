@@ -9,6 +9,7 @@ defmodule Githome.Users.User do
     field :first_name, :string
     field :last_name, :string
     field :admin, :boolean
+    field :avatar_uri, :string
     field :email, :string
     timestamps()
 
@@ -17,13 +18,21 @@ defmodule Githome.Users.User do
     field :password_confirm, :string, virtual: true
   end
 
-  @cast_params [:username, :password, :password_confirm, :admin, :first_name, :last_name, :email]
-  @validate_req [:username, :password, :password_confirm]
+  @cast_params [:username, :password, :password_confirm, :admin, :first_name, :last_name, :avatar_uri, :email]
+  @validate_req_create [:username, :password, :password_confirm]
+  @validate_req_change_pass [:password]
   @doc false
   def changeset(user, params) do
     user
     |> cast(params, @cast_params)
-    |> validate_required(@validate_req)
+    |> validate_required(@validate_req_create)
+    |> hash_password
+  end
+
+  def changeset_req_change_pass(user, params) do
+    user
+    |> cast(params, @cast_params)
+    |> validate_required(@validate_req_change_pass)
     |> hash_password
   end
 

@@ -89,7 +89,8 @@ defmodule Githome.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:distillery_packager, "~> 1.0"},
-      {:comeonin, "~> 2.3"}
+      {:comeonin, "~> 2.3"},
+      {:navigation_history, "~> 0.0"}
     ]
   end
 

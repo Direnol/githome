@@ -1,6 +1,6 @@
 /* This file is for your main application css. */
 
-@import "./phoenix.css";
+@import "./main.css";
 @import "./login.css";
 @import "./snackbar.css";
 @import "./navbar.css";

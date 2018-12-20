@@ -14,8 +14,7 @@ defmodule GithomeWeb.PageController do
             |> put_flash(:info, "Please sign in")
             |> redirect(to: Routes.login_path(conn, :index))
       _ ->
-        username = get_session(conn, :username)
-        user = Users.get_user_by(username: username)
+        user = get_session(conn, :user)
         if user == nil do
           redirect(conn, to: Routes.login_path(conn, :index))
         end

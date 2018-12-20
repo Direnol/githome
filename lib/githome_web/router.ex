@@ -7,6 +7,7 @@ defmodule GithomeWeb.Router do
     plug :fetch_flash
     plug :protect_from_forgery
     plug :put_secure_browser_headers
+    plug NavigationHistory.Tracker
   end
 
   pipeline :main_layout do
@@ -48,6 +49,8 @@ defmodule GithomeWeb.Router do
     get "/new", UserController, :new
     post "/create", UserController, :create
     post "/update", UserController, :update
+    get "/change_password", UserController, :change_password
+    post "/change_password", UserController, :change_password_post
   end
 
   scope "/projects", GithomeWeb do

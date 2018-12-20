@@ -75,6 +75,12 @@ defmodule Githome.Users do
     |> Repo.update()
   end
 
+  def update_user_pass(%User{} = user, attrs) do
+    user
+    |> User.changeset_req_change_pass(attrs)
+    |> Repo.update()
+  end
+
   @doc """
   Deletes a User.
 

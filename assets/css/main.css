@@ -1,0 +1,6 @@
+.main-frame {
+    position: absolute;
+    margin: auto;
+    width: -webkit-fill-available;
+    width: -moz-available;
+}
