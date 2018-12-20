@@ -50,6 +50,18 @@ defmodule GithomeWeb.Router do
     post "/update", UserController, :update
   end
 
+  scope "/projects", GithomeWeb do
+    pipe_through [:browser, :main_layout]
+
+    get "/", ProjectController, :index
+    get "/show", ProjectController, :show
+    get "/edit", ProjectController, :edit
+    delete "/delete", ProjectController, :delete
+    get "/new", ProjectController, :new
+    post "/create", ProjectController, :create
+    post "/update", ProjectController, :update
+  end
+
 #   Other scopes may use custom stacks.
    scope "/api", GithomeWeb do
      pipe_through :api

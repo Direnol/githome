@@ -1,6 +1,9 @@
 defmodule GithomeWeb.PageController do
   use GithomeWeb, :controller
 
+  alias Githome.Users
+  alias Githome.Users.User
+
   plug :put_layout, "main.html"
 
   def index(conn, _params) do
@@ -11,7 +14,12 @@ defmodule GithomeWeb.PageController do
             |> put_flash(:info, "Please sign in")
             |> redirect(to: Routes.login_path(conn, :index))
       _ ->
-          render(conn, "index.html", layout: {GithomeWeb.LayoutView, "main.html"}, username: get_session(conn, :username))
+        username = get_session(conn, :username)
+        user = Users.get_user_by(username: username)
+        if user == nil do
+          redirect(conn, to: Routes.login_path(conn, :index))
+        end
+        redirect(conn, to: Routes.project_path(conn, :index))
     end
   end
 end

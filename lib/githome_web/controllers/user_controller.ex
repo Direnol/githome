@@ -8,7 +8,10 @@ defmodule GithomeWeb.UserController do
 
   def index(conn, _params) do
     users = Users.list_users()
-    render(conn, "index.html", users: users, layout: {GithomeWeb.LayoutView, "main.html"}, username: get_session(conn, :username))
+      conn
+        |> put_session(:nav_active, :users)
+        |> IO.inspect()
+        |> render("index.html", users: users, layout: {GithomeWeb.LayoutView, "main.html"}, username: get_session(conn, :username), nav_active: get_session(conn, :nav_active))
   end
 
   def new(conn, _params) do

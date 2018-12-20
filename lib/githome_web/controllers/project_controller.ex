@@ -6,7 +6,9 @@ defmodule GithomeWeb.ProjectController do
 
   def index(conn, _params) do
     projects = Projects.list_projects()
-    render(conn, "index.html", projects: projects)
+    conn
+    |> put_session(:nav_active, :projects)
+    |> render("index.html", projects: projects, username: get_session(conn, :username), nav_active: get_session(conn, :nav_active))
   end
 
   def new(conn, _params) do
