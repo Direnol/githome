@@ -8,10 +8,24 @@ defmodule GithomeWeb.UserController do
   plug :put_layout, "main.html"
 
   def index(conn, _params) do
-    users = Users.list_users()
-    conn = put_session(conn, :nav_active, :users)
-      conn
+    token = get_session(conn, :token)
+    case token  do
+      nil ->
+        conn
+        |> put_flash(:info, "Please sign in")
+        |> redirect(to: Routes.login_path(conn, :index))
+      _ ->
+        user = get_session(conn, :user)
+        if user == nil do
+          conn
+          |> put_flash(:info, "Please sign in")
+          |> redirect(to: Routes.login_path(conn, :index))
+        end
+        users = Users.list_users()
+        conn = put_session(conn, :nav_active, :users)
+        conn
         |> render("index.html", users: users, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
+    end
   end
 
   def new(conn, _params) do
@@ -84,6 +98,7 @@ defmodule GithomeWeb.UserController do
   end
 
   def change_password(conn, params) do
+    conn = put_session(conn, :nav_active, :user_change_pass)
     render(conn, "change_password.html", layout: {GithomeWeb.LayoutView, "main.html"}, token: get_session(conn, :token), user: get_session(conn, :user), nav_active: get_session(conn, :nav_active), info: get_flash(conn, :info))
   end
 
