@@ -16,8 +16,12 @@
       <td><%= user.id %></td>
       <td><%= user.username %></td>
       <td><%= user.password_digest %></td>
-
-
+      <td>
+        <div class="container-fluid margin">
+            <%= link "Delete", to: Routes.user_path(@conn, :delete, %{"id" => user.id}), method: "delete", target: "_blank", class: "themeBtn3 ripple-effect" %>
+        	<!-- <a  href="https://dribbble.com/saikiran053" target="_blank" class="themeBtn3 ripple-effect">Follow @ Dribble</a> -->
+        </div>
+    </td>
     </tr>
 <% end %>
   </tbody>

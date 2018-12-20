@@ -67,7 +67,7 @@ defmodule GithomeWeb.LoginController do
     end
   end
 
-  def create(conn, %{"user" => user_params, "token" => token}) do
+  defp create(conn, %{"user" => user_params, "token" => token}) do
     case Users.create_user(user_params) do
       {:ok, user} ->
         conn
