@@ -6,19 +6,23 @@ defmodule Githome.Users.User do
   schema "users" do
     field :username, :string
     field :password_digest, :string
-
+    field :description, :string
+    field :admin, :boolean
+    field :email, :string
     timestamps()
 
     # Virtual Fields
     field :password, :string, virtual: true
-    field :password_confirmation, :string, virtual: true
+    field :password_confirm, :string, virtual: true
   end
 
+  @cast_params [:username, :password, :password_confirm, :admin, :description, :email]
+  @validate_req [:username, :password, :password_confirm]
   @doc false
   def changeset(user, params) do
     user
-    |> cast(params, [:username, :password, :password_confirmation])
-    |> validate_required([:username, :password, :password_confirmation])
+    |> cast(params, @cast_params)
+    |> validate_required(@validate_req)
     |> hash_password
   end
 

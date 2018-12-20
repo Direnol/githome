@@ -113,7 +113,7 @@ create_githome_mysql_database() {
 }
 
 update_grants() {
-    GRANTS="CREATE, DELETE, DROP, INSERT, SELECT, UPDATE, EXECUTE, EVENT, ALTER"
+    GRANTS="CREATE, DELETE, DROP, INSERT, SELECT, UPDATE, EXECUTE, EVENT, ALTER, INDEX"
     db_grants "${1}" "${2}" "${3}" "$GRANTS" "githome" "localhost" "${4}" "${5}"
     db_grants "${1}" "${2}" "${3}" "$GRANTS" "githome" "127.0.0.1" "${4}" "${5}"
 }

@@ -49,7 +49,7 @@ defmodule GithomeWeb.LoginController do
               "user" => %{
                 :username => login,
                 :password => pass,
-                :password_confirmation => confirm_pass
+                :password_confirm => confirm_pass
               },
               "token" => token
             })
