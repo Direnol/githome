@@ -72,7 +72,7 @@ defmodule GithomeWeb.LoginController do
       {:ok, user} ->
         conn
         |> put_flash(:info, "User created successfully")
-        |> redirect(to: Routes.session_path(conn, :new, username: user_params[:username]user_params, token: token))
+        |> redirect(to: Routes.session_path(conn, :new, username: user_params[:username], token: token))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
