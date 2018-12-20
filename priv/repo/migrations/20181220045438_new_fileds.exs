@@ -3,7 +3,8 @@ defmodule Githome.Repo.Migrations.NewFileds do
 
   def change do
     alter table(:users) do
-      add :description, :string
+      add :first_name, :string
+      add :last_name, :string
       add :email, :string, default: "nomail"
     end
   end
