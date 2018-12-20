@@ -39,7 +39,7 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/users", GithomeWeb do
-    pipe_through :browser
+    pipe_through [:browser, :main_layout]
 
     get "/", UserController, :index
     get "/show", UserController, :show

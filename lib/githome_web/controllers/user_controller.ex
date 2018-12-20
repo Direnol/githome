@@ -4,9 +4,11 @@ defmodule GithomeWeb.UserController do
   alias Githome.Users
   alias Githome.Users.User
 
+  plug :put_layout, "main.html"
+
   def index(conn, _params) do
     users = Users.list_users()
-    render(conn, "index.html", users: users)
+    render(conn, "index.html", users: users, layout: {GithomeWeb.LayoutView, "main.html"}, username: get_session(conn, :username))
   end
 
   def new(conn, _params) do

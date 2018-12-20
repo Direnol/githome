@@ -11,7 +11,7 @@ defmodule GithomeWeb.PageController do
             |> put_flash(:info, "Please sign in")
             |> redirect(to: Routes.login_path(conn, :index))
       _ ->
-          render(conn, "index.html", layout: {GithomeWeb.LayoutView, "main.html"})
+          render(conn, "index.html", layout: {GithomeWeb.LayoutView, "main.html"}, username: get_session(conn, :username))
     end
   end
 end
