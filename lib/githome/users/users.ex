@@ -110,5 +110,9 @@ defmodule Githome.Users do
     User.changeset(user, %{})
   end
 
+  def changeset_customize_user(%User{} = user) do
+    User.changeset_customize(user, %{})
+  end
+
   def hash(changeset), do: User.hash_password(changeset)
 end

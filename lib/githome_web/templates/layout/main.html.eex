@@ -42,17 +42,22 @@
                             <span class="icon-bar"></span>
                             <span class="icon-bar"></span>
                             </button>
-                            <a class="navbar-brand" href="/page">GitHome</a>
+                            <a class="navbar-brand" href="/my_projects">GitHome</a>
                         </div>
                         <div id="navbar" class="navbar-collapse collapse">
                             <ul class="nav navbar-nav">
-                                <li class="<%= if @nav_active in [:projects, :projects_view_all, :projects_add_new]  do %> active <% else %> <% end %> dropdown">
+                                <li class="<%= if @nav_active in [:projects, :projects_view_all, :projects_add_new, :projects_view_my]  do %> active <% else %> <% end %> dropdown">
                                     <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects<span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li class="<%= if @nav_active == :projects_view_all do %> active <% else %> <% end %> dropdown">
-                                            <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">View All</a>
+                                        <li class="<%= if @nav_active == :projects_view_all do %> active <% else %> <% end %>">
+                                            <a href="/projects">View All</a>
                                         </li>
-                                        <li class="<%= if @nav_active == :projects_add_new do %> active <% else %> <% end %>"><a href="#">Add New</a></li>
+                                        <li class="<%= if @nav_active == :projects_view_my do %> active <% else %> <% end %>">
+                                            <a href="/my_projects">View My</a>
+                                        </li>
+                                        <li class="<%= if @nav_active == :projects_add_new do %> active <% else %> <% end %>">
+                                            <a href="/my_projects/add">Add New</a>
+                                        </li>
                                     </ul>
                                 </li>
 
@@ -89,7 +94,7 @@
                             <ul class="nav navbar-nav pull-right">
                                 <li class="<%= if @nav_active in [:user_menu, :user_change_pass, :user_my_profile] do %> active <% else %> <% end %> nav-item dropdown  user-menu">
                                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdownMenuLink"  role="button" aria-haspopup="true" aria-expanded="false">
-                                        <img class="user-image" src="/images/user_default_avatar.png" alt="User Image" style="width: 18px;"/>
+                                        <img class="user-image" src="<%= if @user.avatar_uri do %><% else %>/images/user_default_avatar.png<% end %>" alt="User Image" style="width: 18px;"/>
                                         <span><%= @user.username %></span>
                                         <span class="caret"></span>
                                     </a>

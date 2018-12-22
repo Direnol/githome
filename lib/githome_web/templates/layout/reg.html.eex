@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+    <!------ Include the above in your HEAD tag ---------->
+
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Githome</title>
+        <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/style.css") %>"/>
+    </head>
+    <script type="text/javascript">
+    function show_snackbar_noti() {
+        // Get the snackbar DIV
+        var x = document.getElementById("snackbar");
+        // Add the "show" class to DIV
+        if(x.textContent) {
+            x.className = "show";
+
+            // After 3 seconds, remove the show class from DIV
+            setTimeout(function () {
+                x.className = x.className.replace("show", "");
+            }, 3000);
+        }
+    }
+    window.onload = show_snackbar_noti;
+    </script>
+    <body>
+        <div class="navbar-wrapper">
+            <div class="container-fluid">
+                <nav class="navbar navbar-fixed-top">
+                    <div class="container">
+                        <div class="navbar-header">
+                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            </button>
+                            <a class="navbar-brand">GitHome</a>
+                        </div>
+                    </div>
+                    <div class="main-frame">
+                        <%= render @view_module, @view_template, assigns %>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </body>
+</html>

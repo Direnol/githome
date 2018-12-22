@@ -14,16 +14,21 @@ defmodule GithomeWeb.Router do
     plug :put_layout, {GithomeWeb.LayoutView, :main}
   end
 
+  pipeline :reg_layout do
+    plug :put_layout, {GithomeWeb.LayoutView, :reg}
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
 
   scope "/", GithomeWeb do
-    pipe_through :browser
+    pipe_through [:browser, :reg_layout]
 
     get "/", LoginController, :index
     post "/login", LoginController, :login
     post "/register", LoginController, :register
+    get "/customize", LoginController, :customize
   end
 
   scope "/session", GithomeWeb do
@@ -33,10 +38,11 @@ defmodule GithomeWeb.Router do
     get "/logout", SessionController, :logout
   end
 
-  scope "/page", GithomeWeb do
+  scope "/my_projects", GithomeWeb do
     pipe_through [:browser, :main_layout]
 
-    get "/", PageController, :index
+    get "/", MyProjectController, :index
+    get "/add", MyProjectController, :add
   end
 
   scope "/users", GithomeWeb do
@@ -49,8 +55,21 @@ defmodule GithomeWeb.Router do
     get "/new", UserController, :new
     post "/create", UserController, :create
     post "/update", UserController, :update
+    put "/update", UserController, :update
     get "/change_password", UserController, :change_password
     post "/change_password", UserController, :change_password_post
+  end
+
+  scope "/settings", GithomeWeb do
+    pipe_through [:browser, :main_layout]
+
+    get "/", ParameterController, :index
+    get "/show", ParameterController, :show
+    get "/edit", ParameterController, :edit
+    delete "/delete", ParameterController, :delete
+    get "/new", ParameterController, :new
+    post "/create", ParameterController, :create
+    post "/update", ParameterController, :update
   end
 
   scope "/projects", GithomeWeb do

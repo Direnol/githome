@@ -67,17 +67,53 @@ defmodule GithomeWeb.LoginController do
     end
   end
 
+  def customize(conn, _) do
+    token = get_session(conn, :token)
+    case token  do
+      nil ->
+        conn
+        |> put_flash(:info, "Please sign in")
+        |> redirect(to: Routes.login_path(conn, :index))
+      _ ->
+        user = get_session(conn, :user)
+        if user == nil do
+          conn
+          |> put_flash(:info, "Please sign in")
+          |> redirect(to: Routes.login_path(conn, :index))
+        end
+        conn
+          |> put_layout({LayoutView, "reg.html"})
+          |> redirect(to: Routes.user_path(conn, :edit))
+    end
+  end
+
   defp create(conn, %{"user" => user_params, "token" => token}) do
     case Users.create_user(user_params) do
       {:ok, user} ->
         conn
         |> put_flash(:info, "User created successfully")
-        |> redirect(to: Routes.session_path(conn, :new, username: user_params[:username], token: token))
+        |> register_session(%{username: user_params[:username], token: token})
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_flash(:info, "Check your parameters")
         |> redirect(to: Routes.login_path(conn, :index))
+    end
+  end
+
+  defp register_session(conn, params) do
+    token = params[:token]
+    username = params[:username]
+    IO.inspect(token)
+    case String.valid?(token) do
+      true ->
+        conn
+          |> put_session(:token, token)
+          |> put_session(:user, Users.get_user_by(username: username))
+          |> redirect(to: Routes.login_path(conn, :customize))
+      _ ->
+        conn
+          |> redirect(to: Routes.login_path(conn, :index))
     end
   end
 end

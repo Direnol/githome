@@ -19,7 +19,7 @@ defmodule GithomeWeb.ProjectController do
             |> redirect(to: Routes.login_path(conn, :index))
         end
         projects = Projects.list_projects()
-        conn = put_session(conn, :nav_active, :projects)
+        conn = put_session(conn, :nav_active, :projects_view_all)
         conn
           |> render("index.html", projects: projects, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
     end

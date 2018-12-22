@@ -29,8 +29,18 @@ defmodule GithomeWeb.UserController do
   end
 
   def new(conn, _params) do
-    changeset = Users.change_user(%User{})
-    render(conn, "new.html", changeset: changeset)
+    token = get_session(conn, :token)
+    case token  do
+      nil ->
+        conn
+        |> put_flash(:info, "Please sign in")
+        |> redirect(to: Routes.login_path(conn, :index))
+      _ ->
+        changeset = Users.change_user(%User{})
+        IO.inspect(changeset)
+        conn
+        |> render("new.html", changeset: changeset, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active), token: get_session(conn, :token))
+    end
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -52,24 +62,71 @@ defmodule GithomeWeb.UserController do
     render(conn, "show.html", user: user)
   end
 
-  def edit(conn, %{"id" => id}) do
-    user = Users.get_user!(id)
-    changeset = Users.change_user(user)
-    render(conn, "edit.html", user: user, changeset: changeset)
+  def edit(conn, _) do
+    token = get_session(conn, :token)
+    case token  do
+      nil ->
+        conn
+        |> put_flash(:info, "Please sign in")
+        |> redirect(to: Routes.login_path(conn, :index))
+      _ ->
+        user = get_session(conn, :user)
+        if user == nil do
+          conn
+          |> put_flash(:info, "Please sign in")
+          |> redirect(to: Routes.login_path(conn, :index))
+        end
+        changeset = Users.changeset_customize_user(user)
+        IO.inspect(changeset)
+        conn
+          |> render("edit.html", user: user, changeset: changeset, nav_active: get_session(conn, :nav_active), token: get_session(conn, :token))
+    end
   end
 
-  def update(conn, %{"id" => id, "user" => user_params}) do
-    user = Users.get_user!(id)
+  def update(conn, params) do
+    if params["_csrf_token"] != get_session(conn, :token) do
+      conn
+      |> put_flash(:info, "Failed to register user. Please try again")
+      |> redirect(to: Routes.login_path(conn, :index))
+    end
+    case get_session(conn, :user) do
+      nil ->
+        conn
+        |> put_flash(:info, "Failed to register user. Please try again")
+        |> redirect(to: Routes.login_path(conn, :index))
 
-    case Users.update_user(user, user_params) do
+      _ ->
+        conn
+        |> update_user_info(params)
+    end
+  end
+
+  defp update_user_info(conn, user_params) do
+    IO.inspect(user_params)
+    user = get_session(conn, :user)
+    avatar_uri = ""
+    if upload = user_params["photo"] do
+      IO.inspect(upload)
+      extension = Path.extname(upload["filename"])
+      File.cp(upload["path"], "/images/#{user.id}-avatar#{extension}")
+      avatar_uri = "/images/#{user.id}-avatar#{extension}"
+    end
+
+    user_changeset = user_params["user"]
+    Map.delete(user_changeset, "photo")
+    Map.put(user_changeset, "avatar_uri", avatar_uri)
+    IO.inspect(user_changeset)
+
+
+    case Users.update_user(user, user_changeset) do
       {:ok, user} ->
         conn
         |> put_flash(:info, "User updated successfully")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
-          |> put_flash(:info, "Sorry try again")
-          |> Githome.redirect_back(default: "/")
+        |> put_flash(:info, "Sorry try again")
+        |> Githome.redirect_back(default: "/")
     end
   end
 

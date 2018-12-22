@@ -1,28 +1,77 @@
-<%= form_for @changeset, @action, fn f -> %>
-  <%= if @changeset.action do %>
-    <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+<hr>
+<div class="container bootstrap snippet">
+    <div class="row">
+        <div class="col-sm-10"><h1>Customize your profile</h1></div>
     </div>
-  <% end %>
+</div>
+<div class="row">
+    <%= form_for @changeset, @action, [multipart: true], fn f -> %>
+      <%= if @changeset.action do %>
+        <div class="alert alert-danger">
+          <p>Oops, something went wrong! Please check the errors below.</p>
+        </div>
+      <% end %>
+    <div class="col-sm-3"><!--left col-->
+      <div class="text-center">
+        <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
+        <h6>Upload a different photo...</h6>
+        <div class="form-group">
+            <%= file_input f, :photo, class: "text-center center-block file-upload " %>
+        </div>
+      </div>
+    </div><!--/col-3-->
+    <div class="col-sm-9">
+         <ul class="nav nav-tabs">
+             <li class="active"><a data-toggle="tab" href="#" aria-expanded="true">Settings</a></li>
+         </ul>
+         <div class="tab-content">
+            <div class="tab-pane active" id="home">
+                <hr>
+                    <input type="hidden" value="<%= @token %>" name="_csrf_token"/>
+                    <div class="form-group">
+                          <div class="col-xs-6">
+                            <%= label f, :first_name, "First name", class: "control-label" %>
+                            <%= text_input f, :first_name, class: "form-control", placeholder: "first name", title: "enter your first name if any." %>
+                            <%= error_tag f, :first_name %>
+                          </div>
+                      </div>
+                    <div class="form-group">
+                          <div class="col-xs-6">
+                            <%= label f, :last_name, "Last name", class: "control-label" %>
+                            <%= text_input f, :last_name, class: "form-control", placeholder: "last name", title: "enter your last name if any." %>
+                            <%= error_tag f, :last_name %>
+                          </div>
+                      </div>
+                    <div class="form-group">
+                          <div class="col-xs-6">
+                            <%= label f, :email, "Email", class: "control-label" %>
+                            <%= text_input f, :email, class: "form-control", placeholder: "you@email.com", title: "enter your email."%>
+                            <%= error_tag f, :email %>
+                          </div>
+                      </div>
+                        <div class="form-group">
 
-  <div class="form-group">
-    <%= label f, :username %>
-    <%= text_input f, :username %>
-    <%= error_tag f, :username %>
-  </div>
+                        </div>
+                    <div class="form-group">
+                          <div class="col-xs-6">
+                            <%= label f, :ssh_key, "SSH key", class: "control-label" %>
+                            <%= text_input f, :ssh_key, class: "form-control", placeholder: "ssh key", title: "enter a ssh key." %>
+                            <%= error_tag f, :ssh_key %>
+                          </div>
+                      </div>
 
-  <div class="form-group">
-    <%= label f, :password, "Password", class: "control-label" %>
-    <%= password_input f, :password, class: "form-control" %>
-    <%= error_tag f, :password %>
-  </div>
+                    <div class="form-group">
+                           <div class="col-xs-12">
+                                <br>
+                                <button class="btn btn-lg btn-success" type="submit"><i class="glyphicon glyphicon-ok-sign"></i> Save</button>
+                                <button class="btn btn-lg" type="reset"><i class="glyphicon glyphicon-repeat"></i> Reset</button>
+                            </div>
+                      </div>
+                <hr>
+            </div>
+          </div><!--/tab-content-->
+    </div><!--/col-9-->
+   <% end %>
+</div><!--/row-->
 
-  <div class="form-group">
-    <%= label f, :password_confirmation, "Password Confirmation", class: "control-label" %>
-    <%= password_input f, :password_confirmation, class: "form-control" %>
-    <%= error_tag f, :password_confirmation %>
-  </div>
-  <div>
-    <%= submit "Save" %>
-  </div>
-<% end %>
+
