@@ -7,6 +7,7 @@ defmodule Githome.Repo.Migrations.NewFileds do
       add :last_name, :string
       add :avatar_uri, :string
       add :email, :string, default: "nomail"
+      add :ssh_key, :string
     end
   end
 end

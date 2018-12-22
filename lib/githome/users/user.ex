@@ -11,6 +11,7 @@ defmodule Githome.Users.User do
     field :admin, :boolean
     field :avatar_uri, :string
     field :email, :string
+    field :ssh_key, :string
     timestamps()
 
     # Virtual Fields
@@ -18,7 +19,7 @@ defmodule Githome.Users.User do
     field :password_confirm, :string, virtual: true
   end
 
-  @cast_params [:username, :password, :password_confirm, :admin, :first_name, :last_name, :avatar_uri, :email]
+  @cast_params [:username, :password, :password_confirm, :admin, :first_name, :last_name, :avatar_uri, :email, :ssh_key]
   @validate_req_create [:username, :password, :password_confirm]
   @validate_req_change_pass [:password]
   @doc false
