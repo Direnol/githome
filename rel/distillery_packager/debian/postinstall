@@ -176,6 +176,8 @@ function configure_git() {
 
 case "${1}" in
 configure | reconfigure)
+    configure_git
+
     chown -R ${USER}:${GROUP} /usr/lib/githome/ /opt/githome/ \
         /var/lib/githome/ /etc/githome/
     chmod u+rwx,g+rx,o+r /usr/lib/githome/*
@@ -185,7 +187,6 @@ configure | reconfigure)
     chmod +x /etc/githome/mysql.conf
 
     echo "* githome: Start configure gitolite"
-    configure_git
 
     echo "* githome: Start init database"
     InitDataBase || true

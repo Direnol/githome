@@ -107,4 +107,5 @@ raw-compile: raw-init raw-gitolite
 
 
 raw-gitolite:
+	git submodule update --init
 	cd gitolite && ./install -to ${PWD}/rel/distillery_packager/debian/additional_files/usr/lib/githome/gitolite
