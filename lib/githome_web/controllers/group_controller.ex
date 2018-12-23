@@ -3,10 +3,33 @@ defmodule GithomeWeb.GroupController do
 
   alias Githome.Groups
   alias Githome.Groups.Group
+  alias Githome.Users
 
-  def index(conn, _params) do
-    groups = Groups.list_groups()
-    render(conn, "index.html", groups: groups)
+  plug :put_layout, "main.html"
+
+  def index(conn, params) do
+    token = get_session(conn, :token)
+    case token  do
+      nil ->
+        conn
+        |> put_flash(:info, "Please sign in")
+        |> redirect(to: Routes.login_path(conn, :index))
+      _ ->
+        user = get_session(conn, :user)
+        case is_map(user) do
+          true ->
+            groups = Groups.list_groups()
+            user_update = Users.get_user!(user.id)
+            conn
+            |> put_session(:user, user_update)
+            |> put_session(:nav_active, :groups)
+            |> render("index.html", groups: groups, layout: {GithomeWeb.LayoutView, "main.html"}, user: user_update, nav_active: :groups)
+          _ ->
+            conn
+            |> put_flash(:info, "Please sign in")
+            |> redirect(to: Routes.login_path(conn, :index))
+        end
+    end
   end
 
   def new(conn, _params) do
