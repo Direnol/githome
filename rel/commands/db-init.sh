@@ -8,4 +8,4 @@ if [ -n "${2}" ] ; then
 fi
 
 echo "Create database"
-mysql --user="${MYSQL_LOGIN}" ${MYSQL_PASS} -e "create database if not exists githome;"
+mysql --user="${MYSQL_LOGIN}" ${MYSQL_PASS} -e "create database if not exists githome character set UTF8;"

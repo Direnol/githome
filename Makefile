@@ -83,8 +83,8 @@ compile: docker-req
 clean:
 	@echo "Clean..."
 	@rm -rf ./_build ./deps rel/*.deb
-	@rm -rf rel/distillery_packager/debian/additional_files/usr/bin/gitolie
-	@rm -rf rel/distillery_packager/debian/additional_files/usr/lib/githome/gitolie/*
+	@rm -rf rel/distillery_packager/debian/additional_files/usr/bin/gitolite
+	@rm -rf rel/distillery_packager/debian/additional_files/usr/lib/githome/gitolite/*
 
 
 ####################################
@@ -99,12 +99,11 @@ raw-init: req
 	@mix phx.digest
 	# @${MIX} ecto.create
 
-raw-deb: raw-init
+raw-deb: raw-gitolite raw-init
 	@MIX_ENV=prod ${MIX} release
 
 raw-compile: raw-init raw-gitolite
 	@${MIX} compile
-
 
 raw-gitolite:
 	git submodule update --init

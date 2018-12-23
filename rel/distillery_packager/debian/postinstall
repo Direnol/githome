@@ -119,7 +119,7 @@ Set_DB_Connection_config() {
 
 # 1 - home
 function create_git_user() {
-    grep -q githome < "/etc/passwd"
+    grep -q githome <"/etc/passwd"
     if [[ $? == 1 ]]; then
         echo "Creating githome user"
         adduser --system --group githome --home "${1}" --shell /bin/bash
@@ -133,7 +133,7 @@ function create_git_user() {
 }
 
 function delete_git_user() {
-    grep -q githome < "/etc/passwd"
+    grep -q githome <"/etc/passwd"
     if [[ $? == 0 ]]; then
         echo "Delete user githome"
         userdel --remove --force githome || true
@@ -150,6 +150,7 @@ function configure_git() {
 
     local GITHOME_ROOT="/usr/lib/githome/gitolite"
     for I in gitolite gitolite-shell; do
+        echo "Link ${GITHOME_ROOT}/${I} to /usr/bin"
         ln --force -s "${GITHOME_ROOT}/${I}" "/usr/bin"
     done
 
@@ -162,11 +163,10 @@ function configure_git() {
 
     if [ ! -d "${GITHOME_GIT_PATH}/admin" ]; then
         rm -rf /tmp/admin* || true
-        ssh-keygen -t rsa -P "" -f "/tmp/${GITHOME_ADMIN}"
-
-        sudo -Hu githome gitolite setup -pk "/tmp/${GITHOME_ADMIN}.pub"
-        [ -f "/tmp/${GITHOME_ADMIN}" ] && cp "/tmp/${GITHOME_ADMIN}" "${GITHOME_GIT_PATH}/.ssh/id_rsa"
-        [ -f "/tmp/${GITHOME_ADMIN}.pub" ] && cp "/tmp/${GITHOME_ADMIN}.pub" "${GITHOME_GIT_PATH}/.ssh/id_rsa.pub"
+        rm -rf "${GITHOME_GIT_PATH}/.ssh" || true
+        sudo -Hu githome ssh-keygen -t rsa -P "" -f "${GITHOME_GIT_PATH}/.ssh/id_rsa"
+        sudo -Hu githome cp "${GITHOME_GIT_PATH}/.ssh/id_rsa.pub" "${GITHOME_GIT_PATH}/.ssh/${GITHOME_ADMIN}.pub"
+        sudo -Hu githome gitolite setup -pk "${GITHOME_GIT_PATH}/.ssh/${GITHOME_ADMIN}.pub"
         sudo -Hu githome git config --global user.email "noemail@noemail.com"
         sudo -Hu githome git config --global user.name "Git admin"
         rm -rf "${GITHOME_ADMIN}/admin"

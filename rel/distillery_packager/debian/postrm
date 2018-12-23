@@ -17,6 +17,7 @@ purge)
     echo "User githome deleted"
     rm -rf /etc/githome
     rm -rf /usr/bin/gitolite*
+    rm -rf /home/githome
     db_purge
     ;;
 *)
