@@ -126,7 +126,7 @@ defmodule GithomeWeb.UserController do
       true ->
         user = get_session(conn, :user)
         extension = Path.extname(Map.get(upload, :filename))
-        avatar_path = "/data/project/githome/priv/static/images/#{user.id}-avatar#{extension}"
+        avatar_path = "./priv/static/images/#{user.id}-avatar#{extension}"
         File.cp(Map.get(upload, :path), avatar_path)
         changeset = %{
           :avatar_uri => "/images/#{user.id}-avatar#{extension}",
