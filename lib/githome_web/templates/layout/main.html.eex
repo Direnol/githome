@@ -94,7 +94,7 @@
                             <ul class="nav navbar-nav pull-right">
                                 <li class="<%= if @nav_active in [:user_menu, :user_change_pass, :user_my_profile] do %> active <% else %> <% end %> nav-item dropdown  user-menu">
                                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" id="navbarDropdownMenuLink"  role="button" aria-haspopup="true" aria-expanded="false">
-                                        <img class="user-image" src="<%= if @user.avatar_uri do %><% else %>/images/user_default_avatar.png<% end %>" alt="User Image" style="width: 18px;"/>
+                                        <img class="user-image" src="<%= if @user.avatar_uri do %> <%= @user.avatar_uri %> <% else %>/images/user_default_avatar.png<% end %>" alt="User Image" style="width: 18px;"/>
                                         <span><%= @user.username %></span>
                                         <span class="caret"></span>
                                     </a>

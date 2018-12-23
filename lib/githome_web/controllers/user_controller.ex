@@ -16,16 +16,37 @@ defmodule GithomeWeb.UserController do
         |> redirect(to: Routes.login_path(conn, :index))
       _ ->
         user = get_session(conn, :user)
+        case is_map(user) do
+          true ->
+            users = Users.list_users()
+            user_update = Users.get_user!(user.id)
+            conn
+             |> put_session(:user, user_update)
+             |> put_session(:nav_active, :users)
+             |> render("index.html", users: users, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
+          _ ->
+            conn
+            |> put_flash(:info, "Please sign in")
+            |> redirect(to: Routes.login_path(conn, :index))
+        end
+    end
+
+
+
+    token = get_session(conn, :token)
+    case token  do
+      nil ->
+        conn
+        |> put_flash(:info, "Please sign in")
+        |> redirect(to: Routes.login_path(conn, :index))
+      _ ->
+        user = get_session(conn, :user)
         if user == nil do
           conn
           |> put_flash(:info, "Please sign in")
           |> redirect(to: Routes.login_path(conn, :index))
         end
-        users = Users.list_users()
-        conn = put_session(conn, :nav_active, :users)
-        conn
-        |> render("index.html", users: users, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
-    end
+        end
   end
 
   def new(conn, _params) do
@@ -37,7 +58,6 @@ defmodule GithomeWeb.UserController do
         |> redirect(to: Routes.login_path(conn, :index))
       _ ->
         changeset = Users.change_user(%User{})
-        IO.inspect(changeset)
         conn
         |> render("new.html", changeset: changeset, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active), token: get_session(conn, :token))
     end
@@ -77,7 +97,6 @@ defmodule GithomeWeb.UserController do
           |> redirect(to: Routes.login_path(conn, :index))
         end
         changeset = Users.changeset_customize_user(user)
-        IO.inspect(changeset)
         conn
           |> render("edit.html", user: user, changeset: changeset, nav_active: get_session(conn, :nav_active), token: get_session(conn, :token))
     end
@@ -97,42 +116,61 @@ defmodule GithomeWeb.UserController do
 
       _ ->
         conn
-        |> update_user_info(params)
+        |> update_user_info(params["user"])
     end
   end
 
   defp update_user_info(conn, user_params) do
-    IO.inspect(user_params)
-    user = get_session(conn, :user)
-    avatar_uri = ""
-    if upload = user_params["photo"] do
-      IO.inspect(upload)
-      extension = Path.extname(upload["filename"])
-      File.cp(upload["path"], "/images/#{user.id}-avatar#{extension}")
-      avatar_uri = "/images/#{user.id}-avatar#{extension}"
+    upload = Map.get(user_params, "photo")
+    case is_map(upload) do
+      true ->
+        user = get_session(conn, :user)
+        extension = Path.extname(Map.get(upload, :filename))
+        avatar_path = "/data/project/githome/priv/static/images/#{user.id}-avatar#{extension}"
+        File.cp(Map.get(upload, :path), avatar_path)
+        changeset = %{
+          :avatar_uri => "/images/#{user.id}-avatar#{extension}",
+          :email => user_params["email"],
+          :first_name => user_params["first_name"],
+          :last_name => user_params["last_name"],
+          :ssh_key => user_params["ssh_key"]
+        }
+        case Users.update_user_info(user, changeset) do
+          {:ok, user} ->
+            conn
+            |> put_flash(:info, "User updated successfully")
+            |> Githome.redirect_back(default: "/")
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            conn
+            |> put_flash(:info, "Sorry try again")
+            |> Githome.redirect_back(default: "/")
+        end
+
+        _ ->
+          user = get_session(conn, :user)
+          changeset = %{
+            :email => user_params["email"],
+            :first_name => user_params["first_name"],
+            :last_name => user_params["last_name"],
+            :ssh_key => user_params["ssh_key"]
+          }
+          case Users.update_user_info(user, changeset) do
+            {:ok, user} ->
+              conn
+              |> put_flash(:info, "User updated successfully")
+
+            {:error, %Ecto.Changeset{} = changeset} ->
+              conn
+              |> put_flash(:info, "Sorry try again")
+              |> Githome.redirect_back(default: "/")
+          end
     end
 
-    user_changeset = user_params["user"]
-    Map.delete(user_changeset, "photo")
-    Map.put(user_changeset, "avatar_uri", avatar_uri)
-    IO.inspect(user_changeset)
-
-
-    case Users.update_user(user, user_changeset) do
-      {:ok, user} ->
-        conn
-        |> put_flash(:info, "User updated successfully")
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        conn
-        |> put_flash(:info, "Sorry try again")
-        |> Githome.redirect_back(default: "/")
-    end
   end
 
   def update_password(conn, %{"id" => id, "user" => user_params}) do
     user = Users.get_user!(id)
-
     case Users.update_user_pass(user, user_params) do
       {:ok, user} ->
         conn

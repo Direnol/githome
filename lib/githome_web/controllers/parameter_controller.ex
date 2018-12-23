@@ -13,15 +13,19 @@ defmodule GithomeWeb.ParameterController do
         |> redirect(to: Routes.login_path(conn, :index))
       _ ->
         user = get_session(conn, :user)
-        if user == nil do
-          conn
-          |> put_flash(:info, "Please sign in")
-          |> redirect(to: Routes.login_path(conn, :index))
+        case is_map(user) do
+          true ->
+            user_update = Users.get_user!(user.id)
+            settings = Settrings.list_settings()
+            conn
+              |> put_session(:user, user_update)
+              |> put_session(:nav_active, :settings)
+              |> render("index.html", settings: settings, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
+          _ ->
+            conn
+            |> put_flash(:info, "Please sign in")
+            |> redirect(to: Routes.login_path(conn, :index))
         end
-        settings = Settrings.list_settings()
-        conn = put_session(conn, :nav_active, :settings)
-        conn
-        |> render("index.html", settings: settings, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
     end
   end
 

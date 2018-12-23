@@ -20,7 +20,7 @@ defmodule Githome.Users.User do
   end
 
   @cast_params [:username, :password, :password_confirm, :admin, :first_name, :last_name, :avatar_uri, :email, :ssh_key]
-  @cast_params_without_username [:password, :password_confirm, :admin, :first_name, :last_name, :avatar_uri, :email, :ssh_key]
+  @cast_params_without_username [:first_name, :last_name, :avatar_uri, :email, :ssh_key]
   @validate_req_create [:username, :password, :password_confirm]
   @validate_req_change_pass [:password]
   @doc false
