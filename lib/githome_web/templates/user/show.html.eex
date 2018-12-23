@@ -1,17 +1,41 @@
-<h1>Show User</h1>
+<hr>
+<div class="container bootstrap snippet">
+    <div class="row">
+  		<div class="col-sm-9"><h1><%= @user.username %></h1></div>
+  		<div class="col-sm-2" style="text-align: right"><h3>Set up a profile</h3></div>
+  		<div class="col-sm-1"><a href="/users/edit" class="pull-right"><img title="profile image" class="img-circle img-responsive" src="/images/Settings.png" style="width: 70px"></a></div>
+    </div>
+    <div class="row">
+  	    <div class="col-sm-3"><!--left col-->
+            <div class="text-center">
+              <img src="<%= if @user.avatar_uri do %> <%= @user.avatar_uri %> <% else %>/images/user_default_avatar.png<% end %>" class="avatar img-circle img-thumbnail" alt="avatar">
+            </div>
+            <br>
+            <ul class="list-group">
+                <li class="list-group-item text-muted">Activity <i class="fa fa-dashboard fa-1x"></i></li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong>Repositories</strong></span> 125</li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong>Groups</strong></span> 13</li>
+                <li class="list-group-item text-right"><span class="pull-left"><strong>Commits</strong></span> 37</li>
+            </ul>
+        </div><!--/col-3-->
+    	<div class="col-sm-9">
+          <div class="col-xs-6">
+            <label for="first_name"><h3>First name</h3></label>
+            <h4><%= if @user.first_name do %> <%= @user.first_name %> <% else %>noname<% end %></h4>
+          </div>
+          <div class="col-xs-6">
+            <label for="last_name"><h3>Last name</h3></label>
+            <h4><%= if @user.last_name do %> <%= @user.last_name %> <% else %>noname<% end %></h4>
+          </div>
+          <div class="col-xs-6">
+            <label for="email"><h3>Email</h3></label>
+            <h4><%= if @user.email do %> <%= @user.email %> <% else %>nomail<% end %></h4>
+          </div>
 
-<ul>
-
-  <li>
-    <strong>Username:</strong>
-    <%= @user.username %>
-  </li>
-
-  <li>
-    <strong>Password digest:</strong>
-    <%= @user.password_digest %>
-  </li>
-
-</ul>
-
-<span><%= link "Back", to: Routes.user_path(@conn, :index) %></span>
+          <div class="col-xs-6">
+            <label for="ssh_key"><h3>SSH key</h3></label>
+            <h4><%= if @user.ssh_key do %> <%= @user.ssh_key %> <% else %>nokey<% end %></h4>
+          </div>
+        </div><!--/col-9-->
+    </div><!--/row-->
+</div>

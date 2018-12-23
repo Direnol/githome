@@ -13,7 +13,7 @@
       <% end %>
     <div class="col-sm-3"><!--left col-->
       <div class="text-center">
-        <img src="http://ssl.gstatic.com/accounts/ui/avatar_2x.png" class="avatar img-circle img-thumbnail" alt="avatar">
+        <img src="/images/user_default_avatar.png" class="avatar img-circle img-thumbnail" alt="avatar">
         <h6>Upload a different photo...</h6>
         <div class="form-group">
             <%= file_input f, :photo, class: "text-center center-block file-upload " %>

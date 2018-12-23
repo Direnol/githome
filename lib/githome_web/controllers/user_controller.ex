@@ -161,6 +161,7 @@ defmodule GithomeWeb.UserController do
             {:ok, user} ->
               conn
               |> put_flash(:info, "User updated successfully")
+              |> Githome.redirect_back(default: "/")
 
             {:error, %Ecto.Changeset{} = changeset} ->
               conn
@@ -191,7 +192,7 @@ defmodule GithomeWeb.UserController do
 
     conn
     |> put_flash(:info, "User deleted successfully.")
-    |> redirect(to: Routes.user_path(conn, :index))
+    |> Githome.redirect_back(default: "/")
   end
 
   def change_password(conn, params) do
