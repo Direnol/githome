@@ -4,6 +4,7 @@
 
 echo "${0} called with: ${*}"
 
+deb-systemd-helper disable githome.service
 case "${1}" in
 remove)
 	rm -rf /opt/githome
@@ -15,9 +16,10 @@ purge)
     userdel --remove --force githome || true
     echo "User githome deleted"
     rm -rf /etc/githome
+    rm -rf /usr/bin/gitolite*
+    db_purge
     ;;
 *)
     echo "postrm called with: ${1}"
     ;;
 esac
-		

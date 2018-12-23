@@ -4,7 +4,7 @@ RES=''
 readonly PROGDIR=$(readlink -m "$(dirname "$0")")
 
 LOG_FILE=/tmp/githome_mysql_deploy-$(date --iso-8601).log
-
+echo "Log file: ${LOG_FILE}"
 log() {
     echo "$(date -R)=> $1" >> "$LOG_FILE"
 }
@@ -43,7 +43,13 @@ cancel_with_message() {
 }
 
 check_githome_mysql_user() {
-    run_query "-u${1}" "-p${2}" "-h${3}" "select distinct user from mysql.user where user='${4}'"
+    local PASS="${2}"
+    if [ "${PASS}" != "~~" ]; then
+        PASS="-p${PASS}"
+    else
+        PASS=""
+    fi
+    run_query "-u${1}" "${PASS}" "-h${3}" "select distinct user from mysql.user where user='${4}'"
     if [[ "${RES}" == "${4}" ]]; then
         return 0
     else
@@ -53,7 +59,13 @@ check_githome_mysql_user() {
 }
 
 create_user() {
-    run_query "-u${1}" "-p${2}" "-h${3}" "CREATE USER ${4} IDENTIFIED BY '${5}'"
+    local PASS="${2}"
+    if [ "${PASS}" != "~~" ]; then
+        PASS="-p${PASS}"
+    else
+        PASS=""
+    fi
+    run_query "-u${1}" "${PASS}" "-h${3}" "CREATE USER ${4} IDENTIFIED BY '${5}'"
     if [[ $? -eq 0 ]]; then
         return 0
     fi
@@ -61,11 +73,18 @@ create_user() {
 }
 
 update_password() {
-    run_query "-u${1}" "-p${2}" "-h${3}" "UPDATE mysql.user SET authentication_string = PASSWORD('${5}') WHERE user = '${4}';"
+    local PASS="${2}"
+    if [ "${PASS}" != "~~" ]; then
+        PASS="-p${PASS}"
+    else
+        PASS=""
+    fi
+
+    run_query "-u${1}" "${PASS}" "-h${3}" "UPDATE mysql.user SET authentication_string = PASSWORD('${5}') WHERE user = '${4}';"
     if [[ $? -eq 1 ]]; then
         return 1
     fi
-    run_query "-u${1}" "-p${2}" "-h${3}" "flush privileges;"
+    run_query "-u${1}" "${PASS}" "-h${3}" "flush privileges;"
     if [[ $? -eq 1 ]]; then
         return 1
     fi
@@ -73,6 +92,12 @@ update_password() {
 }
 
 db_grants() {
+    local PASS="${2}"
+    if [ "${PASS}" != "~~" ]; then
+        PASS="-p${PASS}"
+    else
+        PASS=""
+    fi
     local grants=${4}
     local db=${5}
     local host=${6}
@@ -80,15 +105,21 @@ db_grants() {
     local password=${8}
     log "Grant ${grants} for ${db}@${host}"
     if [[ -n "${password}" ]]; then
-        run_query "-u${1}" "-p${2}" "-h${3}" "GRANT ${grants}  ON \`$db\`.* TO \`${user}\`@\`${host}\` IDENTIFIED BY '${password}';"
+        run_query "-u${1}" "${PASS}" "-h${3}" "GRANT ${grants}  ON \`$db\`.* TO \`${user}\`@\`${host}\` IDENTIFIED BY '${password}';"
     else
-        run_query "-u${1}" "-p${2}" "-h${3}" "GRANT ${grants}  ON \`$db\`.* TO \`${user}\`@\`${host}\`;"
+        run_query "-u${1}" "${PASS}" "-h${3}" "GRANT ${grants}  ON \`$db\`.* TO \`${user}\`@\`${host}\`;"
     fi
-    run_query "-u${1}" "-p${2}" "-h${3}" "flush privileges;"
+    run_query "-u${1}" "${PASS}" "-h${3}" "flush privileges;"
 }
 
 check_connect() {
-    run_query "-u${1}" "-p${2}" "-h${3}" "exit"
+    local PASS="${2}"
+    if [ "${PASS}" != "~~" ]; then
+        PASS="-p${PASS}"
+    else
+        PASS=""
+    fi
+    run_query "-u${1}" "${PASS}" "-h${3}" "exit"
     if [[ $? -eq 0 ]]; then
         return 0
     fi
@@ -96,7 +127,13 @@ check_connect() {
 }
 
 check_githome_mysql_database() {
-    run_query "-u${1}" "-p${2}" "-h${3}" "show databases like 'githome'"
+    local PASS="${2}"
+    if [ "${PASS}" != "~~" ]; then
+        PASS="-p${PASS}"
+    else
+        PASS=""
+    fi
+    run_query "-u${1}" "${PASS}" "-h${3}" "show databases like 'githome'"
     if [[ -n "$RES" ]]; then
         return 0
     fi

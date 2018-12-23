@@ -8,10 +8,16 @@ defmodule GithomeWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug NavigationHistory.Tracker
+    |> IO.inspect(label: "wow")
   end
 
   pipeline :main_layout do
     plug :put_layout, {GithomeWeb.LayoutView, :main}
+    |> IO.inspect(label: "waw")
+  end
+
+  pipeline :reg_layout do
+    plug :put_layout, {GithomeWeb.LayoutView, :reg}
   end
 
   pipeline :reg_layout do

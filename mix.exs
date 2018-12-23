@@ -22,7 +22,8 @@ defmodule Githome.MixProject do
   def application do
     [
       mod: {Githome.Application, []},
-      extra_applications: [:logger, :runtime_tools, :ssl, :xmerl, :comeonin]
+      extra_applications: [:logger, :runtime_tools, :ssl, :xmerl, :comeonin],
+      env: [env: Mix.env]
     ]
   end
 
@@ -39,7 +40,13 @@ defmodule Githome.MixProject do
       external_dependencies: [
         "bash-completion (>= 1:2.8)",
         "mysql-server (>= 5.7)",
-        "elixir (>= 1.7.3-1)"
+        "elixir (>= 1.7.3-1)",
+        "git",
+        "adduser",
+        "libjson-perl",
+        "openssh-client",
+        "openssh-server | ssh-server",
+        "perl"
       ],
       codename: lsb_release(),
       license_file: "MIT",

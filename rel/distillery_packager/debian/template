@@ -38,3 +38,21 @@ Type: boolean
 Default: false
 Description: Mysql githome user exists. Would you like to change your password?:
 Description-ru.UTF-8: Пользователь для mysql githome найден. Хотите сменить пароль?:
+
+Template: githome/git_path
+Type: string
+Default: /var/lib/githome
+Description: Git root directory:
+Description-ru.UTF-8: Корневая директория для репозитория:
+
+Template: githome/git_path_old
+Type: string
+Default: /var/lib/githome
+Description: Old Git root directory:
+Description-ru.UTF-8: Предыдущая корневая директория для репозитория:
+
+Template: githome/git_admin
+Type: string
+Default: admin
+Description: Git admin name:
+Description-ru.UTF-8: Имя администратора Git:

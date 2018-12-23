@@ -4,11 +4,4 @@
 
 echo "${0} called with: ${*}"
 
-cat /etc/passwd | grep githome > /dev/null
-if [[ $? == 1 ]]; then
-    echo "Creating githome user"
-    adduser --system --group githome
-fi
-echo "User githome created"
-
 exit 0

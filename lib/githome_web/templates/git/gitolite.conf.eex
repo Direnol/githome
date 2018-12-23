@@ -1,0 +1,15 @@
+<%= for {group_name, members} <-  @groups do %>
+@<%= group_name %> = <%= for mem <- members do %> <%= mem %> <% end %>
+<% end %>
+<%= for {repo_name, param} <- @repos do %>
+repo <%= repo_name %>
+    <%= if param[:RW] do %>
+    RW+ = <%= for mem <- param[:RW] do %> <%= mem %> <% end %>
+    <% end %>
+    <%= if param[:R] do %>
+    R = <%= for mem <- param[:R] do %> <%= mem %> <% end %>
+    <% end %>
+    <%= if param[:W] do %>
+    W = <%= for mem <- param[:W] do %> <%= mem %> <% end %>
+    <% end %>
+<% end %>

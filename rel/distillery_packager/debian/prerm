@@ -5,6 +5,7 @@
 echo "${0} called with: ${*}"
 
 LOG_FILE=/tmp/githome_mysql_deploy-$(date --iso-8601).log
+echo "Log file: ${LOG_FILE}"
 
 log() {
     echo "$(date -R)=> $1" >> "$LOG_FILE"
@@ -17,7 +18,7 @@ run_query() {
     if [[ $? -ne 0 ]]; then
         echo "Error: ${RES}"
         log "Error: ${RES}"
-        exit 1
+        return 1
     fi
     log "DEBUG: |${RES}|"
     return 0
@@ -39,16 +40,19 @@ DropDatabase() {
     PASSWORD_MYSQL="${PASSWORD}"
     DATABASE_NAME="${DB_NAME}"
 
-    drop_githome_mysql_database ${USER_MYSQL} ${PASSWORD_MYSQL} ${HOST_MYSQL} ${DATABASE_NAME}
+    drop_githome_mysql_database "${USER_MYSQL}" "${PASSWORD_MYSQL}" "${HOST_MYSQL}" "${DATABASE_NAME}"
 }
 
 
+deb-systemd-invoke stop githome.service
 case "${1}" in
 remove)
-    DropDatabase
+    DropDatabase || true
     echo "Database for githome deleted"
 	;;
 purge)
+    db_get githome/git_path
+    rm -rf "${RET}" || true
     ;;
 *)
     echo "postrm called with: ${1}"

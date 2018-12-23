@@ -83,6 +83,8 @@ compile: docker-req
 clean:
 	@echo "Clean..."
 	@rm -rf ./_build ./deps rel/*.deb
+	@rm -rf rel/distillery_packager/debian/additional_files/usr/bin/gitolie
+	@rm -rf rel/distillery_packager/debian/additional_files/usr/lib/githome/gitolie/*
 
 
 ####################################
@@ -100,5 +102,9 @@ raw-init: req
 raw-deb: raw-init
 	@MIX_ENV=prod ${MIX} release
 
-raw-compile: raw-init
+raw-compile: raw-init raw-gitolite
 	@${MIX} compile
+
+
+raw-gitolite:
+	cd gitolite && ./install -to ${PWD}/rel/distillery_packager/debian/additional_files/usr/lib/githome/gitolite

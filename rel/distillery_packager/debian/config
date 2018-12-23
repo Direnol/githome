@@ -2,12 +2,16 @@
 
 . /usr/share/debconf/confmodule
 
-
 echo "${0} called with: ${*}"
+
 
 db_input high githome/mysql_host || true; db_go || true
 db_input high githome/mysql_admin_login || true; db_go || true
 db_input high githome/mysql_admin_password || true; db_go || true
+
+# Git core
+db_input high githome/git_path || true; db_go || true
+db_input high githome/git_admin || true; db_go || true
 
 # TODO: Добавить возможность создания конфигурационного файла
 
