@@ -23,30 +23,13 @@ defmodule GithomeWeb.UserController do
             conn
              |> put_session(:user, user_update)
              |> put_session(:nav_active, :users)
-             |> render("index.html", users: users, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
+             |> render("index.html", users: users, layout: {GithomeWeb.LayoutView, "main.html"}, user: user_update, nav_active: :users)
           _ ->
             conn
             |> put_flash(:info, "Please sign in")
             |> redirect(to: Routes.login_path(conn, :index))
         end
     end
-
-
-
-    token = get_session(conn, :token)
-    case token  do
-      nil ->
-        conn
-        |> put_flash(:info, "Please sign in")
-        |> redirect(to: Routes.login_path(conn, :index))
-      _ ->
-        user = get_session(conn, :user)
-        if user == nil do
-          conn
-          |> put_flash(:info, "Please sign in")
-          |> redirect(to: Routes.login_path(conn, :index))
-        end
-        end
   end
 
   def new(conn, _params) do
@@ -77,9 +60,28 @@ defmodule GithomeWeb.UserController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
-    user = Users.get_user!(id)
-    render(conn, "show.html", user: user)
+  def show(conn, _) do
+    token = get_session(conn, :token)
+    case token  do
+      nil ->
+        conn
+        |> put_flash(:info, "Please sign in")
+        |> redirect(to: Routes.login_path(conn, :index))
+      _ ->
+        user = get_session(conn, :user)
+        case is_map(user) do
+          true ->
+            user_update = Users.get_user!(user.id)
+            conn
+            |> put_session(:user, user_update)
+            |> put_session(:nav_active, :user_my_profile)
+            |> render("show.html", layout: {GithomeWeb.LayoutView, "main.html"}, user: user_update, nav_active: :user_my_profile)
+          _ ->
+            conn
+            |> put_flash(:info, "Please sign in")
+            |> redirect(to: Routes.login_path(conn, :index))
+        end
+      end
   end
 
   def edit(conn, _) do

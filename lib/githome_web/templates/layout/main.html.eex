@@ -100,7 +100,7 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li class="<%= if @nav_active == :user_change_pass do %> active <% else %> <% end %>"><a href="/users/change_password">Change Password</a></li>
-                                        <li class="<%= if @nav_active == :user_my_profile do %> active <% else %> <% end %>"><a href="#">My Profile</a></li>
+                                        <li class="<%= if @nav_active == :user_my_profile do %> active <% else %> <% end %>"><a href="/users/show">My Profile</a></li>
                                     </ul>
                                 </li>
                                 <li class=""><a href="/session/logout">Logout</a></li>

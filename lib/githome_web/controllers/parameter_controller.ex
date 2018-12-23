@@ -3,6 +3,7 @@ defmodule GithomeWeb.ParameterController do
 
   alias Githome.Settrings
   alias Githome.Settrings.Parameter
+  alias Githome.Users
 
   def index(conn, _params) do
     token = get_session(conn, :token)
@@ -20,7 +21,7 @@ defmodule GithomeWeb.ParameterController do
             conn
               |> put_session(:user, user_update)
               |> put_session(:nav_active, :settings)
-              |> render("index.html", settings: settings, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
+                |> render("index.html", settings: settings, layout: {GithomeWeb.LayoutView, "main.html"}, user: user_update, nav_active: :settings)
           _ ->
             conn
             |> put_flash(:info, "Please sign in")

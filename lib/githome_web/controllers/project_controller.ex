@@ -3,6 +3,7 @@ defmodule GithomeWeb.ProjectController do
 
   alias Githome.Projects
   alias Githome.Projects.Project
+  alias Githome.Users
 
   def index(conn, _params) do
     token = get_session(conn, :token)
@@ -20,7 +21,7 @@ defmodule GithomeWeb.ProjectController do
             conn
               |> put_session(:user, user_update)
               |> put_session(:nav_active, :projects_view_all)
-              |> render("index.html", projects: projects, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
+              |> render("index.html", projects: projects, layout: {GithomeWeb.LayoutView, "main.html"}, user: user_update, nav_active: :projects_view_all)
           _ ->
             conn
             |> put_flash(:info, "Please sign in")

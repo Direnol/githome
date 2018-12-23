@@ -3,7 +3,6 @@ defmodule GithomeWeb.MyProjectController do
 
   alias Githome.Projects
   alias Githome.Projects.Project
-
   alias Githome.Users
 
   plug :put_layout, "main.html"
@@ -24,7 +23,7 @@ defmodule GithomeWeb.MyProjectController do
             conn
               |> put_session(:user, user_update)
               |> put_session(:nav_active, :projects_view_my)
-              |> render("index.html", projects: projects, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
+              |> render("index.html", projects: projects, layout: {GithomeWeb.LayoutView, "main.html"}, user: user_update, nav_active: :projects_view_my)
           _ ->
             conn
               |> put_flash(:info, "Please sign in")
