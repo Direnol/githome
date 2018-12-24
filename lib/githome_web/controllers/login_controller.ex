@@ -1,6 +1,7 @@
 defmodule GithomeWeb.LoginController do
   use GithomeWeb, :controller
   alias Githome.Users
+  alias Githome.Groups
   import Comeonin.Bcrypt, only: [checkpw: 2]
 
   def index(conn, _params) do
@@ -47,15 +48,20 @@ defmodule GithomeWeb.LoginController do
       nil ->
         case pass == confirm_pass do
           true ->
-            conn
-            |> create(%{
-              "user" => %{
+            conn_user = create(conn, %{
                 :username => login,
                 :password => pass,
                 :password_confirm => confirm_pass
-              },
-              "token" => token
             })
+            conn = conn_user.conn
+            user = conn_user.user
+            conn
+              |> create_group(%{
+                  :name => login,
+                  :uid => user.id,
+                  :pid => nil
+                  })
+              |> redirect(to: Routes.session_path(conn, :new, username: login, token: token))
 
           _ ->
             conn
@@ -70,19 +76,30 @@ defmodule GithomeWeb.LoginController do
     end
   end
 
-  defp create(conn, %{"user" => user_params, "token" => token}) do
+  defp create(conn, user_params) do
     case Users.create_user(user_params) do
       {:ok, _user} ->
-        conn
-        |> put_flash(:info, "User created successfully")
-        |> redirect(
-          to: Routes.session_path(conn, :new, username: user_params[:username], token: token)
-        )
+        conn = put_flash(conn, :info, "User created successfully")
+        %{:conn => conn,
+          :user => _user}
 
       {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:info, "Check your parameters")
         |> redirect(to: Routes.login_path(conn, :index))
+    end
+  end
+
+  defp create_group(conn, group_params) do
+    case Groups.create_private_group(group_params) do
+      {:ok, group} ->
+        conn
+        |> put_flash(:info, "Group created successfully.")
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+          |> put_flash(:info, "Error private group create")
+          |> redirect(to: Routes.login_path(conn, :index))
     end
   end
 end

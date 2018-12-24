@@ -36,6 +36,8 @@ defmodule Githome.Groups do
 
   """
   def get_group!(id), do: Repo.get!(Group, id)
+  def get_group_by!(search), do: Repo.get_by!(Group, search)
+  def get_group_by(search), do: Repo.get_by(Group, search)
 
   @doc """
   Creates a group.
@@ -52,6 +54,12 @@ defmodule Githome.Groups do
   def create_group(attrs \\ %{}) do
     %Group{}
     |> Group.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def create_private_group(attrs \\ %{}) do
+    %Group{}
+    |> Group.changeset_private_group(attrs)
     |> Repo.insert()
   end
 

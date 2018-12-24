@@ -36,6 +36,8 @@ defmodule Githome.Projects do
 
   """
   def get_project!(id), do: Repo.get!(Project, id)
+  def get_project_by!(search), do: Repo.get_by!(Project, search)
+  def get_project_by(search), do: Repo.get_by(Project, search)
 
   @doc """
   Creates a project.

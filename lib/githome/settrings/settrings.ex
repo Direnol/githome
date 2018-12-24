@@ -36,6 +36,8 @@ defmodule Githome.Settrings do
 
   """
   def get_parameter!(id), do: Repo.get!(Parameter, id)
+  def get_parameter_by!(search), do: Repo.get_by!(Parameter, search)
+  def get_parameter_by(search), do: Repo.get_by(Parameter, search)
 
   @doc """
   Creates a parameter.
