@@ -99,8 +99,9 @@ defmodule GithomeWeb.Router do
     post "/create", GroupController, :create
     post "/update", GroupController, :update
   end
-#   Other scopes may use custom stacks.
-   scope "/api", GithomeWeb do
-     pipe_through :api
-   end
+
+  #   Other scopes may use custom stacks.
+  scope "/api", GithomeWeb do
+    pipe_through :api
+  end
 end

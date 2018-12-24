@@ -9,6 +9,5 @@ defmodule Githome.Repo.Migrations.CreateGroups do
 
       timestamps()
     end
-
   end
 end

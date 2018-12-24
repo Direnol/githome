@@ -75,6 +75,7 @@ defmodule GithomeWeb.ParameterControllerTest do
     test "deletes chosen parameter", %{conn: conn, parameter: parameter} do
       conn = delete(conn, Routes.parameter_path(conn, :delete, parameter))
       assert redirected_to(conn) == Routes.parameter_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.parameter_path(conn, :show, parameter))
       end

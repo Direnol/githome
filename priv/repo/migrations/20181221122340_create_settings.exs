@@ -8,6 +8,5 @@ defmodule Githome.Repo.Migrations.CreateSettings do
 
       timestamps()
     end
-
   end
 end

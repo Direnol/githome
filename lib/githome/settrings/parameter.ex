@@ -2,7 +2,6 @@ defmodule Githome.Settrings.Parameter do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "settings" do
     field :key, :string
     field :value, :string

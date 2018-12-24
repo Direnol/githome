@@ -41,7 +41,10 @@ defmodule Githome.SettringsTest do
 
     test "update_parameter/2 with valid data updates the parameter" do
       parameter = parameter_fixture()
-      assert {:ok, %Parameter{} = parameter} = Settrings.update_parameter(parameter, @update_attrs)
+
+      assert {:ok, %Parameter{} = parameter} =
+               Settrings.update_parameter(parameter, @update_attrs)
+
       assert parameter.key == "some updated key"
       assert parameter.value == "some updated value"
     end

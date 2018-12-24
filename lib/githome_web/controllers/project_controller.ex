@@ -7,21 +7,31 @@ defmodule GithomeWeb.ProjectController do
 
   def index(conn, _params) do
     token = get_session(conn, :token)
-    case token  do
+
+    case token do
       nil ->
         conn
         |> put_flash(:info, "Please sign in")
         |> redirect(to: Routes.login_path(conn, :index))
+
       _ ->
         user = get_session(conn, :user)
+
         case is_map(user) do
           true ->
             user_update = Users.get_user!(user.id)
             projects = Projects.list_projects()
+
             conn
-              |> put_session(:user, user_update)
-              |> put_session(:nav_active, :projects_view_all)
-              |> render("index.html", projects: projects, layout: {GithomeWeb.LayoutView, "main.html"}, user: user_update, nav_active: :projects_view_all)
+            |> put_session(:user, user_update)
+            |> put_session(:nav_active, :projects_view_all)
+            |> render("index.html",
+              projects: projects,
+              layout: {GithomeWeb.LayoutView, "main.html"},
+              user: user_update,
+              nav_active: :projects_view_all
+            )
+
           _ ->
             conn
             |> put_flash(:info, "Please sign in")
@@ -30,19 +40,22 @@ defmodule GithomeWeb.ProjectController do
     end
 
     token = get_session(conn, :token)
-    case token  do
+
+    case token do
       nil ->
         conn
-          |> put_flash(:info, "Please sign in")
-          |> redirect(to: Routes.login_path(conn, :index))
+        |> put_flash(:info, "Please sign in")
+        |> redirect(to: Routes.login_path(conn, :index))
+
       _ ->
         user = get_session(conn, :user)
+
         if user == nil do
           conn
-            |> put_flash(:info, "Please sign in")
-            |> redirect(to: Routes.login_path(conn, :index))
+          |> put_flash(:info, "Please sign in")
+          |> redirect(to: Routes.login_path(conn, :index))
         end
-        end
+    end
   end
 
   def new(conn, _params) do

@@ -29,7 +29,7 @@ defmodule GithomeWeb.GitView do
     {err, ret}
   end
 
-    @doc """
+  @doc """
 
     ## Examples
 

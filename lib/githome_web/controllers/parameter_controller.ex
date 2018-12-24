@@ -7,21 +7,31 @@ defmodule GithomeWeb.ParameterController do
 
   def index(conn, _params) do
     token = get_session(conn, :token)
-    case token  do
+
+    case token do
       nil ->
         conn
         |> put_flash(:info, "Please sign in")
         |> redirect(to: Routes.login_path(conn, :index))
+
       _ ->
         user = get_session(conn, :user)
+
         case is_map(user) do
           true ->
             user_update = Users.get_user!(user.id)
             settings = Settrings.list_settings()
+
             conn
-              |> put_session(:user, user_update)
-              |> put_session(:nav_active, :settings)
-                |> render("index.html", settings: settings, layout: {GithomeWeb.LayoutView, "main.html"}, user: user_update, nav_active: :settings)
+            |> put_session(:user, user_update)
+            |> put_session(:nav_active, :settings)
+            |> render("index.html",
+              settings: settings,
+              layout: {GithomeWeb.LayoutView, "main.html"},
+              user: user_update,
+              nav_active: :settings
+            )
+
           _ ->
             conn
             |> put_flash(:info, "Please sign in")
@@ -32,24 +42,41 @@ defmodule GithomeWeb.ParameterController do
 
   def new(conn, _params) do
     token = get_session(conn, :token)
-    case token  do
+
+    case token do
       nil ->
         conn
         |> put_flash(:info, "Please sign in")
         |> redirect(to: Routes.login_path(conn, :index))
+
       _ ->
         user = get_session(conn, :user)
+
         if user == nil do
           conn
           |> put_flash(:info, "Please sign in")
           |> redirect(to: Routes.login_path(conn, :index))
         end
+
         changeset = Settrings.change_parameter(%Parameter{})
         conn = put_session(conn, :nav_active, :settings)
-        render(conn, "new.html", changeset: changeset, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
+
+        render(conn, "new.html",
+          changeset: changeset,
+          layout: {GithomeWeb.LayoutView, "main.html"},
+          user: get_session(conn, :user),
+          nav_active: get_session(conn, :nav_active)
+        )
     end
+
     changeset = Settrings.change_parameter(%Parameter{})
-    render(conn, "new.html", changeset: changeset, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: get_session(conn, :nav_active))
+
+    render(conn, "new.html",
+      changeset: changeset,
+      layout: {GithomeWeb.LayoutView, "main.html"},
+      user: get_session(conn, :user),
+      nav_active: get_session(conn, :nav_active)
+    )
   end
 
   def create(conn, %{"parameter" => parameter_params}) do

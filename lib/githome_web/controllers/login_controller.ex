@@ -21,7 +21,14 @@ defmodule GithomeWeb.LoginController do
 
     case ret do
       true ->
-        conn |> redirect(to: Routes.session_path(conn, :new, username: param["username"], token: param["_csrf_token"]))
+        conn
+        |> redirect(
+          to:
+            Routes.session_path(conn, :new,
+              username: param["username"],
+              token: param["_csrf_token"]
+            )
+        )
 
       _ ->
         conn
@@ -58,8 +65,8 @@ defmodule GithomeWeb.LoginController do
 
       _ ->
         conn
-            |> put_flash(:info, "Already exist")
-            |> redirect(to: Routes.login_path(conn, :index))
+        |> put_flash(:info, "Already exist")
+        |> redirect(to: Routes.login_path(conn, :index))
     end
   end
 
@@ -68,7 +75,9 @@ defmodule GithomeWeb.LoginController do
       {:ok, _user} ->
         conn
         |> put_flash(:info, "User created successfully")
-        |> redirect(to: Routes.session_path(conn, :new, username: user_params[:username], token: token))
+        |> redirect(
+          to: Routes.session_path(conn, :new, username: user_params[:username], token: token)
+        )
 
       {:error, %Ecto.Changeset{} = _changeset} ->
         conn

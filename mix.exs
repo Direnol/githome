@@ -20,15 +20,19 @@ defmodule Githome.MixProject do
 
   def version do
     now = DateTime.utc_now()
-    {:ok, last} = System.cmd("git", ~w[log --pretty=%at -1])
-              |> elem(0)
-              |> Integer.parse
-              |> elem(0)
-              |> DateTime.from_unix
-    patch = DateTime.diff now, last
-    {minor, 0} = System.cmd "git", ~w[rev-list --count HEAD]
+
+    {:ok, last} =
+      System.cmd("git", ~w[log --pretty=%at -1])
+      |> elem(0)
+      |> Integer.parse()
+      |> elem(0)
+      |> DateTime.from_unix()
+
+    patch = DateTime.diff(now, last)
+    {minor, 0} = System.cmd("git", ~w[rev-list --count HEAD])
     @major_vsn <> "." <> String.trim(minor) <> "." <> to_string(patch)
   end
+
   # Configuration for the OTP application.
   #
   # Type `mix help compile.app` for more information.

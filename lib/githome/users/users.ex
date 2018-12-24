@@ -39,6 +39,7 @@ defmodule Githome.Users do
 
   def get_user_by!(search), do: Repo.get_by!(User, search)
   def get_user_by(search), do: Repo.get_by(User, search)
+
   @doc """
   Creates a user.
 

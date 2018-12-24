@@ -19,7 +19,17 @@ defmodule Githome.Users.User do
     field :password_confirm, :string, virtual: true
   end
 
-  @cast_params [:username, :password, :password_confirm, :admin, :first_name, :last_name, :avatar_uri, :email, :ssh_key]
+  @cast_params [
+    :username,
+    :password,
+    :password_confirm,
+    :admin,
+    :first_name,
+    :last_name,
+    :avatar_uri,
+    :email,
+    :ssh_key
+  ]
   @cast_params_without_username [:first_name, :last_name, :avatar_uri, :email, :ssh_key]
   @validate_req_create [:username, :password, :password_confirm]
   @validate_req_change_pass [:password]
@@ -33,9 +43,9 @@ defmodule Githome.Users.User do
 
   def changeset_customize(user, params) do
     user
-      |> cast(params, @cast_params)
-      |> validate_required(@cast_params_without_username)
-      |> hash_password
+    |> cast(params, @cast_params)
+    |> validate_required(@cast_params_without_username)
+    |> hash_password
   end
 
   def changeset_req_change_pass(user, params) do

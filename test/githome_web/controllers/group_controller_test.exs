@@ -75,6 +75,7 @@ defmodule GithomeWeb.GroupControllerTest do
     test "deletes chosen group", %{conn: conn, group: group} do
       conn = delete(conn, Routes.group_path(conn, :delete, group))
       assert redirected_to(conn) == Routes.group_path(conn, :index)
+
       assert_error_sent 404, fn ->
         get(conn, Routes.group_path(conn, :show, group))
       end
