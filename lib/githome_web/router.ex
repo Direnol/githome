@@ -42,7 +42,12 @@ defmodule GithomeWeb.Router do
     pipe_through [:browser, :main_layout]
 
     get "/", MyProjectController, :index
-    get "/add", MyProjectController, :add
+    get "/new", MyProjectController, :new
+    get "/show", MyProjectController, :show
+    get "/edit", MyProjectController, :edit
+    delete "/delete", MyProjectController, :delete
+    post "/create", MyProjectController, :create
+    post "/update", MyProjectController, :update
   end
 
   scope "/users", GithomeWeb do

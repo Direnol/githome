@@ -57,12 +57,6 @@ defmodule Githome.Groups do
     |> Repo.insert()
   end
 
-  def create_private_group(attrs \\ %{}) do
-    %Group{}
-    |> Group.changeset_private_group(attrs)
-    |> Repo.insert()
-  end
-
   @doc """
   Updates a group.
 

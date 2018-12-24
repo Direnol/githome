@@ -2,7 +2,9 @@ defmodule GithomeWeb.MyProjectController do
   use GithomeWeb, :controller
 
   alias Githome.Projects
+  alias Githome.Projects.Project
   alias Githome.Users
+  alias Githome.Groups
 
   plug :put_layout, "main.html"
 
@@ -41,7 +43,44 @@ defmodule GithomeWeb.MyProjectController do
     end
   end
 
-  def add(conn, _params) do
+  def show(conn, params) do
+    IO.inspect(params)
+    id = params["id"]
+    token = get_session(conn, :token)
+
+    case token do
+      nil ->
+        conn
+        |> put_flash(:info, "Please sign in")
+        |> redirect(to: Routes.login_path(conn, :index))
+
+      _ ->
+        user = get_session(conn, :user)
+
+        case is_map(user) do
+          true ->
+            user_update = Users.get_user!(user.id)
+            project = Projects.get_project!(id)
+
+            conn
+            |> put_session(:user, user_update)
+            |> put_session(:nav_active, :projects_view_my)
+            |> render("show.html",
+                 project: project,
+                 layout: {GithomeWeb.LayoutView, "main.html"},
+                 user: user_update,
+                 nav_active: :projects_view_my
+               )
+
+          _ ->
+            conn
+            |> put_flash(:info, "Please sign in")
+            |> redirect(to: Routes.login_path(conn, :index))
+        end
+    end
+  end
+
+  def new(conn, _params) do
     token = get_session(conn, :token)
 
     case token do
@@ -59,16 +98,49 @@ defmodule GithomeWeb.MyProjectController do
           |> redirect(to: Routes.login_path(conn, :index))
         end
 
-        projects = Projects.list_projects()
         conn = put_session(conn, :nav_active, :projects_add_new)
-
+        changeset = Projects.change_project(%Project{})
         conn
-        |> render("add.html",
-          projects: projects,
+        |> render("new.html",
           layout: {GithomeWeb.LayoutView, "main.html"},
+          changeset: changeset,
           user: get_session(conn, :user),
           nav_active: get_session(conn, :nav_active)
         )
+    end
+  end
+
+  def create(conn, params) do
+    user = get_session(conn, :user)
+    project_params = params["project"]
+    case Projects.create_project(project_params) do
+      {:ok, project} ->
+        case Groups.create_group(%{ # Создание связки пользователя и приватного проекта
+            :name => user.username,
+            :uid => user.id,
+            :pid => project.id,
+            :owner => true
+        }) do
+          {:ok, group} ->
+              conn
+                |> put_flash(:info, "Project created successfully.")
+#                |> redirect(to: Routes.my_project_path(conn, :index))
+                |> redirect(to: Routes.my_project_path(conn, :show, %{"id" => project.id}))
+          {:error, %Ecto.Changeset{} = changeset} ->
+              conn
+                |> render("new.html",  layout: {GithomeWeb.LayoutView, "main.html"},
+                 changeset: changeset,
+                 user: get_session(conn, :user),
+                 nav_active: get_session(conn, :nav_active),
+                )
+        end
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn
+          |> render("new.html",  layout: {GithomeWeb.LayoutView, "main.html"},
+                                 changeset: changeset,
+                                 user: get_session(conn, :user),
+                                 nav_active: get_session(conn, :nav_active),
+             )
     end
   end
 end

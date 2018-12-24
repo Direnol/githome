@@ -17,10 +17,4 @@ defmodule Githome.Groups.Group do
     |> cast(attrs, [:name, :uid, :pid, :owner])
     |> validate_required([:name, :uid, :pid, :owner])
   end
-
-  def changeset_private_group(group, attrs) do
-    group
-    |> cast(attrs, [:name, :uid, :pid])
-    |> validate_required([:name, :uid])
-  end
 end

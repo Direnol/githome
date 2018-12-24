@@ -2,7 +2,7 @@
 <div class="container bootstrap snippet">
     <div class="row">
   		<div class="col-sm-9"><h1>My Projects</h1></div>
-  		<div class="col-sm-2"><a class="btn icon-btn btn-success" href="/my_project/add"><span class="glyphicon btn-glyphicon glyphicon-plus img-circle text-success"></span>Add</a></div>
+  		<div class="col-sm-2"><a class="btn icon-btn btn-success" href="/my_projects/new"><span class="glyphicon btn-glyphicon glyphicon-plus img-circle text-success"></span>Add</a></div>
     </div>
 
     <div class="row">
@@ -20,12 +20,6 @@
         <tr>
           <td><%= project.project_name %></td>
           <td><%= project.path_to_directory %></td>
-
-          <td>
-            <%= link "Show", to: Routes.project_path(@conn, :show, project) %>
-            <%= link "Edit", to: Routes.project_path(@conn, :edit, project) %>
-            <%= link "Delete", to: Routes.project_path(@conn, :delete, project), method: :delete, data: [confirm: "Are you sure?"] %>
-          </td>
         </tr>
     <% end %>
       </tbody>
