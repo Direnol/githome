@@ -12,6 +12,7 @@ import css from "../css/app.css"
 import "phoenix_html"
 import "./login"
 import "./navbar"
+import "./groups"
 
 // Import local files
 //

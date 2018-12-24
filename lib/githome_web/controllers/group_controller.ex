@@ -4,6 +4,7 @@ defmodule GithomeWeb.GroupController do
   alias Githome.Groups
   alias Githome.Groups.Group
   alias Githome.Users
+  alias Githome.Projects
 
   plug :put_layout, "main.html"
 
@@ -33,11 +34,40 @@ defmodule GithomeWeb.GroupController do
   end
 
   def new(conn, _params) do
-    changeset = Groups.change_group(%Group{})
-    render(conn, "new.html", changeset: changeset)
+    token = get_session(conn, :token)
+    case token  do
+      nil ->
+        conn
+        |> put_flash(:info, "Please sign in")
+        |> redirect(to: Routes.login_path(conn, :index))
+      _ ->
+        user = get_session(conn, :user)
+        case is_map(user) do
+          true ->
+            changeset = Groups.change_group(%Group{})
+            users = Users.list_users()
+            list_of_users = for %{username: username, id: id} <- users do
+                              {username, id}
+                            end
+            projects = Projects.list_projects()
+            list_of_projects = for %{project_name: project_name, id: id} <- projects do
+              {project_name, id}
+            end
+            user_update = Users.get_user!(user.id)
+            conn
+            |> put_session(:user, user_update)
+            |> put_session(:nav_active, :groups)
+            |> render("new.html", changeset: changeset, layout: {GithomeWeb.LayoutView, "main.html"}, users: list_of_users, projects: list_of_projects, user: user_update, nav_active: :groups, token: get_session(conn, :token))
+          _ ->
+            conn
+            |> put_flash(:info, "Please sign in")
+            |> redirect(to: Routes.login_path(conn, :index))
+        end
+    end
   end
 
-  def create(conn, %{"group" => group_params}) do
+  def create(conn, params) do
+    group_params =  params["group"]
     case Groups.create_group(group_params) do
       {:ok, group} ->
         conn
@@ -45,7 +75,8 @@ defmodule GithomeWeb.GroupController do
         |> redirect(to: Routes.group_path(conn, :show, group))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+      conn
+        |> render("new.html", changeset: changeset, layout: {GithomeWeb.LayoutView, "main.html"}, user: get_session(conn, :user), nav_active: :groups, token: get_session(conn, :token))
     end
   end
 

@@ -3,4 +3,7 @@
     margin: auto;
     width: -webkit-fill-available;
     width: -moz-available;
+    overflow-y: scroll;
+    height: -webkit-fill-available;
+    height: -moz-available;
 }
