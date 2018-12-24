@@ -22,8 +22,14 @@ defmodule Githome.MixProject do
   def application do
     [
       mod: {Githome.Application, []},
-      extra_applications: [:logger, :runtime_tools, :ssl, :xmerl, :comeonin],
-      env: [env: Mix.env]
+      extra_applications: [
+        :logger,
+        :runtime_tools,
+        :ssl,
+        :xmerl,
+        :comeonin
+      ],
+      env: [env: Mix.env()]
     ]
   end
 

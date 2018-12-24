@@ -1,8 +1,6 @@
 defmodule GithomeWeb.LoginController do
   use GithomeWeb, :controller
-
   alias Githome.Users
-  alias Githome.Users.User
   import Comeonin.Bcrypt, only: [checkpw: 2]
 
   def index(conn, _params) do
@@ -10,8 +8,6 @@ defmodule GithomeWeb.LoginController do
   end
 
   def login(conn, param) do
-    IO.inspect(param)
-
     db_hash =
       case Users.get_user_by(username: param["username"]) do
         nil -> nil
@@ -69,12 +65,12 @@ defmodule GithomeWeb.LoginController do
 
   defp create(conn, %{"user" => user_params, "token" => token}) do
     case Users.create_user(user_params) do
-      {:ok, user} ->
+      {:ok, _user} ->
         conn
         |> put_flash(:info, "User created successfully")
         |> redirect(to: Routes.session_path(conn, :new, username: user_params[:username], token: token))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:info, "Check your parameters")
         |> redirect(to: Routes.login_path(conn, :index))

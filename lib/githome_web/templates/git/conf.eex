@@ -1,0 +1,16 @@
+<%= for {group_name, members} <-  @groups do %>
+@<%= group_name %> = <%= for mem <- members do %> <%= mem %> <% end %>
+<% end %>
+
+<%= for {repo_name, rules} <- @repos do %>
+repo <%= repo_name %>
+    <%= if rules[:RW] do %>
+    RW+ = <%= for mem <- rules[:RW] do %> <%= mem %> <% end %>
+    <% end %>
+    <%= if rules[:R] do %>
+    R = <%= for mem <- rules[:R] do %> <%= mem %> <% end %>
+    <% end %>
+    <%= if rules[:W] do %>
+    W = <%= for mem <- rules[:W] do %> <%= mem %> <% end %>
+    <% end %>
+<% end %>

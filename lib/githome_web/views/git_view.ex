@@ -1,16 +1,19 @@
-defmodule Githome.Git do
-  import EEx
+defmodule GithomeWeb.GitView do
+  use GithomeWeb, :view
 
-  @actions [
-    :status,
-    :log,
-    :create_user,
-    :commit,
-    :add,
-    :push,
-    :render,
-    :create_project
-  ]
+  def actions do
+    [
+      :status,
+      :log,
+      :create_user,
+      :commit,
+      :add,
+      :push,
+      :render,
+      :create_project,
+      :update_conf
+    ]
+  end
 
   defp home_dir() do
     case Application.get_env(:githome, :env) do
@@ -19,8 +22,6 @@ defmodule Githome.Git do
     end
   end
 
-  @root "lib/githome_web/templates"
-
   defp cmd(command, args, opts \\ []) do
     {ret, err} =
       System.cmd(command, args, [cd: home_dir() <> "/admin", stderr_to_stdout: true] ++ opts)
@@ -28,8 +29,17 @@ defmodule Githome.Git do
     {err, ret}
   end
 
+    @doc """
+
+    ## Examples
+
+    iex> GithomeWeb.GitView.git :render, groups: [{"admins", ["admin", "direnol"]}, {"users", ["u1", "u2"]}], repos: [{"gitolite-admin", [RW: ["@admins"]]}]
+    "@admins =  admin  direnol \n@users =  u1  u2 \n\nrepo gitolite-admin\n    RW+ =  @admins \n        \n"
+
+
+  """
   def git(action, opts \\ []) do
-    if action in @actions do
+    if action in actions() do
       git_action(action, opts)
     else
       {:error, bad_arg: action}
@@ -76,20 +86,11 @@ defmodule Githome.Git do
   end
 
   defp git_action(:render, opts) do
-    {:ok, file} = File.open(home_dir() <> "/admin/conf/gitolite.conf", [:write])
-
-    render =
-      eval_file(@root <> "/git/gitolite.conf.eex",
-        assigns: [
-          groups: opts[:groups],
-          repos: opts[:repos]
-        ]
-      )
-      |> IO.inspect()
-
-    IO.puts(file, render)
-
-    File.close(file)
+    "conf"
+    |> render(
+      groups: opts[:groups],
+      repos: opts[:repos]
+    )
   end
 
   defp git_action(:log, _opts) do
@@ -98,6 +99,11 @@ defmodule Githome.Git do
 
   defp git_action(:push, _opts) do
     cmd("git", ["push"])
+  end
+
+  defp git_action(:update_conf, opts) do
+    opts[:file]
+    |> File.write(opts[:data])
   end
 
   defp git_action(act, _opts) do
