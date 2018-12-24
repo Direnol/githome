@@ -45,7 +45,7 @@
                         </div>
                         <div id="navbar" class="navbar-collapse collapse">
                             <ul class="nav navbar-nav">
-                                <li class="<%= if @nav_active in [:projects, :projects_view_all, :projects_add_new, :projects_view_my]  do %> active <% else %> <% end %> dropdown">
+                                <li class="<%= if @nav_active in [:projects, :projects_view_all, :projects_add_new, :projects_view_my]  do %> active <% else %> <% end %>dropdown">
                                     <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Projects<span class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li class="<%= if @nav_active == :projects_view_all do %> active <% else %> <% end %>">
@@ -62,33 +62,25 @@
 
                                 <li class="<%= if @nav_active == :users do %> active <% else %> <% end %>"><a href="/users" class="">Users</a></li>
 
-                                <li class="<%= if @nav_active == :groups do %> active <% else %> <% end %>"><a href="/groups" class="">Groups</a></li>
+                                <li class="<%= if @nav_active in [:groups, :groups_view_all, :groups_add_new, :groups_view_my]  do %> active <% else %> <% end %>dropdown">
+                                    <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Groups<span class="caret"></span></a>
+                                    <ul class="dropdown-menu">
+                                        <li class="<%= if @nav_active == :projects_view_all do %> active <% else %> <% end %>">
+                                            <a href="/groups">View All</a>
+                                        </li>
+                                        <li class="<%= if @nav_active == :projects_view_my do %> active <% else %> <% end %>">
+                                            <a href="/my_groups">View My</a>
+                                        </li>
+                                        <li class="<%= if @nav_active == :projects_add_new do %> active <% else %> <% end %>">
+                                            <a href="/my_groups/add">Add New</a>
+                                        </li>
+                                    </ul>
+                                </li>
 
                                 <%= if @user.admin do %>
                                 <li class="<%= if @nav_active == :settings do %> active <% else %> <% end %>"><a href="/settings">Settings</a></li>
                                 <% end %>
 
-                                <!-- <li class=" dropdown"><a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Managers <span class="caret"></span></a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">View Managers</a></li>
-                                        <li><a href="#">Add New</a></li>
-                                    </ul>
-                                </li> -->
-
-                                <!-- <li class=" dropdown"><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Staff <span class="caret"></span></a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">View Staff</a></li>
-                                        <li><a href="#">Add New</a></li>
-                                        <li><a href="#">Bulk Upload</a></li>
-                                    </ul>
-                                </li> -->
-
-                                <!-- <li class=" down"><a href="#" class="dropdown-toggle active" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">HR <span class="caret"></span></a>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="#">Change Time Entry</a></li>
-                                        <li><a href="#">Report</a></li>
-                                    </ul>
-                                </li> -->
                             </ul>
                             <ul class="nav navbar-nav pull-right">
                                 <li class="<%= if @nav_active in [:user_menu, :user_change_pass, :user_my_profile] do %> active <% else %> <% end %> nav-item dropdown  user-menu">
