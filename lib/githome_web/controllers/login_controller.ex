@@ -48,18 +48,11 @@ defmodule GithomeWeb.LoginController do
       nil ->
         case pass == confirm_pass do
           true ->
-            conn_user = create(conn, %{
-                :username => login,
-                :password => pass,
-                :password_confirm => confirm_pass
-            })
-            conn = conn_user.conn
-            user = conn_user.user
             conn
-              |> create_group(%{
-                  :name => login,
-                  :uid => user.id,
-                  :pid => nil
+              |> create(%{
+                    :username => login,
+                    :password => pass,
+                    :password_confirm => confirm_pass
                   })
               |> redirect(to: Routes.session_path(conn, :new, username: login, token: token))
 
@@ -79,9 +72,8 @@ defmodule GithomeWeb.LoginController do
   defp create(conn, user_params) do
     case Users.create_user(user_params) do
       {:ok, _user} ->
-        conn = put_flash(conn, :info, "User created successfully")
-        %{:conn => conn,
-          :user => _user}
+        conn
+          |> put_flash(:info, "User created successfully")
 
       {:error, %Ecto.Changeset{} = _changeset} ->
         conn
@@ -90,16 +82,16 @@ defmodule GithomeWeb.LoginController do
     end
   end
 
-  defp create_group(conn, group_params) do
-    case Groups.create_private_group(group_params) do
-      {:ok, group} ->
-        conn
-        |> put_flash(:info, "Group created successfully.")
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        conn
-          |> put_flash(:info, "Error private group create")
-          |> redirect(to: Routes.login_path(conn, :index))
-    end
-  end
+#  defp create_group(conn, group_params) do
+#    case Groups.create_private_group(group_params) do
+#      {:ok, group} ->
+#        conn
+#        |> put_flash(:info, "Group created successfully.")
+#
+#      {:error, %Ecto.Changeset{} = changeset} ->
+#        conn
+#          |> put_flash(:info, "Error private group create")
+#          |> redirect(to: Routes.login_path(conn, :index))
+#    end
+#  end
 end

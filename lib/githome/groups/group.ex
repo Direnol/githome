@@ -6,6 +6,7 @@ defmodule Githome.Groups.Group do
     field :name, :string
     field :pid, :integer
     field :uid, :integer
+    field :owner, :boolean
 
     timestamps()
   end
@@ -13,8 +14,8 @@ defmodule Githome.Groups.Group do
   @doc false
   def changeset(group, attrs) do
     group
-    |> cast(attrs, [:name, :uid, :pid])
-    |> validate_required([:name, :uid, :pid])
+    |> cast(attrs, [:name, :uid, :pid, :owner])
+    |> validate_required([:name, :uid, :pid, :owner])
   end
 
   def changeset_private_group(group, attrs) do

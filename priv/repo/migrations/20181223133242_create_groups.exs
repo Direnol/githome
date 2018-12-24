@@ -6,6 +6,7 @@ defmodule Githome.Repo.Migrations.CreateGroups do
       add :name, :string
       add :uid, :integer
       add :pid, :integer
+      add :owner, :boolean
 
       timestamps()
     end
