@@ -2,7 +2,6 @@ defmodule GithomeWeb.MyProjectController do
   use GithomeWeb, :controller
 
   alias Githome.Projects
-  alias Githome.Projects.Project
   alias Githome.Users
 
   plug :put_layout, "main.html"

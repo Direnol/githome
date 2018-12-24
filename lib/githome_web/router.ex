@@ -18,10 +18,6 @@ defmodule GithomeWeb.Router do
     plug :put_layout, {GithomeWeb.LayoutView, :reg}
   end
 
-  pipeline :reg_layout do
-    plug :put_layout, {GithomeWeb.LayoutView, :reg}
-  end
-
   pipeline :api do
     plug :accepts, ["json"]
   end

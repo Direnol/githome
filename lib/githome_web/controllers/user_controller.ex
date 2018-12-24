@@ -71,7 +71,7 @@ defmodule GithomeWeb.UserController do
         |> put_flash(:info, "User created successfully.")
         |> redirect(to: Routes.user_path(conn, :show, user))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:info, "Check your parameters")
         |> redirect(to: Routes.login_path(conn, :index))
@@ -179,12 +179,12 @@ defmodule GithomeWeb.UserController do
         }
 
         case Users.update_user_info(user, changeset) do
-          {:ok, user} ->
+          {:ok, _user} ->
             conn
             |> put_flash(:info, "User updated successfully")
             |> Githome.redirect_back(default: "/")
 
-          {:error, %Ecto.Changeset{} = changeset} ->
+          {:error, %Ecto.Changeset{} = _changeset} ->
             conn
             |> put_flash(:info, "Sorry try again")
             |> Githome.redirect_back(default: "/")
@@ -201,12 +201,12 @@ defmodule GithomeWeb.UserController do
         }
 
         case Users.update_user_info(user, changeset) do
-          {:ok, user} ->
+          {:ok, _user} ->
             conn
             |> put_flash(:info, "User updated successfully")
             |> Githome.redirect_back(default: "/")
 
-          {:error, %Ecto.Changeset{} = changeset} ->
+          {:error, %Ecto.Changeset{} = _changeset} ->
             conn
             |> put_flash(:info, "Sorry try again")
             |> Githome.redirect_back(default: "/")
@@ -218,11 +218,11 @@ defmodule GithomeWeb.UserController do
     user = Users.get_user!(id)
 
     case Users.update_user_pass(user, user_params) do
-      {:ok, user} ->
+      {:ok, _user} ->
         conn
         |> put_flash(:info, "User updated successfully")
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:info, "Sorry try again")
         |> Githome.redirect_back(default: "/")
@@ -238,7 +238,7 @@ defmodule GithomeWeb.UserController do
     |> Githome.redirect_back(default: "/")
   end
 
-  def change_password(conn, params) do
+  def change_password(conn, _params) do
     conn = put_session(conn, :nav_active, :user_change_pass)
 
     render(conn, "change_password.html",

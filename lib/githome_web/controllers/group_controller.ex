@@ -8,7 +8,7 @@ defmodule GithomeWeb.GroupController do
 
   plug :put_layout, "main.html"
 
-  def index(conn, params) do
+  def index(conn, _params) do
     token = get_session(conn, :token)
 
     case token do
