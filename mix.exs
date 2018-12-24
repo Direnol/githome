@@ -1,10 +1,12 @@
 defmodule Githome.MixProject do
   use Mix.Project
 
+  @major_vsn "1"
+
   def project do
     [
       app: :githome,
-      version: "0.1.0",
+      version: version(),
       elixir: "~> 1.5",
       description: "Git web",
       elixirc_paths: elixirc_paths(Mix.env()),
@@ -16,6 +18,17 @@ defmodule Githome.MixProject do
     ]
   end
 
+  def version do
+    now = DateTime.utc_now()
+    {:ok, last} = System.cmd("git", ~w[log --pretty=%at -1])
+              |> elem(0)
+              |> Integer.parse
+              |> elem(0)
+              |> DateTime.from_unix
+    patch = DateTime.diff now, last
+    {minor, 0} = System.cmd "git", ~w[rev-list --count HEAD]
+    @major_vsn <> "." <> String.trim(minor) <> "." <> to_string(patch)
+  end
   # Configuration for the OTP application.
   #
   # Type `mix help compile.app` for more information.
