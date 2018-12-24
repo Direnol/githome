@@ -23,12 +23,6 @@
               <td><%= group.name %></td>
               <td><%= group.uid %></td>
               <td><%= group.pid %></td>
-
-              <td>
-                <%= link "Show", to: Routes.group_path(@conn, :show, group) %>
-                <%= link "Edit", to: Routes.group_path(@conn, :edit, group) %>
-                <%= link "Delete", to: Routes.group_path(@conn, :delete, group), method: :delete, data: [confirm: "Are you sure?"] %>
-              </td>
             </tr>
         <% end %>
           </tbody>
