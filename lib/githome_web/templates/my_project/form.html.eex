@@ -16,16 +16,6 @@
               </div>
             </div>
         </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-              <%= label f, :path_to_directory, class: "col-sm-2 control-label" %>
-              <div class="col-md-5">
-                <%= text_input f, :path_to_directory, placeholder: "Enter project path", class: "form-control input-md"%>
-                <%= error_tag f, :path_to_directory %>
-                <!--<span class="help-block">help</span>-->
-              </div>
-            </div>
-        </div>
     </div>
     <%= submit "Save", class: "btn btn-success"%>
 </div>

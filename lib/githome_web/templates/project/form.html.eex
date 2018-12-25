@@ -9,10 +9,6 @@
   <%= text_input f, :project_name %>
   <%= error_tag f, :project_name %>
 
-  <%= label f, :path_to_directory %>
-  <%= text_input f, :path_to_directory %>
-  <%= error_tag f, :path_to_directory %>
-
   <div>
     <%= submit "Save" %>
   </div>

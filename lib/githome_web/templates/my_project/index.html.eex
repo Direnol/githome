@@ -10,7 +10,6 @@
       <thead>
         <tr>
           <th>Project name</th>
-          <th>Path to directory</th>
 
           <th></th>
         </tr>
@@ -19,7 +18,6 @@
     <%= for project <- @projects do %>
         <tr>
           <td><%= project.project_name %></td>
-          <td><%= project.path_to_directory %></td>
         </tr>
     <% end %>
       </tbody>

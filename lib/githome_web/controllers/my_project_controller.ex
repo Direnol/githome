@@ -23,7 +23,7 @@ defmodule GithomeWeb.MyProjectController do
         case is_map(user) do
           true ->
             user_update = Users.get_user!(user.id)
-            projects = Projects.list_projects()
+            projects = Projects.list_my_projects(user.id)
 
             conn
             |> put_session(:user, user_update)
@@ -125,7 +125,7 @@ defmodule GithomeWeb.MyProjectController do
                :owner => true
              }) do
           {:ok, group} ->
-            Git.create_project(project.project_name, RW: [user.username])
+#            Git.create_project(project.project_name, RW: [user.username])
 
             conn
             |> put_flash(:info, "Project created successfully.")

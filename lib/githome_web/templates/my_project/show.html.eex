@@ -7,9 +7,4 @@
     <%= @project.project_name %>
   </li>
 
-  <li>
-    <strong>Path to directory:</strong>
-    <%= @project.path_to_directory %>
-  </li>
-
 </ul>
