@@ -1,7 +1,8 @@
 <hr>
 <div class="container bootstrap snippet">
     <div class="row">
-  		<div class="col-sm-9"><h1>All Groups</h1></div>
+  		<div class="col-sm-9"><h1>My Groups</h1></div>
+        <div class="col-sm-2"><%= link "New Group", to: Routes.group_path(@conn, :new), class: "btn icon-btn btn-success" %></div>
     </div>
 
     <div class="row">

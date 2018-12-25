@@ -1,0 +1,23 @@
+<h1>Show Group</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @group.name %>
+  </li>
+
+  <li>
+    <strong>Uid:</strong>
+    <%= @group.uid %>
+  </li>
+
+  <li>
+    <strong>Pid:</strong>
+    <%= @group.pid %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.group_path(@conn, :edit, @group) %></span>
+<span><%= link "Back", to: Routes.group_path(@conn, :index) %></span>

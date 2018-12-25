@@ -1,0 +1,36 @@
+<%= form_for @changeset, @action, fn f -> %>
+  <%= if @changeset.action do %>
+    <div class="alert alert-danger">
+      <p>Oops, something went wrong! Please check the errors below.</p>
+    </div>
+  <% end %>
+<div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <div class="form-group">
+              <%= label f, :name, class: "col-sm-2 control-label" %>
+              <div class="col-md-5">
+                <%= text_input f, :name, placeholder: "Enter group name", class: "form-control input-md"%>
+                <%= error_tag f, :name %>
+                <!--<span class="help-block">help</span>-->
+              </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-3">
+            <label>
+                <h4>Select Users</h4>
+                <%= multiple_select(f, :members, @users, class: "form-control multiselect multiselect-icon", type: "text", multiple: "multiple", role: "multiselect") %>
+            </label>
+        </div>
+        <div class="col-sm-3">
+            <label>
+                <h4>Select Projects</h4>
+                <%= multiple_select(f, :projects, @users, class: "form-control multiselect multiselect-icon", type: "text", multiple: "multiple", role: "multiselect") %>
+            </label>
+        </div>
+    </div>
+    <%= submit "Save", class: "btn btn-success"%>
+</div>
+<% end %>

@@ -1,28 +1,31 @@
-<h1>Listing Projects</h1>
+<hr>
+<div class="container bootstrap snippet">
+    <div class="row">
+  		<div class="col-sm-9"><h1>All Projects</h1></div>
+    </div>
 
-<table>
-  <thead>
-    <tr>
-      <th>Project name</th>
-      <th>Path to directory</th>
+    <div class="row">
+    <table>
+      <thead>
+        <tr>
+          <th>Project name</th>
+          <th>Path to directory</th>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for project <- @projects do %>
-    <tr>
-      <td><%= project.project_name %></td>
-      <td><%= project.path_to_directory %></td>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+    <%= for project <- @projects do %>
+        <tr>
+          <td><%= project.project_name %></td>
+          <td><%= project.path_to_directory %></td>
+        </tr>
+    <% end %>
+      </tbody>
+    </table>
 
-      <td>
-        <%= link "Show", to: Routes.project_path(@conn, :show, project) %>
-        <%= link "Edit", to: Routes.project_path(@conn, :edit, project) %>
-        <%= link "Delete", to: Routes.project_path(@conn, :delete, project), method: :delete, data: [confirm: "Are you sure?"] %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
-</table>
+    <span><%= link "New Project", to: Routes.project_path(@conn, :new) %></span>
+        </div>
 
-<span><%= link "New Project", to: Routes.project_path(@conn, :new) %></span>
+</div>
+

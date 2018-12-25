@@ -1,0 +1,9 @@
+<hr>
+<div class="container bootstrap snippet">
+    <div class="row">
+  		<div class="col-sm-9"><h1>New Group</h1></div>
+    </div>
+    <div class="row">
+        <%= render "form.html", Map.put(assigns, :action, Routes.group_path(@conn, :create)) %>
+    </div>
+</div>
