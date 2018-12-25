@@ -55,7 +55,7 @@
                                             <a href="/my_projects">View My</a>
                                         </li>
                                         <li class="<%= if @nav_active == :projects_add_new do %> active <% else %> <% end %>">
-                                            <a href="/my_projects/add">Add New</a>
+                                            <a href="/my_projects/new">Add New</a>
                                         </li>
                                     </ul>
                                 </li>
@@ -65,14 +65,14 @@
                                 <li class="<%= if @nav_active in [:groups, :groups_view_all, :groups_add_new, :groups_view_my]  do %> active <% else %> <% end %>dropdown">
                                     <a href="#" class="dropdown-toggle " data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Groups<span class="caret"></span></a>
                                     <ul class="dropdown-menu">
-                                        <li class="<%= if @nav_active == :projects_view_all do %> active <% else %> <% end %>">
+                                        <li class="<%= if @nav_active == :groups_view_all do %> active <% else %> <% end %>">
                                             <a href="/groups">View All</a>
                                         </li>
-                                        <li class="<%= if @nav_active == :projects_view_my do %> active <% else %> <% end %>">
+                                        <li class="<%= if @nav_active == :groups_view_my do %> active <% else %> <% end %>">
                                             <a href="/my_groups">View My</a>
                                         </li>
-                                        <li class="<%= if @nav_active == :projects_add_new do %> active <% else %> <% end %>">
-                                            <a href="/my_groups/add">Add New</a>
+                                        <li class="<%= if @nav_active == :groups_add_new do %> active <% else %> <% end %>">
+                                            <a href="/my_groups/new">Add New</a>
                                         </li>
                                     </ul>
                                 </li>

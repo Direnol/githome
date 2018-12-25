@@ -27,12 +27,12 @@ defmodule GithomeWeb.MyGroupController do
 
             conn
             |> put_session(:user, user_update)
-            |> put_session(:nav_active, :groups)
+            |> put_session(:nav_active, :groups_view_my)
             |> render("index.html",
               groups: groups,
               layout: {GithomeWeb.LayoutView, "main.html"},
               user: user_update,
-              nav_active: :groups
+              nav_active: :groups_view_my
             )
 
           _ ->
@@ -76,14 +76,14 @@ defmodule GithomeWeb.MyGroupController do
 
             conn
             |> put_session(:user, user_update)
-            |> put_session(:nav_active, :groups)
+            |> put_session(:nav_active, :groups_add_new)
             |> render("new.html",
               changeset: changeset,
               layout: {GithomeWeb.LayoutView, "main.html"},
               users: list_of_users,
               projects: list_of_projects,
               user: user_update,
-              nav_active: :groups,
+              nav_active: :groups_add_new,
               token: get_session(conn, :token)
             )
 

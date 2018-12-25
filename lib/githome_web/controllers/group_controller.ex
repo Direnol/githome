@@ -27,12 +27,12 @@ defmodule GithomeWeb.GroupController do
 
             conn
             |> put_session(:user, user_update)
-            |> put_session(:nav_active, :groups)
+            |> put_session(:nav_active, :groups_view_all)
             |> render("index.html",
               groups: groups,
               layout: {GithomeWeb.LayoutView, "main.html"},
               user: user_update,
-              nav_active: :groups
+              nav_active: :groups_view_all
             )
 
           _ ->
