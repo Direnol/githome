@@ -4,6 +4,7 @@ defmodule GithomeWeb.UserController do
   alias Githome.Users
   alias Githome.Users.User
   import Comeonin.Bcrypt, only: [checkpw: 2]
+  alias GithomeWeb.GitController, as: Git
 
   plug :put_layout, "main.html"
 
@@ -179,7 +180,8 @@ defmodule GithomeWeb.UserController do
         }
 
         case Users.update_user_info(user, changeset) do
-          {:ok, _user} ->
+          {:ok, user} ->
+            Git.update_user user.username, user.ssh
             conn
             |> put_flash(:info, "User updated successfully")
             |> Githome.redirect_back(default: "/")

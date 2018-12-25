@@ -72,6 +72,7 @@ defmodule GithomeWeb.LoginController do
   defp create(conn, user_params) do
     case Users.create_user(user_params) do
       {:ok, user} ->
+        Git.create_user user.username, ""
         conn
           |> put_flash(:info, "User created successfully")
 
@@ -82,16 +83,4 @@ defmodule GithomeWeb.LoginController do
     end
   end
 
-#  defp create_group(conn, group_params) do
-#    case Groups.create_private_group(group_params) do
-#      {:ok, group} ->
-#        conn
-#        |> put_flash(:info, "Group created successfully.")
-#
-#      {:error, %Ecto.Changeset{} = changeset} ->
-#        conn
-#          |> put_flash(:info, "Error private group create")
-#          |> redirect(to: Routes.login_path(conn, :index))
-#    end
-#  end
 end
