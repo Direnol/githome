@@ -21,6 +21,13 @@ defmodule Githome.Groups do
     Repo.all(Group)
   end
 
+  def list_my_groups(id) do
+    query = from g in Group, select: g, where: g.uid == ^id
+    query # May be User or an Ecto.Query itself
+    |> Ecto.Queryable.to_query
+    |> Repo.all()
+  end
+
   @doc """
   Gets a single group.
 

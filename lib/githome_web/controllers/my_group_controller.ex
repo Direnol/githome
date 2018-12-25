@@ -22,7 +22,7 @@ defmodule GithomeWeb.MyGroupController do
 
         case is_map(user) do
           true ->
-            groups = Groups.list_groups()
+            groups = Groups.list_my_groups(user.id)
             user_update = Users.get_user!(user.id)
 
             conn
