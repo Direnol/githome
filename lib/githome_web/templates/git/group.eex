@@ -1,0 +1,3 @@
+<%= for {group_name, members} <-  [@group] do %>
+@<%= group_name %> = <%= for mem <- members do %> <%= mem %> <% end %>
+<% end %>

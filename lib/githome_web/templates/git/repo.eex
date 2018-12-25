@@ -1,8 +1,5 @@
-<%= for {group_name, members} <-  @groups do %>
-@<%= group_name %> = <%= for mem <- members do %> <%= mem %> <% end %>
-<% end %>
 
-<%= for {repo_name, rules} <- @repos do %>
+<%= for {repo_name, rules} <- [@repo] do %>
 repo <%= repo_name %>
     <%= if rules[:RW] do %>
     RW+ = <%= for mem <- rules[:RW] do %> <%= mem %> <% end %>

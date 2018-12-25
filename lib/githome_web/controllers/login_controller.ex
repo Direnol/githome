@@ -1,7 +1,7 @@
 defmodule GithomeWeb.LoginController do
   use GithomeWeb, :controller
   alias Githome.Users
-  alias Githome.Groups
+  alias GithomeWeb.GitController, as: Git
   import Comeonin.Bcrypt, only: [checkpw: 2]
 
   def index(conn, _params) do
@@ -71,7 +71,7 @@ defmodule GithomeWeb.LoginController do
 
   defp create(conn, user_params) do
     case Users.create_user(user_params) do
-      {:ok, _user} ->
+      {:ok, user} ->
         conn
           |> put_flash(:info, "User created successfully")
 
