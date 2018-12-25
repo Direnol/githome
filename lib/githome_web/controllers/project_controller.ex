@@ -4,7 +4,7 @@ defmodule GithomeWeb.ProjectController do
   alias Githome.Projects
   alias Githome.Projects.Project
   alias Githome.Users
-
+  alias GithomeWeb.GitController, as: Git
   def index(conn, _params) do
     token = get_session(conn, :token)
 
@@ -27,8 +27,8 @@ defmodule GithomeWeb.ProjectController do
             |> put_session(:nav_active, :projects_view_all)
             |> render("index.html",
               projects: projects,
-              layout: {GithomeWeb.LayoutView, "main.html"},
               user: user_update,
+              layout: {GithomeWeb.LayoutView, "main.html"},
               nav_active: :projects_view_all
             )
 
@@ -48,6 +48,9 @@ defmodule GithomeWeb.ProjectController do
   def create(conn, %{"project" => project_params}) do
     case Projects.create_project(project_params) do
       {:ok, project} ->
+        user = get_session(conn, :user).username
+        pname = project_params.project_name
+        Git.create_project pname, RW: user
         conn
         |> put_flash(:info, "Project created successfully.")
         |> redirect(to: Routes.project_path(conn, :show, project))

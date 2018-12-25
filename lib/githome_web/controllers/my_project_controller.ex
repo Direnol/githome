@@ -44,6 +44,7 @@ defmodule GithomeWeb.MyProjectController do
 
   def show(conn, params) do
     id = params["id"]
+    path = params["path"] || ""
     token = get_session(conn, :token)
 
     case token do
@@ -60,11 +61,21 @@ defmodule GithomeWeb.MyProjectController do
             user_update = Users.get_user!(user.id)
             project = Projects.get_project!(id)
 
+            files =
+              try do
+                Git.git_ls(project.project_name, "master", path)
+              rescue
+                e -> IO.inspect e
+                []
+              end
+              |> IO.inspect
+
             conn
             |> put_session(:user, user_update)
             |> put_session(:nav_active, :projects_view_my)
             |> render("show.html",
               project: project,
+              files: files,
               layout: {GithomeWeb.LayoutView, "main.html"},
               user: user_update,
               nav_active: :projects_view_my
@@ -122,8 +133,8 @@ defmodule GithomeWeb.MyProjectController do
                :pid => project.id,
                :owner => true
              }) do
-          {:ok, group} ->
-#            Git.create_project(project.project_name, RW: [user.username])
+          {:ok, _group} ->
+            Git.create_project(project.project_name, RW: [user.username])
 
             conn
             |> put_flash(:info, "Project created successfully.")
@@ -148,5 +159,14 @@ defmodule GithomeWeb.MyProjectController do
           nav_active: get_session(conn, :nav_active)
         )
     end
+  end
+
+  def delete(conn, %{"id" => id}) do
+    project = Projects.get_project!(id)
+    {:ok, _project} = Projects.delete_project(project)
+
+    conn
+    |> put_flash(:info, "Project deleted successfully.")
+    |> redirect(to: Routes.my_project_path(conn, :index))
   end
 end
