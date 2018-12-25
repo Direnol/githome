@@ -11,10 +11,17 @@ defmodule GithomeWeb.GitController do
 
   defp cmd(command, args, opts \\ []) do
     {ret, err} =
-      System.cmd(command, args, [cd: home_dir() <> "/admin", stderr_to_stdout: true] ++ opts)
+      System.cmd(
+        command,
+        args,
+        Keyword.merge([cd: home_dir() <> "/admin", stderr_to_stdout: true], opts)
+      )
 
     {err, ret}
   end
+
+
+  defp repo_path(name), do: home_dir() <> "/repositories/" <> name <> ".git"
 
   defp project_path(project_name) do
     home_dir() <> "/admin/conf/repos/" <> project_name <> ".conf"
@@ -37,11 +44,12 @@ defmodule GithomeWeb.GitController do
 
   def create_project(project_name, owner) do
     {:ok, project_file} = git_create_project(project_name, owner)
-    git_push project_file, "Create new project: " <> project_name
+    git_push(project_file, "Create new project: " <> project_name)
   end
+
   def update_projet(project_name, owner) do
     {:ok, project_file} = git_create_project(project_name, owner)
-    git_push project_file, "Update project: " <> project_name
+    git_push(project_file, "Update project: " <> project_name)
   end
 
   defp user_path(username) do
@@ -105,12 +113,13 @@ defmodule GithomeWeb.GitController do
     cmd("git", ["push"])
   end
 
-  def git_log(format \\ []) do
-    cmd("git", ["log"] ++ format)
+  def git_log(project, branch, files \\ [], format \\ []) do
+    {0, log} = cmd("git", ["log", branch] ++ format ++ ~w[--] ++ files, cd: repo_path(project))
+    log
   end
 
-  def git_diff(args) do
-    cmd("git", ["diff"] ++ args)
+  def git_diff(project, c1, c2, opts \\ []) do
+    cmd("git", ["diff", c1, c2] ++ opts, cd: repo_path(project))
   end
 
   defp git_commit(message) do
@@ -119,5 +128,27 @@ defmodule GithomeWeb.GitController do
 
   defp git_add(path) do
     cmd("git", ["add", path])
+  end
+
+  defp do_tree([_rules, "blob", _hash, object]), do: {:file, object}
+  defp do_tree([_rules, "tree", _hash, object]), do: {:dir, object}
+
+  def git_ls(name, branch, path \\ "", args \\ []) do
+    {0, tree} = cmd("git", ~w[ls-tree] ++ [branch <> ":" <> path] ++ args, cd: repo_path(name))
+    for o <- String.split(tree, "\n"), o != "", do: o |> String.replace("\t", " ") |> String.split |> do_tree
+  end
+
+  def git_show(name, branch, path \\ "") do
+    {0, res} = cmd("git", ~w[show] ++ [branch <> ":" <> path], cd: repo_path(name))
+    res
+  end
+
+  defp do_branch(["*", name]), do: {:cur_branch, name}
+  defp do_branch([name]), do: {:branch, name}
+
+  @spec git_branches(binary()) :: [any()]
+  def git_branches(name) do
+     {0, branches} = cmd "git", ~w[branch], cd: repo_path(name)
+     for b <- String.split(branches, "\n"), b != "", do: do_branch(String.split b)
   end
 end

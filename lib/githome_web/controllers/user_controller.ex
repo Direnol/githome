@@ -164,7 +164,6 @@ defmodule GithomeWeb.UserController do
 
   defp update_user_info(conn, user_params) do
     upload = Map.get(user_params, "photo")
-
     case is_map(upload) do
       true ->
         user = get_session(conn, :user)
@@ -179,10 +178,9 @@ defmodule GithomeWeb.UserController do
           :last_name => user_params["last_name"],
           :ssh_key => user_params["ssh_key"]
         }
-
         case Users.update_user_info(user, changeset) do
           {:ok, user} ->
-#            Git.update_user user.username, user.ssh
+           Git.update_user user.username, user.ssh_key
             conn
             |> put_flash(:info, "User updated successfully")
             |> Githome.redirect_back(default: "/")
