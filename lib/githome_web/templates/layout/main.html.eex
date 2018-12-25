@@ -5,14 +5,6 @@
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
     <!------ Include the above in your HEAD tag ---------->
-
-    <head>
-        <meta charset="utf-8"/>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-        <title>Githome</title>
-        <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/style.css") %>"/>
-    </head>
     <script type="text/javascript">
     function show_snackbar_noti() {
         // Get the snackbar DIV
@@ -29,6 +21,14 @@
     }
     window.onload = show_snackbar_noti;
     </script>
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <title>Githome</title>
+        <link rel="stylesheet" href="<%= Routes.static_path(@conn, "/css/style.css") %>"/>
+    </head>
+
     <body>
         <div class="navbar-wrapper">
             <div class="container-fluid">
@@ -91,7 +91,7 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         <li class="<%= if @nav_active == :user_change_pass do %> active <% else %> <% end %>"><a href="/users/change_password">Change Password</a></li>
-                                        <li class="<%= if @nav_active == :user_my_profile do %> active <% else %> <% end %>"><a href="/users/show">My Profile</a></li>
+                                        <li class="<%= if @nav_active == :user_my_profile do %> active <% else %> <% end %>"><%= link "My Project", to: Routes.user_path(@conn, :show, %{"id" => @user.id }) %></li>
                                     </ul>
                                 </li>
                                 <li class=""><a href="/session/logout">Logout</a></li>

@@ -79,7 +79,7 @@ defmodule GithomeWeb.UserController do
     end
   end
 
-  def show(conn, _) do
+  def show(conn, %{"id" => id}) do
     token = get_session(conn, :token)
 
     case token do
@@ -93,7 +93,7 @@ defmodule GithomeWeb.UserController do
 
         case is_map(user) do
           true ->
-            user_update = Users.get_user!(user.id)
+            user_update = Users.get_user!(id)
 
             conn
             |> put_session(:user, user_update)
@@ -101,6 +101,7 @@ defmodule GithomeWeb.UserController do
             |> render("show.html",
               layout: {GithomeWeb.LayoutView, "main.html"},
               user: user_update,
+              info: get_flash(conn, :info),
               nav_active: :user_my_profile
             )
 
@@ -131,12 +132,12 @@ defmodule GithomeWeb.UserController do
         end
 
         changeset = Users.changeset_customize_user(user)
-
         conn
         |> render("edit.html",
           user: user,
           changeset: changeset,
           nav_active: get_session(conn, :nav_active),
+          info: get_flash(conn, :info),
           token: get_session(conn, :token)
         )
     end
@@ -196,6 +197,7 @@ defmodule GithomeWeb.UserController do
         user = get_session(conn, :user)
 
         changeset = %{
+          :avatar_uri => nil,
           :email => user_params["email"],
           :first_name => user_params["first_name"],
           :last_name => user_params["last_name"],
@@ -204,9 +206,10 @@ defmodule GithomeWeb.UserController do
 
         case Users.update_user_info(user, changeset) do
           {:ok, _user} ->
+            Git.update_user user.username, user.ssh
             conn
             |> put_flash(:info, "User updated successfully")
-            |> Githome.redirect_back(default: "/")
+            |> redirect(to: Routes.user_path(conn, :show, %{"id" => user.id}))
 
           {:error, %Ecto.Changeset{} = _changeset} ->
             conn

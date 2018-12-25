@@ -1,3 +1,4 @@
+<div id="snackbar"><%= @info %></div>
 <hr>
 <div class="container bootstrap snippet">
     <div class="row">
