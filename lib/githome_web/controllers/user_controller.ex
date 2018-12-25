@@ -182,7 +182,7 @@ defmodule GithomeWeb.UserController do
 
         case Users.update_user_info(user, changeset) do
           {:ok, user} ->
-            Git.update_user user.username, user.ssh
+#            Git.update_user user.username, user.ssh
             conn
             |> put_flash(:info, "User updated successfully")
             |> Githome.redirect_back(default: "/")
@@ -197,7 +197,6 @@ defmodule GithomeWeb.UserController do
         user = get_session(conn, :user)
 
         changeset = %{
-          :avatar_uri => nil,
           :email => user_params["email"],
           :first_name => user_params["first_name"],
           :last_name => user_params["last_name"],
@@ -206,7 +205,7 @@ defmodule GithomeWeb.UserController do
 
         case Users.update_user_info(user, changeset) do
           {:ok, _user} ->
-            Git.update_user user.username, user.ssh
+#            Git.update_user user.username, user.ssh
             conn
             |> put_flash(:info, "User updated successfully")
             |> redirect(to: Routes.user_path(conn, :show, %{"id" => user.id}))
