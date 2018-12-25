@@ -3,7 +3,6 @@ defmodule Githome.Projects.Project do
   import Ecto.Changeset
 
   schema "projects" do
-    field :path_to_directory, :string
     field :project_name, :string
 
     timestamps()
@@ -12,7 +11,7 @@ defmodule Githome.Projects.Project do
   @doc false
   def changeset(project, attrs) do
     project
-    |> cast(attrs, [:project_name, :path_to_directory])
-    |> validate_required([:project_name, :path_to_directory])
+    |> cast(attrs, [:project_name])
+    |> validate_required([:project_name])
   end
 end
