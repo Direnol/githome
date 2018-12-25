@@ -1,31 +1,28 @@
 <hr>
-<div class="container bootstrap snippet">
+<div class="container">
     <div class="row">
   		<div class="col-sm-9"><h1>All Groups</h1></div>
     </div>
-
     <div class="row">
-
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Uid</th>
-              <th>Pid</th>
-
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-        <%= for group <- @groups do %>
-            <tr>
-              <td><%= group.name %></td>
-              <td><%= group.uid %></td>
-              <td><%= group.pid %></td>
-            </tr>
-        <% end %>
-          </tbody>
-        </table>
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table id="mytable" class="table table-bordred table-striped">
+                    <thead>
+                        <th>Name Name</th>
+                        <th>Owner</th>
+                    </thead>
+                    <tbody>
+                         <%= for group <- @groups do %>
+                             <tr>
+                               <td><%= group.name %></td>
+                               <td><%= group.uid %></td>
+                               <td><%= group.pid %></td>
+                             </tr>
+                         <% end %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -1,34 +1,27 @@
 <hr>
-<div class="container bootstrap snippet">
+<div class="container">
     <div class="row">
   		<div class="col-sm-9"><h1>Listing Users</h1></div>
     </div>
-
     <div class="row">
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Username</th>
-              <th>Password digest</th>
-
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-        <%= for user <- @users do %>
-            <tr>
-              <td><%= user.id %></td>
-              <td><%= user.username %></td>
-              <td><%= user.password_digest %></td>
-              <td>
-                <div class="container-fluid margin">
-                    <%= link "Delete", to: Routes.user_path(@conn, :delete, %{"id" => user.id}), method: "delete", target: "_blank", class: "themeBtn3 ripple-effect" %>
-                </div>
-            </td>
-            </tr>
-        <% end %>
-          </tbody>
-        </table>
+        <div class="col-md-12">
+            <div class="table-responsive">
+                <table id="mytable" class="table table-bordred table-striped">
+                    <thead>
+                        <th>Username</th>
+                    </thead>
+                    <%= for user <- @users do %>
+                        <tr>
+                          <td><%= user.username %></td>
+                          <td>
+                            <div class="container-fluid margin">
+                                <%= link "Delete", to: Routes.user_path(@conn, :delete, %{"id" => user.id}), method: "delete", target: "_blank", class: "themeBtn3 ripple-effect" %>
+                            </div>
+                        </td>
+                        </tr>
+                    <% end %>
+                </table>
+            </div>
+        </div>
     </div>
 </div>
