@@ -38,24 +38,6 @@ defmodule GithomeWeb.ProjectController do
             |> redirect(to: Routes.login_path(conn, :index))
         end
     end
-
-    token = get_session(conn, :token)
-
-    case token do
-      nil ->
-        conn
-        |> put_flash(:info, "Please sign in")
-        |> redirect(to: Routes.login_path(conn, :index))
-
-      _ ->
-        user = get_session(conn, :user)
-
-        if user == nil do
-          conn
-          |> put_flash(:info, "Please sign in")
-          |> redirect(to: Routes.login_path(conn, :index))
-        end
-    end
   end
 
   def new(conn, _params) do

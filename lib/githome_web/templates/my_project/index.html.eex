@@ -25,7 +25,7 @@
                         <th>Delete</th>
                     </thead>
                     <tbody>
-                        <%= for p <- @projects do %>
+                        <%= for %{:p => p, :g => g} <- @projects do %>
                         <tr>
                             <td><%= link p.project_name, to: Routes.my_project_path(@conn, :show, %{"id" => p.id}), class: "btn btn-primary btn-xs"  %></td>
                             <td>Irshad</td>
