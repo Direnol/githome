@@ -1,29 +1,33 @@
-<hr>
-<div class="container bootstrap snippet">
+<div class="container">
     <div class="row">
-  		<div class="col-sm-9"><h1>All Projects</h1></div>
-    </div>
 
-    <div class="row">
-    <table>
-      <thead>
-        <tr>
-          <th>Project name</th>
 
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
-    <%= for project <- @projects do %>
-        <tr>
-          <td><%= project.project_name %></td>
-        </tr>
-    <% end %>
-      </tbody>
-    </table>
+        <div class="col-md-12">
+            <div class="table-responsive">
 
-    <span><%= link "New Project", to: Routes.project_path(@conn, :new) %></span>
+
+                <table id="mytable" class="table table-bordred table-striped">
+
+                    <thead>
+                        <th>Project Name</th>
+                        <th>Owner</th>
+                    </thead>
+                    <tbody>
+
+                         <%= for p <- @projects do %>
+                        <tr>
+                            <td><%= link p.project_name, to: Routes.my_project_path(@conn, :show, %{"id" => p.id}), class: "btn btn-primary btn-xs"  %></td>
+                            <td>Irshad</td>
+                        </tr>
+                        <% end %>
+
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
         </div>
-
+    </div>
 </div>
-
