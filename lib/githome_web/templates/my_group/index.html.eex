@@ -4,7 +4,9 @@
         <div class="col-sm-9">
             <h1>My Groups</h1>
         </div>
-        <div class="col-sm-2"><%= link "New Group", to: Routes.my_group_path(@conn, :new), class: "btn icon-btn btn-success" %></div>
+        <div class="col-sm-2">
+            <%= link "New Group", to: Routes.my_group_path(@conn, :new), class: "btn icon-btn btn-success" %>
+        </div>
     </div>
 </div>
 
@@ -22,8 +24,12 @@
                     <tbody>
                         <%= for group <- @groups do %>
                         <tr>
-                            <td><%= link group.name, to: Routes.my_group_path(@conn, :show, %{"id" => group.id}), class: "btn btn-primary btn-xs"  %></td>
-                            <td><%= group.description %></td>
+                            <td>
+                                <%= link group.name, to: Routes.my_group_path(@conn, :show, %{"id" => group.id}), class: "btn btn-primary btn-xs"  %>
+                            </td>
+                            <td>
+                                <%= group.description %>
+                            </td>
                             <td>
                                 <p data-placement="top" data-toggle="tooltip" title="Edit">
                                     <%= link raw(~s(<span class="glyphicon glyphicon-pencil"></span>)), to: Routes.my_group_path(@conn, :edit, %{"id" => group.id}), class: "btn btn-primary btn-xs",
@@ -31,10 +37,10 @@
                                 </p>
                             </td>
                             <td>
-                            <p data-placement="top" data-toggle="tooltip" title="Delete">
-                                <%= link raw(~s(<span class="glyphicon glyphicon-trash"></span>)), to: Routes.my_group_path(@conn, :delete, %{"id" => group.id}), class: "btn btn-danger btn-xs",
+                                <p data-placement="top" data-toggle="tooltip" title="Delete">
+                                    <%= link raw(~s(<span class="glyphicon glyphicon-trash"></span>)), to: Routes.my_group_path(@conn, :delete, %{"id" => group.id}), class: "btn btn-danger btn-xs",
                                     data_title: "Delete", data_toggle: "modal", method: "DELETE" %>
-                            </p>
+                                </p>
                             </td>
                         </tr>
                         <% end %>

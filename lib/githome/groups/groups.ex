@@ -29,13 +29,14 @@ defmodule Githome.Groups do
   def list_my_groups(id) do
     query =
       from i in Ginfo,
-           left_join: g in Group,
-           on: i.id == g.gid,
-           select: i,
-           where: g.uid == ^id
+        left_join: g in Group,
+        on: i.id == g.gid,
+        select: i,
+        where: g.uid == ^id
+
     query
-      |> Ecto.Queryable.to_query()
-      |> Repo.all()
+    |> Ecto.Queryable.to_query()
+    |> Repo.all()
   end
 
   @doc """
@@ -74,27 +75,33 @@ defmodule Githome.Groups do
     projects = attrs["projects"] || []
     desc = attrs["description"] || "desc default"
     owner = attrs["owner"]
+
     case GroupInfo.create_ginfo(%{"name" => name, "description" => desc}) do
       {:ok, info} ->
-       case insert_in_group(%{"gid" => info.id, "uid" => owner, "owner" => true}) do
-         {:ok, _group} ->
-           for member <- members, member != owner do
+        case insert_in_group(%{"gid" => info.id, "uid" => owner, "owner" => true}) do
+          {:ok, _group} ->
+            for member <- members, member != owner do
               insert_in_group(%{"gid" => info.id, "uid" => member, "owner" => false})
-           end
-           for project <- projects do
-             GroupProject.create_gp(%{"pid" => project, "gid" => info.id})
-           end
-           {:ok, info}
-         err -> err
-       end
+            end
 
-      err -> err
+            for project <- projects do
+              GroupProject.create_gp(%{"pid" => project, "gid" => info.id})
+            end
+
+            {:ok, info}
+
+          err ->
+            err
+        end
+
+      err ->
+        err
     end
-
   end
 
   def insert_in_group(attrs \\ %{}) do
     IO.inspect(attrs)
+
     %Group{}
     |> Group.changeset(attrs)
     |> Repo.insert()
@@ -150,20 +157,24 @@ defmodule Githome.Groups do
   end
 
   def get_all_members_by_group(id) do
-    query = from u in User,
-                 right_join: gr in Group,
-                 on: u.id == gr.uid,
-                 select: u,
-                 where: gr.gid == ^id
+    query =
+      from u in User,
+        right_join: gr in Group,
+        on: u.id == gr.uid,
+        select: u,
+        where: gr.gid == ^id
+
     query
     |> Ecto.Queryable.to_query()
     |> Repo.all()
   end
 
   def get_owner_by_group(id) do
-    query = from g in Group,
-                 select: g,
-                 where: g.gid == ^id and g.owner == true
+    query =
+      from g in Group,
+        select: g,
+        where: g.gid == ^id and g.owner == true
+
     query
     |> Ecto.Queryable.to_query()
     |> Repo.all()

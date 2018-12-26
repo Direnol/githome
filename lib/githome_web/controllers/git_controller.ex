@@ -50,6 +50,7 @@ defmodule GithomeWeb.GitController do
     {:ok, project_file} = git_create_project(project_name, owner)
     git_push(project_file, "Update project: " <> project_name)
   end
+
   def update_project(_, _), do: :no_ars
 
   def delete_project(name) do
@@ -80,7 +81,6 @@ defmodule GithomeWeb.GitController do
       err -> err
     end
   end
-
 
   def create_user(username, ssh) do
     {:ok, user_file} = git_create_user(username, ssh)
@@ -135,9 +135,9 @@ defmodule GithomeWeb.GitController do
   def delete_group(name) do
     {:ok, _} =
       group_path(name)
-      |> IO.inspect
+      |> IO.inspect()
       |> File.rm_rf()
-      |> IO.inspect
+      |> IO.inspect()
 
     git_push(".", "Delete group:" <> name)
   end

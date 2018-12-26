@@ -8,68 +8,83 @@
                 <tbody>
                     <tr>
                         <td>
-                            <h1><%= @group.name %></h1>
+                            <h1>
+                                <%= @group.name %>
+                            </h1>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
         <div class="col-sm-6">
-                    <table id="mytable" class="table table-bordred table-striped">
-                        <thead>
-                            <th>Group Description</th>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <h1><%= @group.description %></h1>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <table id="mytable" class="table table-bordred table-striped">
+                <thead>
+                    <th>Group Description</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <h1>
+                                <%= @group.description %>
+                            </h1>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-            <h2>Projects</h2>
+                <h2>Projects</h2>
                 <table id="mytable" class="table table-bordred table-striped">
                     <thead>
-                    <th>Name</th>
-                    <th>Owner</th>
+                        <th>Name</th>
+                        <th>Owner</th>
                     </thead>
                     <tbody>
-                    <%= for project <- @projects do %>
-                    <% user = Githome.Users.get_user!(project.owner) %>
-                    <tr>
-                        <td> <%= link project.project_name,
-                            to: Routes.my_project_path(@conn, :show, %{"id" => project.id}), class: "btn btn-primary btn-xs"   %></td>
-                        <td> <span class = "btn btn-xs btn-success"><%= user.username %> </span>
-                    </tr>
-                    <% end %>
+                        <%= for project <- @projects do %>
+                        <% user = Githome.Users.get_user!(project.owner) %>
+                        <tr>
+                            <td>
+                                <%= link project.project_name,
+                            to: Routes.my_project_path(@conn, :show, %{"id" => project.id}), class: "btn btn-primary btn-xs"   %>
+                            </td>
+                            <td> <span class="btn btn-xs btn-success">
+                                    <%= user.username %> </span>
+                        </tr>
+                        <% end %>
                     </tbody>
                 </table>
             </div>
             <div class="table-responsive">
-            <h3>Members</h2>
-                <table id="mytable" class="table table-bordred table-striped">
-                    <thead>
-                        <th>Name</th>
-                        <th>First name</th>
-                        <th>Last name</th>
-                        <th>Email</th>
-                    </thead>
-                    <tbody>
-                    <%= for member <- @members do %>
-                    <tr>
-                        <td><%= member.username %></td>
-                        <td><%= member.first_name %></td>
-                        <td><%= member.last_name %></td>
-                        <td><%= member.email %></td>
-                    </tr>
-                    <% end %>
-                    </tbody>
-                </table>
+                <h3>Members</h2>
+                    <table id="mytable" class="table table-bordred table-striped">
+                        <thead>
+                            <th>Name</th>
+                            <th>First name</th>
+                            <th>Last name</th>
+                            <th>Email</th>
+                        </thead>
+                        <tbody>
+                            <%= for member <- @members do %>
+                            <tr>
+                                <td>
+                                    <%= member.username %>
+                                </td>
+                                <td>
+                                    <%= member.first_name %>
+                                </td>
+                                <td>
+                                    <%= member.last_name %>
+                                </td>
+                                <td>
+                                    <%= member.email %>
+                                </td>
+                            </tr>
+                            <% end %>
+                        </tbody>
+                    </table>
             </div>
         </div>
     </div>

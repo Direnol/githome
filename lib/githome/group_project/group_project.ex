@@ -2,7 +2,6 @@ defmodule Githome.GroupProject.Gp do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "group_project" do
     field :gid, :integer
     field :pid, :integer

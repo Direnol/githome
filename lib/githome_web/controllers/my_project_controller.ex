@@ -23,6 +23,7 @@ defmodule GithomeWeb.MyProjectController do
           true ->
             user_update = Users.get_user!(user.id)
             projects = Projects.list_my_projects(user.id)
+
             conn
             |> put_session(:user, user_update)
             |> put_session(:nav_active, :projects_view_my)
@@ -147,10 +148,13 @@ defmodule GithomeWeb.MyProjectController do
 
   def create(conn, params) do
     user = get_session(conn, :user)
-    project_params = params["project"]
+
+    project_params =
+      params["project"]
       |> Map.put("owner", user.id)
-      |> IO.inspect
-    case Projects.create_project project_params do
+      |> IO.inspect()
+
+    case Projects.create_project(project_params) do
       {:ok, project} ->
         Git.create_project(project.project_name, RW: [user.username])
 
@@ -159,7 +163,8 @@ defmodule GithomeWeb.MyProjectController do
         |> redirect(to: Routes.my_project_path(conn, :show, %{"id" => project.id}))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect changeset
+        IO.inspect(changeset)
+
         conn
         |> render("new.html",
           layout: {GithomeWeb.LayoutView, "main.html"},

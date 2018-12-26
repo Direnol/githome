@@ -2,13 +2,13 @@ defmodule Githome.GroupInfo.Ginfo do
   use Ecto.Schema
   import Ecto.Changeset
 
-
   schema "group_info" do
     field :description, :string
     field :name, :string
 
     timestamps()
   end
+
   @cast_param [:name, :description]
   @validate_param [:name]
   @doc false

@@ -8,7 +8,7 @@ defmodule Githome.ProjectsTest do
 
     @valid_attrs %{project_name: "some project_name", description: "some description", owner: 1}
     @update_attrs %{
-      description: "some updated description",
+      description: "some updated description"
     }
     @invalid_attrs %{project_name: nil, owner: nil}
 

@@ -2,4 +2,5 @@
 
 <%= render "form.html", Map.put(assigns, :action, Routes.parameter_path(@conn, :update, @parameter)) %>
 
-<span><%= link "Back", to: Routes.parameter_path(@conn, :index) %></span>
+<span>
+    <%= link "Back", to: Routes.parameter_path(@conn, :index) %></span>

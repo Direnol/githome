@@ -9,6 +9,7 @@ defmodule Githome.Projects.Project do
 
     timestamps()
   end
+
   @cast_param [:project_name, :description, :owner]
   @validate_param [:project_name, :owner]
   @doc false

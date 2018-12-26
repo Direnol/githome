@@ -33,11 +33,13 @@ defmodule Githome.GroupProject do
   end
 
   def get_all_project_by_group(id) do
-    query = from pr in Project,
-           right_join: gr in Gp,
-           on: pr.id == gr.pid,
-           select: pr,
-           where: gr.gid == ^id
+    query =
+      from pr in Project,
+        right_join: gr in Gp,
+        on: pr.id == gr.pid,
+        select: pr,
+        where: gr.gid == ^id
+
     query
     |> Ecto.Queryable.to_query()
     |> Repo.all()

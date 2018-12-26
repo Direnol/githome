@@ -206,8 +206,8 @@ defmodule GithomeWeb.MyGroupController do
     projects = group_params["projects"] || []
 
     Enum.map(old_projects -- projects, fn x ->
-      IO.inspect x
-      update_projects([Projects.get_project_by project_name: x])
+      IO.inspect(x)
+      update_projects([Projects.get_project_by(project_name: x)])
     end)
 
     case GroupInfo.update_ginfo(group, group_params) do
@@ -232,8 +232,10 @@ defmodule GithomeWeb.MyGroupController do
   end
 
   defp update_projects([nil]), do: nil
+
   defp update_projects(projects) do
-    IO.inspect projects
+    IO.inspect(projects)
+
     Enum.map(projects, fn p ->
       members = Enum.map(Projects.get_groups_by_project(p.id), fn x -> "@#{x.name}" end)
       Git.update_project(p.project_name, RW: [Users.get_user!(p.owner).username | members])

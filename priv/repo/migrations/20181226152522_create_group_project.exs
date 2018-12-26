@@ -8,6 +8,5 @@ defmodule Githome.Repo.Migrations.CreateGroupProject do
 
       timestamps()
     end
-
   end
 end

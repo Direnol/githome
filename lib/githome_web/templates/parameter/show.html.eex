@@ -2,17 +2,19 @@
 
 <ul>
 
-  <li>
-    <strong>Key:</strong>
-    <%= @parameter.key %>
-  </li>
+    <li>
+        <strong>Key:</strong>
+        <%= @parameter.key %>
+    </li>
 
-  <li>
-    <strong>Value:</strong>
-    <%= @parameter.value %>
-  </li>
+    <li>
+        <strong>Value:</strong>
+        <%= @parameter.value %>
+    </li>
 
 </ul>
 
-<span><%= link "Edit", to: Routes.parameter_path(@conn, :edit, @parameter) %></span>
-<span><%= link "Back", to: Routes.parameter_path(@conn, :index) %></span>
+<span>
+    <%= link "Edit", to: Routes.parameter_path(@conn, :edit, @parameter) %></span>
+<span>
+    <%= link "Back", to: Routes.parameter_path(@conn, :index) %></span>

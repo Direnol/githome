@@ -1,28 +1,33 @@
 <h1>Listing Settings</h1>
 
 <table>
-  <thead>
-    <tr>
-      <th>Key</th>
-      <th>Value</th>
+    <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
 
-      <th></th>
-    </tr>
-  </thead>
-  <tbody>
-<%= for parameter <- @settings do %>
-    <tr>
-      <td><%= parameter.key %></td>
-      <td><%= parameter.value %></td>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        <%= for parameter <- @settings do %>
+        <tr>
+            <td>
+                <%= parameter.key %>
+            </td>
+            <td>
+                <%= parameter.value %>
+            </td>
 
-      <td>
-        <%= link "Show", to: Routes.parameter_path(@conn, :show, parameter) %>
-        <%= link "Edit", to: Routes.parameter_path(@conn, :edit, parameter) %>
-        <%= link "Delete", to: Routes.parameter_path(@conn, :delete, parameter), method: :delete, data: [confirm: "Are you sure?"] %>
-      </td>
-    </tr>
-<% end %>
-  </tbody>
+            <td>
+                <%= link "Show", to: Routes.parameter_path(@conn, :show, parameter) %>
+                <%= link "Edit", to: Routes.parameter_path(@conn, :edit, parameter) %>
+                <%= link "Delete", to: Routes.parameter_path(@conn, :delete, parameter), method: :delete, data: [confirm: "Are you sure?"] %>
+            </td>
+        </tr>
+        <% end %>
+    </tbody>
 </table>
 
-<span><%= link "New Parameter", to: Routes.parameter_path(@conn, :new) %></span>
+<span>
+    <%= link "New Parameter", to: Routes.parameter_path(@conn, :new) %></span>

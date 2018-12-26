@@ -6,8 +6,8 @@
                     <thead>
                         <th>Username</th>
                         <%= if @admin do %>
-                            <th>Admin grants</th>
-                            <th>Delete user</th>
+                        <th>Admin grants</th>
+                        <th>Delete user</th>
                         <% end %>
                     </thead>
                     <tbody>
