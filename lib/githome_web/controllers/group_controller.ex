@@ -1,8 +1,8 @@
 defmodule GithomeWeb.GroupController do
   use GithomeWeb, :controller
 
-  alias Githome.GroupInfo.Ginfo, as: Group
-  alias Githome.GroupInfo, as: Groups
+  alias Githome.GroupInfo.Ginfo
+  alias Githome.GroupInfo
   alias Githome.Users
 
   plug :put_layout, "main.html"
@@ -21,7 +21,7 @@ defmodule GithomeWeb.GroupController do
 
         case is_map(user) do
           true ->
-            groups = Groups.list_ginfos()
+            groups = GroupInfo.list_ginfos()
             user_update = Users.get_user!(user.id)
 
             conn
@@ -56,19 +56,12 @@ defmodule GithomeWeb.GroupController do
 
         case is_map(user) do
           true ->
-            changeset = Groups.change_ginfo(%Group{})
+            changeset = GroupInfo.change_ginfo(%Ginfo{})
             users = Users.list_users()
 
             list_of_users =
               for %{username: username, id: id} <- users do
                 {username, id}
-              end
-
-            projects = Projects.list_projects()
-
-            list_of_projects =
-              for %{project_name: project_name, id: id} <- projects do
-                {project_name, id}
               end
 
             user_update = Users.get_user!(user.id)
@@ -80,7 +73,6 @@ defmodule GithomeWeb.GroupController do
               changeset: changeset,
               layout: {GithomeWeb.LayoutView, "main.html"},
               users: list_of_users,
-              projects: list_of_projects,
               user: user_update,
               nav_active: :groups,
               token: get_session(conn, :token)
@@ -97,7 +89,7 @@ defmodule GithomeWeb.GroupController do
   def create(conn, params) do
     group_params = params["group"]
 
-    case Groups.create_group(group_params) do
+    case GroupInfo.create_ginfo(group_params) do
       {:ok, group} ->
         conn
         |> put_flash(:info, "Group created successfully.")
@@ -116,20 +108,20 @@ defmodule GithomeWeb.GroupController do
   end
 
   def show(conn, %{"id" => id}) do
-    group = Groups.get_group!(id)
+    group = GroupInfo.get_ginfo!(id)
     render(conn, "show.html", group: group)
   end
 
   def edit(conn, %{"id" => id}) do
-    group = Groups.get_group!(id)
-    changeset = Groups.change_group(group)
+    group = GroupInfo.get_ginfo!(id)
+    changeset = GroupInfo.change_ginfo(group)
     render(conn, "edit.html", group: group, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "group" => group_params}) do
-    group = Groups.get_group!(id)
+    group = GroupInfo.get_ginfo!(id)
 
-    case Groups.update_group(group, group_params) do
+    case GroupInfo.update_ginfo(group, group_params) do
       {:ok, group} ->
         conn
         |> put_flash(:info, "Group updated successfully.")
@@ -141,8 +133,8 @@ defmodule GithomeWeb.GroupController do
   end
 
   def delete(conn, %{"id" => id}) do
-    group = Groups.get_group!(id)
-    {:ok, _group} = Groups.delete_group(group)
+    group = GroupInfo.get_ginfo!(id)
+    {:ok, _group} = GroupInfo.delete_ginfo(group)
 
     conn
     |> put_flash(:info, "Group deleted successfully.")

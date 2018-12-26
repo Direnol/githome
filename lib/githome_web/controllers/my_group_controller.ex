@@ -2,6 +2,8 @@ defmodule GithomeWeb.MyGroupController do
   use GithomeWeb, :controller
 
   alias Githome.GroupInfo.Ginfo
+  alias Githome.GroupInfo
+  alias Githome.Groups
   alias Githome.Users
   alias Githome.Projects
 
@@ -129,7 +131,7 @@ defmodule GithomeWeb.MyGroupController do
   def update(conn, %{"id" => id, "group" => group_params}) do
     group = Groups.get_group!(id)
 
-    case Groups.update_group(group, group_params) do
+    case GroupInfo.update_ginfo(group, group_params) do
       {:ok, group} ->
         conn
         |> put_flash(:info, "Group updated successfully.")
