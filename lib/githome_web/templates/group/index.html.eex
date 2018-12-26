@@ -10,11 +10,33 @@
                     <thead>
                         <th>Name</th>
                         <th>Owner</th>
+                        <%= if @user.admin do %>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                        <% end %>
                     </thead>
                     <tbody>
                          <%= for group <- @groups do %>
+                         <% [gp] = Githome.Groups.get_owner_by_group(group.id)%>
+                         <% user = Githome.Users.get_user!(gp.uid)%>
                              <tr>
-                               <td><%= group.name %></td>
+                               <td><%= link group.name, to: Routes.my_group_path(@conn, :show,
+                               %{"id" => group.id}), class: "btn btn-xs btn-success" %></td>
+                               <td><%= user.username %></td>
+                               <%= if @user.admin do %>
+                                <td>
+                                    <p data-placement="top" data-toggle="tooltip" title="Edit">
+                                    <%= link raw(~s(<span class="glyphicon glyphicon-pencil"></span>)), to: Routes.group_path(@conn, :edit, %{"id" => group.id}),
+                                    method: "post", target: "_blank", class: "btn btn-primary btn-xs" %>
+                                   </p>
+                                </td>
+                                <td>
+                                <p data-placement="top" data-toggle="tooltip" title="Delete">
+                                    <%= link raw(~s(<span class="glyphicon glyphicon-trash"></span>)), to: Routes.group_path(@conn, :delete, %{"id" => group.id}),
+                                    method: "post", target: "_blank", class: "btn btn-danger btn-xs" %>
+                                </p>
+                                </td>
+                                <% end %>
                              </tr>
                          <% end %>
                     </tbody>
