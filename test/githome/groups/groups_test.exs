@@ -6,9 +6,9 @@ defmodule Githome.GroupsTest do
   describe "groups" do
     alias Githome.Groups.Group
 
-    @valid_attrs %{name: "some name", pid: 42, uid: 42}
-    @update_attrs %{name: "some updated name", pid: 43, uid: 43}
-    @invalid_attrs %{name: nil, pid: nil, uid: nil}
+    @valid_attrs %{gid: 42, owner: true, uid: 42}
+    @update_attrs %{gid: 43, owner: false, uid: 43}
+    @invalid_attrs %{gid: nil, owner: nil, uid: nil}
 
     def group_fixture(attrs \\ %{}) do
       {:ok, group} =
@@ -31,8 +31,7 @@ defmodule Githome.GroupsTest do
 
     test "create_group/1 with valid data creates a group" do
       assert {:ok, %Group{} = group} = Groups.create_group(@valid_attrs)
-      assert group.name == "some name"
-      assert group.pid == 42
+      assert group.gid == 42
       assert group.uid == 42
     end
 
@@ -43,8 +42,7 @@ defmodule Githome.GroupsTest do
     test "update_group/2 with valid data updates the group" do
       group = group_fixture()
       assert {:ok, %Group{} = group} = Groups.update_group(group, @update_attrs)
-      assert group.name == "some updated name"
-      assert group.pid == 43
+      assert group.gid == 43
       assert group.uid == 43
     end
 

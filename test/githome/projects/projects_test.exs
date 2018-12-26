@@ -6,12 +6,11 @@ defmodule Githome.ProjectsTest do
   describe "projects" do
     alias Githome.Projects.Project
 
-    @valid_attrs %{path_to_directory: "some path_to_directory", project_name: "some project_name"}
+    @valid_attrs %{project_name: "some project_name", description: "some description", owner: 1}
     @update_attrs %{
-      path_to_directory: "some updated path_to_directory",
-      project_name: "some updated project_name"
+      description: "some updated description",
     }
-    @invalid_attrs %{path_to_directory: nil, project_name: nil}
+    @invalid_attrs %{project_name: nil, owner: nil}
 
     def project_fixture(attrs \\ %{}) do
       {:ok, project} =
@@ -34,7 +33,7 @@ defmodule Githome.ProjectsTest do
 
     test "create_project/1 with valid data creates a project" do
       assert {:ok, %Project{} = project} = Projects.create_project(@valid_attrs)
-      assert project.path_to_directory == "some path_to_directory"
+      assert project.description == "some description"
       assert project.project_name == "some project_name"
     end
 
@@ -45,8 +44,7 @@ defmodule Githome.ProjectsTest do
     test "update_project/2 with valid data updates the project" do
       project = project_fixture()
       assert {:ok, %Project{} = project} = Projects.update_project(project, @update_attrs)
-      assert project.path_to_directory == "some updated path_to_directory"
-      assert project.project_name == "some updated project_name"
+      assert project.description == "some updated description"
     end
 
     test "update_project/2 with invalid data returns error changeset" do

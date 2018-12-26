@@ -1,3 +1,3 @@
 <h1>Edit Group</h1>
 
-<%= render "form.html", Map.put(assigns, :action, Routes.my_group_path(@conn, :update, @id)) %>
+<%= render "form_update.html", Map.put(assigns, :action, Routes.my_group_path(@conn, :update, @id)) %>
