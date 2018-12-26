@@ -1,3 +1,4 @@
+<h1 class = "text-success"><%= @project.project_name %></h1>
 <div class="content_box">
 
     <div class="left_bar">

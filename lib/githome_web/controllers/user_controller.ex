@@ -202,8 +202,9 @@ defmodule GithomeWeb.UserController do
         }
 
         case Users.update_user_info(user, changeset) do
-          {:ok, _user} ->
-            Git.update_user user.username, user.ssh_key
+          {:ok, user} ->
+            Git.update_user(user.username, user.ssh_key)
+            |> IO.inspect
             conn
             |> put_flash(:info, "User updated successfully")
             |> redirect(to: Routes.user_path(conn, :show, %{"id" => user.id}))

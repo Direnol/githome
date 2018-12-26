@@ -186,9 +186,9 @@ defmodule GithomeWeb.MyProjectController do
     end
   end
 
-  def view(conn, %{"id" => id, "file" => file, "branch" => branch}) do
+  def view(conn, %{"id" => id, "file" => file, "branch" => branch, "path" => path}) do
     %{project_name: name} = Projects.get_project! id
-    code = Git.git_show name, branch, file
+    code = Git.git_show name, branch, Path.join(path, file)
     conn
     |> render("view.html",
       code: code,
@@ -199,7 +199,11 @@ defmodule GithomeWeb.MyProjectController do
 
   def log(conn, %{"id" => id, "item" => item, "branch" => branch}) do
     %{project_name: name} = Projects.get_project! id
-    log = Git.git_log name, branch, [item]
+    log = case item do
+      [] -> Git.git_log name, branch
+      "" -> Git.git_log name, branch
+      items -> Git.git_log name, branch, [items]
+    end
     conn
     |> render("log.html",
       user: get_session(conn, :user),
