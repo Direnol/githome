@@ -77,7 +77,7 @@ defmodule Githome.Groups do
     case GroupInfo.create_ginfo(%{"name" => name, "description" => desc}) do
       {:ok, info} ->
        case insert_in_group(%{"gid" => info.id, "uid" => owner, "owner" => true}) do
-         {:ok, group} ->
+         {:ok, _group} ->
            for member <- members, member != owner do
               insert_in_group(%{"gid" => info.id, "uid" => member, "owner" => false})
            end

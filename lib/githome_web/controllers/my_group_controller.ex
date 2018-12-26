@@ -162,12 +162,12 @@ defmodule GithomeWeb.MyGroupController do
     group = GroupInfo.get_ginfo!(id)
 
     case GroupInfo.update_ginfo(group, group_params) do
-      {:ok, group} ->
+      {:ok, _group} ->
         conn
         |> put_flash(:info, "Group updated successfully.")
         |> redirect(to: Routes.my_group_path(conn, :show, %{"id" => id}))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:info, "Group not updated.")
         |> redirect(to: Routes.my_group_path(conn, :edit, %{"id" => id}))
