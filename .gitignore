@@ -35,3 +35,4 @@ rel/githome
 githome.iml
 
 rel/distillery_packager/debian/additional_files/usr/lib/githome/gitolite/
+rel/vsn

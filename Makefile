@@ -53,7 +53,7 @@ deb: docker-req
 		${MAKE} raw-deb
 
 install: req
-	@sudo dpkg -i rel/githome_0.1.0_all.deb
+	@sudo dpkg -i rel/githome_$(shell mix vsn)_all.deb
 
 remove: req
 	@sudo dpkg --remove githome
@@ -100,6 +100,7 @@ raw-init: req
 	# @${MIX} ecto.create
 
 raw-deb: raw-gitolite raw-init
+	@${MIX} vsn.update
 	@MIX_ENV=prod ${MIX} release
 
 raw-compile: raw-init raw-gitolite

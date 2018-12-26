@@ -19,18 +19,14 @@ defmodule Githome.MixProject do
   end
 
   def version do
-    now = DateTime.utc_now()
-
-    {:ok, last} =
-      System.cmd("git", ~w[log --pretty=%at -1])
-      |> elem(0)
-      |> Integer.parse()
-      |> elem(0)
-      |> DateTime.from_unix()
-
-    patch = DateTime.diff(now, last)
-    {minor, 0} = System.cmd("git", ~w[rev-list --count HEAD])
-    @major_vsn <> "." <> String.trim(minor) <> "." <> to_string(patch)
+    case File.read "rel/vsn" do
+      {:ok, vsn} -> vsn
+      _ ->
+        minor = System.cmd("git", ~w[rev-list --count HEAD])
+          |> elem(0)
+          |> String.trim
+        "#{@major_vsn}.#{minor}.0"
+      end
   end
 
   # Configuration for the OTP application.
@@ -134,7 +130,9 @@ defmodule Githome.MixProject do
     [
       "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate", "test"]
+      test: ["ecto.create --quiet", "ecto.migrate", "test"],
+      vsn: ["app.version"],
+      "vsn.update": ["app.version update"]
     ]
   end
 end
