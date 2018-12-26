@@ -100,7 +100,7 @@ raw-init: req
 	# @${MIX} ecto.create
 
 raw-deb: raw-update-vsn raw-gitolite raw-init
-	@MIX_ENV=prod ${MIX} release
+	@MIX_ENV=prod ${MIX} release --upgrade
 
 raw-update-vsn:
 	@${MIX} vsn.update
