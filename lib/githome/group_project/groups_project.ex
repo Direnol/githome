@@ -1,6 +1,8 @@
 defmodule Githome.GroupProject do
   alias Githome.GroupProject.Gp
+  alias Githome.Projects.Project
   alias Githome.Repo
+  import Ecto.Query, warn: false
 
   def list_gps do
     Repo.all(Gp)
@@ -30,4 +32,14 @@ defmodule Githome.GroupProject do
     Gp.changeset(group, %{})
   end
 
+  def get_all_project_by_group(id) do
+    query = from pr in Project,
+           right_join: gr in Gp,
+           on: pr.id == gr.pid,
+           select: pr,
+           where: gr.gid == ^id
+    query
+    |> Ecto.Queryable.to_query()
+    |> Repo.all()
+  end
 end

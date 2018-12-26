@@ -11,6 +11,7 @@ defmodule Githome.Groups do
   alias Githome.GroupInfo
   alias Githome.GroupProject.Gp
   alias Githome.GroupProject
+  alias Githome.Users.User
 
   @doc """
   Returns the list of groups.
@@ -144,5 +145,16 @@ defmodule Githome.Groups do
   """
   def change_group(%Group{} = group) do
     Group.changeset(group, %{})
+  end
+
+  def get_all_members_by_group(id) do
+    query = from u in User,
+                 right_join: gr in Group,
+                 on: u.id == gr.uid,
+                 select: u,
+                 where: gr.gid == ^id
+    query
+    |> Ecto.Queryable.to_query()
+    |> Repo.all()
   end
 end
