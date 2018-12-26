@@ -4,6 +4,8 @@ defmodule Githome.Repo.Migrations.CreateProjects do
   def change do
     create table(:projects) do
       add :project_name, :string
+      add :description, :string
+
 
       timestamps()
     end

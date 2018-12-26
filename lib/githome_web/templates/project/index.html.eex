@@ -5,13 +5,13 @@
                 <table id="mytable" class="table table-bordred table-striped">
                     <thead>
                         <th>Project Name</th>
-                        <th>Owner</th>
+                        <th>Description</th>
                     </thead>
                     <tbody>
                          <%= for p <- @projects do %>
                         <tr>
                             <td><%= link p.project_name, to: Routes.my_project_path(@conn, :show, %{"id" => p.id}), class: "btn btn-primary btn-xs"  %></td>
-                            <td>Irshad</td>
+                            <td><%= p.description %></td>
                         </tr>
                         <% end %>
                     </tbody>

@@ -20,6 +20,7 @@
 
                     <thead>
                         <th>Project Name</th>
+                        <th>Description</th>
                         <th>Owner</th>
                         <th>Edit</th>
                         <th>Delete</th>
@@ -28,7 +29,8 @@
                         <%= for %{:p => p, :g => g} <- @projects do %>
                         <tr>
                             <td><%= link p.project_name, to: Routes.my_project_path(@conn, :show, %{"id" => p.id}), class: "btn btn-primary btn-xs"  %></td>
-                            <td>Irshad</td>
+                            <td><%= p.description %></td>
+                            <td><%= if g.owner == true do %>true<% else %>false<% end %></td>
                             <td>
                                 <p data-placement="top" data-toggle="tooltip" title="Edit">
                                     <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit">
