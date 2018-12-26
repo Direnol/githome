@@ -26,13 +26,13 @@
                                <%= if @user.admin do %>
                                 <td>
                                     <p data-placement="top" data-toggle="tooltip" title="Edit">
-                                    <%= link raw(~s(<span class="glyphicon glyphicon-pencil"></span>)), to: Routes.group_path(@conn, :edit, %{"id" => group.id}),
+                                    <%= link raw(~s(<span class="glyphicon glyphicon-pencil"></span>)), to: Routes.my_group_path(@conn, :edit, %{"id" => group.id}),
                                     method: "post", target: "_blank", class: "btn btn-primary btn-xs" %>
                                    </p>
                                 </td>
                                 <td>
                                 <p data-placement="top" data-toggle="tooltip" title="Delete">
-                                    <%= link raw(~s(<span class="glyphicon glyphicon-trash"></span>)), to: Routes.group_path(@conn, :delete, %{"id" => group.id}),
+                                    <%= link raw(~s(<span class="glyphicon glyphicon-trash"></span>)), to: Routes.my_group_path(@conn, :delete, %{"id" => group.id}),
                                     method: "post", target: "_blank", class: "btn btn-danger btn-xs" %>
                                 </p>
                                 </td>
