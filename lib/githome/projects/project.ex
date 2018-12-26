@@ -5,6 +5,7 @@ defmodule Githome.Projects.Project do
   schema "projects" do
     field :project_name, :string
     field :description, :string
+    field :owner, :integer
 
     timestamps()
   end
@@ -13,6 +14,6 @@ defmodule Githome.Projects.Project do
   def changeset(project, attrs) do
     project
     |> cast(attrs, [:project_name, :description])
-    |> validate_required([:project_name])
+    |> validate_required([:project_name, :owner])
   end
 end
