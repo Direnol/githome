@@ -4,7 +4,6 @@ defmodule GithomeWeb.MyProjectController do
   alias Githome.Projects
   alias Githome.Projects.Project
   alias Githome.Users
-  alias Githome.Groups
   alias GithomeWeb.GitController, as: Git
   plug :put_layout, "main.html"
 
@@ -24,7 +23,7 @@ defmodule GithomeWeb.MyProjectController do
           true ->
             user_update = Users.get_user!(user.id)
             projects = Projects.list_my_projects(user.id)
-
+              |> IO.inspect
             conn
             |> put_session(:user, user_update)
             |> put_session(:nav_active, :projects_view_my)
@@ -150,34 +149,18 @@ defmodule GithomeWeb.MyProjectController do
   def create(conn, params) do
     user = get_session(conn, :user)
     project_params = params["project"]
-
-    case Projects.create_project(project_params) do
+      |> Map.put("owner", user.id)
+      |> IO.inspect
+    case Projects.create_project project_params do
       {:ok, project} ->
-        # Создание связки пользователя и приватного проекта
-        case Groups.create_group(%{
-               :name => user.username,
-               :uid => user.id,
-               :pid => project.id,
-               :owner => true
-             }) do
-          {:ok, _group} ->
-            Git.create_project(project.project_name, RW: [user.username])
+        Git.create_project(project.project_name, RW: [user.username])
 
-            conn
-            |> put_flash(:info, "Project created successfully.")
-            |> redirect(to: Routes.my_project_path(conn, :show, %{"id" => project.id}))
-
-          {:error, %Ecto.Changeset{} = changeset} ->
-            conn
-            |> render("new.html",
-              layout: {GithomeWeb.LayoutView, "main.html"},
-              changeset: changeset,
-              user: get_session(conn, :user),
-              nav_active: get_session(conn, :nav_active)
-            )
-        end
+        conn
+        |> put_flash(:info, "Project created successfully.")
+        |> redirect(to: Routes.my_project_path(conn, :show, %{"id" => project.id}))
 
       {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect changeset
         conn
         |> render("new.html",
           layout: {GithomeWeb.LayoutView, "main.html"},

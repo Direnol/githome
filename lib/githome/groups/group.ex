@@ -10,10 +10,12 @@ defmodule Githome.Groups.Group do
     timestamps()
   end
 
+  @cast_param [:uid, :gid, :owner]
+  @validate_param @cast_param
   @doc false
   def changeset(group, attrs) do
     group
-    |> cast(attrs, [:uid, :gid, :owner])
-    |> validate_required([:uid, :gid, :owner])
+    |> cast(attrs, @cast_param)
+    |> validate_required(@validate_param)
   end
 end

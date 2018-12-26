@@ -7,7 +7,6 @@ defmodule Githome.Projects do
   alias Githome.Repo
 
   alias Githome.Projects.Project
-  alias Githome.Groups
   alias Githome.Groups.Group
   alias Githome.GroupProject.Gp
 
@@ -25,14 +24,7 @@ defmodule Githome.Projects do
   end
 
   def list_my_projects(id) do
-    query =
-      from p in Project,
-        left_join: gp in Gp,
-        on: p.id == gp.pid,
-        left_join: g in Group,
-        on: g.gid == gp.gid,
-        select: p,
-        where: g.uid == ^id
+    query = from p in Project, select: p, where: p.owner == ^id
 
     # May be User or an Ecto.Query itself
     query

@@ -104,9 +104,9 @@ defmodule GithomeWeb.MyGroupController do
       {:ok, group} ->
         conn
         |> put_flash(:info, "Group created successfully.")
-        |> redirect(to: Routes.group_path(conn, :show, %{"id" => group.id}))
+        |> redirect(to: Routes.my_group_path(conn, :show, %{"id" => group.id}))
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:info, "Group not created.")
         |> redirect(to: Routes.my_group_path(conn, :new))
@@ -115,13 +115,15 @@ defmodule GithomeWeb.MyGroupController do
 
   def show(conn, %{"id" => id}) do
     group = GroupInfo.get_ginfo!(id)
+    members = []
+    projects = []
     conn
     |> render("show.html",
-            group: group,
+            group: group, members: members, projects: projects,
             layout: {GithomeWeb.LayoutView, "main.html"},
             user: get_session(conn, :user),
             info: get_flash(conn, :info),
-            nav_active: get_session(conn, :nav_active),
+            nav_active: get_session(conn, :nav_active)
             )
   end
 

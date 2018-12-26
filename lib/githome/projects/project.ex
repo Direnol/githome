@@ -9,11 +9,12 @@ defmodule Githome.Projects.Project do
 
     timestamps()
   end
-
+  @cast_param [:project_name, :description, :owner]
+  @validate_param [:project_name, :owner]
   @doc false
   def changeset(project, attrs) do
     project
-    |> cast(attrs, [:project_name, :description])
-    |> validate_required([:project_name, :owner])
+    |> cast(attrs, @cast_param)
+    |> validate_required(@validate_param)
   end
 end

@@ -10,10 +10,12 @@ defmodule Githome.GroupProject.Gp do
     timestamps()
   end
 
+  @cast_param [:pid, :gid]
+  @validate_param @cast_param
   @doc false
   def changeset(group_project, attrs) do
     group_project
-    |> cast(attrs, [:pid, :gid])
-    |> validate_required([:pid, :gid])
+    |> cast(attrs, @cast_param)
+    |> validate_required(@validate_param)
   end
 end
