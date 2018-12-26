@@ -32,7 +32,8 @@ defmodule GithomeWeb.UserController do
               users: users,
               layout: {GithomeWeb.LayoutView, "main.html"},
               user: user_update,
-              nav_active: :users
+              nav_active: :users,
+              admin: get_session(conn, :user).admin
             )
 
           _ ->
@@ -170,6 +171,7 @@ defmodule GithomeWeb.UserController do
       true ->
         user = get_session(conn, :user)
         extension = Path.extname(Map.get(upload, :filename))
+        IO.inspect Application.get_env(:githome, :env)
         avatar_path = case Application.get_env(:githome, :env) do
           :prod -> "#{Application.app_dir :githome, "priv/static"}/images/#{user.id}-avatar#{extension}"
           _ -> "./priv/static/images/#{user.id}-avatar#{extension}"
@@ -292,5 +294,14 @@ defmodule GithomeWeb.UserController do
         |> put_flash(:info, "Check your current password and try again")
         |> redirect(to: Routes.user_path(conn, :change_password))
     end
+  end
+
+  def admin(conn, %{"id" => id}) do
+    user = Users.get_user!(id)
+    Users.update_admin(user, %{"admin" => !user.admin})
+
+    conn
+    |> put_flash(:info, "Admin rules for #{user.username} has been updated")
+    |> Githome.redirect_back(default: "/")
   end
 end

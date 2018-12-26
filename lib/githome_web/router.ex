@@ -66,6 +66,7 @@ defmodule GithomeWeb.Router do
     put "/update", UserController, :update
     get "/change_password", UserController, :change_password
     post "/change_password", UserController, :change_password_post
+    post "/change_admin", UserController, :admin
   end
 
   scope "/settings", GithomeWeb do

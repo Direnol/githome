@@ -122,4 +122,10 @@ defmodule Githome.Users do
   end
 
   def hash(changeset), do: User.hash_password(changeset)
+
+  def update_admin(user, attrs) do
+    user
+    |> User.changeset_customize(attrs)
+    |> Repo.update()
+  end
 end
