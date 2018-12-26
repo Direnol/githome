@@ -24,6 +24,7 @@ defmodule GithomeWeb.MyProjectController do
           true ->
             user_update = Users.get_user!(user.id)
             projects = Projects.list_my_projects(user.id)
+
             conn
             |> put_session(:user, user_update)
             |> put_session(:nav_active, :projects_view_my)
@@ -60,25 +61,46 @@ defmodule GithomeWeb.MyProjectController do
           true ->
             user_update = Users.get_user!(user.id)
             project = Projects.get_project!(id)
+            branches = try do
+              Git.git_branches(project.project_name)
+            rescue
+              e ->
+                IO.inspect e
+                []
+            end
 
             files =
               try do
-                Git.git_ls(project.project_name, "master", path)
+                Git.git_ls(
+                  project.project_name,
+                  params["branch"] || branches[:cur_branch],
+                  path
+                )
               rescue
-                e -> IO.inspect e
+                e ->
+                  IO.inspect(e)
+                  []
+              end
+              |> IO.inspect()
+
+            back =
+              if path != "" do
+                [{:back, Path.expand(path <> "/../", "") |> String.slice(1..-1)}]
+              else
                 []
               end
-              |> IO.inspect
 
             conn
             |> put_session(:user, user_update)
             |> put_session(:nav_active, :projects_view_my)
             |> render("show.html",
               project: project,
-              files: files,
+              files: back ++ files,
               layout: {GithomeWeb.LayoutView, "main.html"},
               user: user_update,
-              nav_active: :projects_view_my
+              nav_active: :projects_view_my,
+              path: path,
+              branches: branches
             )
 
           _ ->
