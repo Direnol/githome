@@ -26,9 +26,8 @@
                             <td><%= group.description %></td>
                             <td>
                                 <p data-placement="top" data-toggle="tooltip" title="Edit">
-                                    <button class="btn btn-primary btn-xs" data-title="Edit" data-toggle="modal" data-target="#edit">
-                                        <span class="glyphicon glyphicon-pencil"></span>
-                                    </button>
+                                    <%= link raw(~s(<span class="glyphicon glyphicon-pencil"></span>)), to: Routes.my_group_path(@conn, :edit, %{"id" => group.id}), class: "btn btn-primary btn-xs",
+                                    data_title: "Edit", data_toggle: "modal" %>
                                 </p>
                             </td>
                             <td>

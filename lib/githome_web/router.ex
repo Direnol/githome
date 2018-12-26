@@ -115,6 +115,7 @@ defmodule GithomeWeb.Router do
     get "/new", MyGroupController, :new
     post "/create", MyGroupController, :create
     post "/update", MyGroupController, :update
+    put "/update", MyGroupController, :update
   end
 
   #   Other scopes may use custom stacks.

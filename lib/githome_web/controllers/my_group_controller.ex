@@ -129,27 +129,53 @@ defmodule GithomeWeb.MyGroupController do
   end
 
   def edit(conn, %{"id" => id}) do
-    group = Groups.get_group!(id)
-    changeset = Groups.change_group(group)
-    render(conn, "edit.html", group: group, changeset: changeset)
+    users = Users.list_users()
+    list_of_users =
+      for %{username: username, id: id} <- users do
+        {username, id}
+      end
+
+    projects = Projects.list_projects()
+
+    list_of_projects =
+      for %{project_name: project_name, id: id} <- projects do
+        {project_name, id}
+      end
+
+    group = GroupInfo.get_ginfo!(id)
+    changeset = GroupInfo.change_ginfo(group)
+    conn
+      |> render("edit.html",
+            id: %{"id" => group}, changeset: changeset,
+            layout: {GithomeWeb.LayoutView, "main.html"},
+            user: get_session(conn, :user),
+            users: list_of_users,
+            projects: list_of_projects,
+            info: get_flash(conn, :info),
+            nav_active: get_session(conn, :nav_active)
+          )
   end
 
-  def update(conn, %{"id" => id, "group" => group_params}) do
-    group = Groups.get_group!(id)
+  def update(conn, params) do
+    id = params["id"]
+    group_params =params["ginfo"]
+    group = GroupInfo.get_ginfo!(id)
 
-    case Groups.update_group(group, group_params) do
+    case GroupInfo.update_ginfo(group, group_params) do
       {:ok, group} ->
         conn
         |> put_flash(:info, "Group updated successfully.")
-        |> redirect(to: Routes.group_path(conn, :show, group))
+        |> redirect(to: Routes.my_group_path(conn, :show, %{"id" => id}))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "edit.html", group: group, changeset: changeset)
+        conn
+        |> put_flash(:info, "Group not updated.")
+        |> redirect(to: Routes.my_group_path(conn, :edit, %{"id" => id}))
     end
   end
 
   def delete(conn, %{"id" => id}) do
-    group = Groups.get_group!(id)
+    group = GroupInfo.get_ginfo!(id)
     {:ok, _group} = Groups.delete_group(group)
 
     conn
