@@ -184,7 +184,7 @@ function configure_git() {
         sudo -Hu githome git commit -m "Install"
         sudo -Hu githome git push
         popd
-        rm -rf "${GH_REPO}/repositories/testing.git"
+        rm -rf "${GITHOME_GIT_PATH}/repositories/testing.git"
     fi
 }
 
