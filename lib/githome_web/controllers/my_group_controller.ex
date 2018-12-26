@@ -6,6 +6,7 @@ defmodule GithomeWeb.MyGroupController do
   alias Githome.Groups
   alias Githome.Users
   alias Githome.Projects
+  alias Githome.GroupProject
 
   plug :put_layout, "main.html"
 
@@ -115,8 +116,8 @@ defmodule GithomeWeb.MyGroupController do
 
   def show(conn, %{"id" => id}) do
     group = GroupInfo.get_ginfo!(id)
-    members = []
-    projects = []
+    members = Groups.get_all_members_by_group group.id
+    projects = GroupProject.get_all_project_by_group group.id
     conn
     |> render("show.html",
             group: group, members: members, projects: projects,

@@ -9,12 +9,18 @@
             <h3>Projects</h2>
                 <table id="mytable" class="table table-bordred table-striped">
                     <thead>
-                    <th></th>
+                    <th>Name</th>
+                    <th>Ownder</th>
                     </thead>
                     <tbody>
+                    <%= for project <- @projects do %>
+                    <% user = Githome.Users.get_user!(project.id) %>
                     <tr>
-
+                        <td> <%= link project.project_name,
+                            to: Routes.my_project_path(@conn, :show, %{"id" => project.id}), class: "btn btn-primary btn-xs"   %></td>
+                        <td> <span class = "btn btn-xs btn-success"><%= user.username %></span>
                     </tr>
+                    <% end %>
                     </tbody>
                 </table>
             </div>
@@ -22,8 +28,20 @@
             <h3>Members</h2>
                 <table id="mytable" class="table table-bordred table-striped">
                     <thead>
+                        <th>Name</th>
+                        <th>First name</th>
+                        <th>Last name</th>
+                        <th>Email</th>
                     </thead>
                     <tbody>
+                    <%= for member <- @members do %>
+                    <tr>
+                        <td><%= member.username %></td>
+                        <td><%= member.first_name %></td>
+                        <td><%= member.last_name %></td>
+                        <td><%= member.email %></td>
+                    </tr>
+                    <% end %>
                     </tbody>
                 </table>
             </div>
