@@ -9,6 +9,7 @@ defmodule Githome.Projects do
   alias Githome.Projects.Project
   alias Githome.Groups.Group
   alias Githome.GroupProject.Gp
+  alias Githome.GroupInfo.Ginfo
 
   @doc """
   Returns the list of projects.
@@ -27,6 +28,17 @@ defmodule Githome.Projects do
     query = from p in Project, select: p, where: p.owner == ^id
 
     # May be User or an Ecto.Query itself
+    query
+    |> Ecto.Queryable.to_query()
+    |> Repo.all()
+  end
+
+  def get_groups_by_progect(id) do
+    query = from i in Ginfo,
+                 right_join: gp in Gp,
+                 on: i.id == gp.gid,
+                 select: i,
+                 where: gp.pid == ^id
     query
     |> Ecto.Queryable.to_query()
     |> Repo.all()

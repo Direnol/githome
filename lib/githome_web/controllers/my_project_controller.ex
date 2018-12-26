@@ -23,7 +23,6 @@ defmodule GithomeWeb.MyProjectController do
           true ->
             user_update = Users.get_user!(user.id)
             projects = Projects.list_my_projects(user.id)
-              |> IO.inspect
             conn
             |> put_session(:user, user_update)
             |> put_session(:nav_active, :projects_view_my)

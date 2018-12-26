@@ -217,6 +217,8 @@ configure | reconfigure)
         chmod 0400 "${COOKIE_FILE}"
     fi
 
+    chown -R ${USER}:${GROUP} /usr/lib/githome/ /opt/githome/ \
+        /var/lib/githome/ /etc/githome/
     systemctl --system daemon-reload >/dev/null || true
     deb-systemd-helper enable githome.service
     deb-systemd-invoke start githome.service
