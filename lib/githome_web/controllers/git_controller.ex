@@ -46,10 +46,11 @@ defmodule GithomeWeb.GitController do
     git_push(project_file, "Create new project: " <> project_name)
   end
 
-  def update_projet(project_name, owner) do
+  def update_projet(project_name, owner) when is_list(owner) do
     {:ok, project_file} = git_create_project(project_name, owner)
     git_push(project_file, "Update project: " <> project_name)
   end
+  def update_project(_, _), do: :no_args
 
   def delete_project(name) do
     {:ok, _} =
@@ -80,15 +81,18 @@ defmodule GithomeWeb.GitController do
     end
   end
 
+
   def create_user(username, ssh) do
     {:ok, user_file} = git_create_user(username, ssh)
     git_push(user_file, "Create new user: " <> username)
   end
 
-  def update_user(username, ssh) do
+  def update_user(username, ssh) when is_binary(ssh) do
     {:ok, user_file} = git_create_user(username, ssh)
     git_push(user_file, "Update user: " <> username)
   end
+
+  def update_user(_, _), do: :no_args
 
   def delete_user(username) do
     {:ok, _} =
@@ -121,10 +125,12 @@ defmodule GithomeWeb.GitController do
     git_push(group_file, "Create new group: " <> name)
   end
 
-  def update_group(name, members) do
+  def update_group(name, members) when is_list(members) do
     {:ok, group_file} = git_create_group(name, members)
     git_push(group_file, "Update group: " <> name)
   end
+
+  def update_group(_, _), do: :no_args
 
   def delete_group(name) do
     {:ok, _} =
