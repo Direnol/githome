@@ -6,7 +6,6 @@ defmodule Githome.Repo.Migrations.CreateProjects do
       add :project_name, :string
       add :description, :string
 
-
       timestamps()
     end
   end

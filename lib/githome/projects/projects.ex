@@ -24,10 +24,17 @@ defmodule Githome.Projects do
   end
 
   def list_my_projects(id) do
-    query = from p in Project, left_join: g in Group, on: p.id == g.pid, select: %{ :p => p, :g => g }, where: g.uid == ^id
-    query # May be User or an Ecto.Query itself
-      |> Ecto.Queryable.to_query
-      |> Repo.all()
+    query =
+      from p in Project,
+        left_join: g in Group,
+        on: p.id == g.pid,
+        select: %{:p => p, :g => g},
+        where: g.uid == ^id
+
+    # May be User or an Ecto.Query itself
+    query
+    |> Ecto.Queryable.to_query()
+    |> Repo.all()
   end
 
   @doc """

@@ -132,6 +132,7 @@ defmodule GithomeWeb.UserController do
         end
 
         changeset = Users.changeset_customize_user(user)
+
         conn
         |> render("edit.html",
           user: user,
@@ -164,6 +165,7 @@ defmodule GithomeWeb.UserController do
 
   defp update_user_info(conn, user_params) do
     upload = Map.get(user_params, "photo")
+
     case is_map(upload) do
       true ->
         user = get_session(conn, :user)
@@ -178,9 +180,11 @@ defmodule GithomeWeb.UserController do
           :last_name => user_params["last_name"],
           :ssh_key => user_params["ssh_key"]
         }
+
         case Users.update_user_info(user, changeset) do
           {:ok, user} ->
-           Git.update_user user.username, user.ssh_key
+            Git.update_user(user.username, user.ssh_key)
+
             conn
             |> put_flash(:info, "User updated successfully")
             |> Githome.redirect_back(default: "/")
@@ -204,7 +208,8 @@ defmodule GithomeWeb.UserController do
         case Users.update_user_info(user, changeset) do
           {:ok, user} ->
             Git.update_user(user.username, user.ssh_key)
-            |> IO.inspect
+            |> IO.inspect()
+
             conn
             |> put_flash(:info, "User updated successfully")
             |> redirect(to: Routes.user_path(conn, :show, %{"id" => user.id}))
@@ -235,6 +240,7 @@ defmodule GithomeWeb.UserController do
   def delete(conn, %{"id" => id}) do
     user = Users.get_user!(id)
     {:ok, _user} = Users.delete_user(user)
+    Git.delete_user(user.username)
 
     conn
     |> put_flash(:info, "User deleted successfully.")

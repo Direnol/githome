@@ -70,7 +70,9 @@ defmodule GithomeWeb.MyProjectController do
                   IO.inspect(e)
                   []
               end
+
             branch = params["branch"] || branches[:cur_branch]
+
             files =
               try do
                 Git.git_ls(
@@ -187,8 +189,9 @@ defmodule GithomeWeb.MyProjectController do
   end
 
   def view(conn, %{"id" => id, "file" => file, "branch" => branch, "path" => path}) do
-    %{project_name: name} = Projects.get_project! id
-    code = Git.git_show name, branch, Path.join(path, file)
+    %{project_name: name} = Projects.get_project!(id)
+    code = Git.git_show(name, branch, Path.join(path, file))
+
     conn
     |> render("view.html",
       code: code,
@@ -198,12 +201,15 @@ defmodule GithomeWeb.MyProjectController do
   end
 
   def log(conn, %{"id" => id, "item" => item, "branch" => branch}) do
-    %{project_name: name} = Projects.get_project! id
-    log = case item do
-      [] -> Git.git_log name, branch
-      "" -> Git.git_log name, branch
-      items -> Git.git_log name, branch, [items]
-    end
+    %{project_name: name} = Projects.get_project!(id)
+
+    log =
+      case item do
+        [] -> Git.git_log(name, branch)
+        "" -> Git.git_log(name, branch)
+        items -> Git.git_log(name, branch, [items])
+      end
+
     conn
     |> render("log.html",
       user: get_session(conn, :user),
@@ -215,31 +221,37 @@ defmodule GithomeWeb.MyProjectController do
   def edit(conn, %{"id" => id}) do
     project = Projects.get_project!(id)
     changeset = Projects.change_project(project)
+
     conn
     |> render("edit.html",
-         layout: {GithomeWeb.LayoutView, "main.html"},
-         id: %{"id" => project.id},
-         changeset: changeset,
-         user: get_session(conn, :user),
-         nav_active: get_session(conn, :nav_active)
-       )
+      layout: {GithomeWeb.LayoutView, "main.html"},
+      id: %{"id" => project.id},
+      changeset: changeset,
+      user: get_session(conn, :user),
+      nav_active: get_session(conn, :nav_active)
+    )
   end
 
   def update(conn, params) do
     IO.inspect(params)
     id = params["id"]
-    id = case Integer.parse(id) do
-      :error ->
-        conn
+
+    id =
+      case Integer.parse(id) do
+        :error ->
+          conn
           |> put_flash(:info, "Update fail.")
           |> Githome.redirect_back(default: "/")
-      {id, _} -> id
-    end
+
+        {id, _} ->
+          id
+      end
+
     project_params = params["project"]
     project = Projects.get_project!(id)
 
     case Projects.update_project(project, project_params) do
-      {:ok, project} ->
+      {:ok, _project} ->
         conn
         |> put_flash(:info, "Project updated successfully.")
         |> redirect(to: Routes.my_project_path(conn, :index))
@@ -251,6 +263,7 @@ defmodule GithomeWeb.MyProjectController do
 
   def delete(conn, %{"id" => id}) do
     project = Projects.get_project!(id)
+    Git.delete_project(project.project_name)
     {:ok, _project} = Projects.delete_project(project)
 
     conn

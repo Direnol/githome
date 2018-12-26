@@ -5,6 +5,7 @@ defmodule GithomeWeb.ProjectController do
   alias Githome.Projects.Project
   alias Githome.Users
   alias GithomeWeb.GitController, as: Git
+
   def index(conn, _params) do
     token = get_session(conn, :token)
 
@@ -50,7 +51,8 @@ defmodule GithomeWeb.ProjectController do
       {:ok, project} ->
         user = get_session(conn, :user).username
         pname = project_params.project_name
-        Git.create_project pname, RW: user
+        Git.create_project(pname, RW: user)
+
         conn
         |> put_flash(:info, "Project created successfully.")
         |> redirect(to: Routes.project_path(conn, :show, project))

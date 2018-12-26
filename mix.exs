@@ -19,14 +19,18 @@ defmodule Githome.MixProject do
   end
 
   def version do
-    case File.read "rel/vsn" do
-      {:ok, vsn} -> vsn
+    case File.read("rel/vsn") do
+      {:ok, vsn} ->
+        vsn
+
       _ ->
-        minor = System.cmd("git", ~w[rev-list --count HEAD])
+        minor =
+          System.cmd("git", ~w[rev-list --count HEAD])
           |> elem(0)
-          |> String.trim
+          |> String.trim()
+
         "#{@major_vsn}.#{minor}.0"
-      end
+    end
   end
 
   # Configuration for the OTP application.

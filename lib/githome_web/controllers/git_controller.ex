@@ -5,7 +5,7 @@ defmodule GithomeWeb.GitController do
   defp home_dir() do
     case Application.get_env(:githome, :env) do
       :prod -> System.user_home()
-      _ -> Path.join System.user_home, "workspace"
+      _ -> Path.join(System.user_home(), "workspace")
     end
   end
 
@@ -19,7 +19,6 @@ defmodule GithomeWeb.GitController do
 
     {err, ret}
   end
-
 
   defp repo_path(name), do: home_dir() <> "/repositories/" <> name <> ".git"
 
@@ -52,6 +51,18 @@ defmodule GithomeWeb.GitController do
     git_push(project_file, "Update project: " <> project_name)
   end
 
+  def delete_project(name) do
+    {:ok, _} =
+      project_path(name)
+      |> File.rm_rf()
+
+    {:ok, _} =
+      repo_path(name)
+      |> File.rm_rf()
+
+    git_push(".", "Delete project: " <> name)
+  end
+
   defp user_path(username) do
     home_dir() <> "/admin/keydir/" <> username <> ".pub"
   end
@@ -77,6 +88,14 @@ defmodule GithomeWeb.GitController do
   def update_user(username, ssh) do
     {:ok, user_file} = git_create_user(username, ssh)
     git_push(user_file, "Update user: " <> username)
+  end
+
+  def delete_user(username) do
+    {:ok, _} =
+      user_path(username)
+      |> File.rm_rf()
+
+    git_push(".", "Delete user: " <> username)
   end
 
   defp group_path(name) do
@@ -107,6 +126,14 @@ defmodule GithomeWeb.GitController do
     git_push(group_file, "Update group: " <> name)
   end
 
+  def delete_group(name) do
+    {:ok, _} =
+      group_path(name)
+      |> File.rm_rf()
+
+    git_push(".", "Delete group:" <> name)
+  end
+
   defp git_push(path, message) do
     git_add(path)
     git_commit(message)
@@ -135,7 +162,10 @@ defmodule GithomeWeb.GitController do
 
   def git_ls(name, branch, path \\ "", args \\ []) do
     {0, tree} = cmd("git", ~w[ls-tree] ++ [branch <> ":" <> path] ++ args, cd: repo_path(name))
-    for o <- String.split(tree, "\n"), o != "", do: o |> String.replace("\t", " ") |> String.split |> do_tree
+
+    for o <- String.split(tree, "\n"),
+        o != "",
+        do: o |> String.replace("\t", " ") |> String.split() |> do_tree
   end
 
   def git_show(name, branch, path \\ "") do
@@ -148,7 +178,7 @@ defmodule GithomeWeb.GitController do
 
   @spec git_branches(binary()) :: [any()]
   def git_branches(name) do
-     {0, branches} = cmd "git", ~w[branch], cd: repo_path(name)
-     for b <- String.split(branches, "\n"), b != "", do: do_branch(String.split b)
+    {0, branches} = cmd("git", ~w[branch], cd: repo_path(name))
+    for b <- String.split(branches, "\n"), b != "", do: do_branch(String.split(b))
   end
 end

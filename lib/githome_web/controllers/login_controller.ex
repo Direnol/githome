@@ -49,12 +49,12 @@ defmodule GithomeWeb.LoginController do
         case pass == confirm_pass do
           true ->
             conn
-              |> create(%{
-                    :username => login,
-                    :password => pass,
-                    :password_confirm => confirm_pass
-                  })
-              |> redirect(to: Routes.session_path(conn, :new, username: login, token: token))
+            |> create(%{
+              :username => login,
+              :password => pass,
+              :password_confirm => confirm_pass
+            })
+            |> redirect(to: Routes.session_path(conn, :new, username: login, token: token))
 
           _ ->
             conn
@@ -72,9 +72,10 @@ defmodule GithomeWeb.LoginController do
   defp create(conn, user_params) do
     case Users.create_user(user_params) do
       {:ok, user} ->
-        Git.create_user user.username, ""
+        Git.create_user(user.username, "")
+
         conn
-          |> put_flash(:info, "User created successfully")
+        |> put_flash(:info, "User created successfully")
 
       {:error, %Ecto.Changeset{} = _changeset} ->
         conn
@@ -82,5 +83,4 @@ defmodule GithomeWeb.LoginController do
         |> redirect(to: Routes.login_path(conn, :index))
     end
   end
-
 end
