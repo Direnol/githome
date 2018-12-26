@@ -4,7 +4,9 @@
             <div class="table-responsive">
                 <table id="mytable" class="table table-bordred table-striped">
                     <thead>
-                        <th>Project Name</th>
+                        <th>Username</th>
+                        <th>Admin grants</th>
+                        <th>Delete user</th>
                     </thead>
                     <tbody>
                         <%= for user <- @users do %>
@@ -20,8 +22,6 @@
                                 <%= link "Add to admin", to: Routes.user_path(@conn, :admin, %{"id" => user.id}), method: "post", target: "_blank", class: "btn btn-primary btn-xs" %>
                                 <% end %>
                             </td>
-                            <td></td>
-                            <td></td>
                             <td>
                                 <%= link "Delete", to: Routes.user_path(@conn, :delete, %{"id" => user.id}), method: "delete", target: "_blank", class: "btn btn-danger btn-xs" %>
                             </td>
