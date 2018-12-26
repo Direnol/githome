@@ -1,7 +1,7 @@
 defmodule GithomeWeb.MyGroupController do
   use GithomeWeb, :controller
 
-  alias Githome.GroupInfo.Group
+  alias Githome.GroupInfo.Ginfo
   alias Githome.Users
   alias Githome.Projects
 
@@ -56,7 +56,7 @@ defmodule GithomeWeb.MyGroupController do
 
         case is_map(user) do
           true ->
-            changeset = Groups.change_group(%Group{})
+            changeset = Groups.change_group(%Ginfo{})
             users = Users.list_users()
 
             list_of_users =

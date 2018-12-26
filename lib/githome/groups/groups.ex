@@ -7,6 +7,7 @@ defmodule Githome.Groups do
   alias Githome.Repo
 
   alias Githome.Groups.Group
+  alias Githome.GroupInfo.Ginfo
 
   @doc """
   Returns the list of groups.
@@ -22,11 +23,15 @@ defmodule Githome.Groups do
   end
 
   def list_my_groups(id) do
-    query = from g in Group, select: g, where: g.uid == ^id
-    # May be User or an Ecto.Query itself
+    query =
+      from i in Ginfo,
+           left_join: g in Group,
+           on: i.id == g.gid,
+           select: i,
+           where: g.uid == ^id
     query
-    |> Ecto.Queryable.to_query()
-    |> Repo.all()
+      |> Ecto.Queryable.to_query()
+      |> Repo.all()
   end
 
   @doc """
