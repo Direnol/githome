@@ -3,8 +3,7 @@ defmodule Githome.Groups.Group do
   import Ecto.Changeset
 
   schema "groups" do
-    field :name, :string
-    field :pid, :integer
+    field :gid, :integer
     field :uid, :integer
     field :owner, :boolean
 
@@ -14,7 +13,7 @@ defmodule Githome.Groups.Group do
   @doc false
   def changeset(group, attrs) do
     group
-    |> cast(attrs, [:name, :uid, :pid, :owner])
-    |> validate_required([:name, :uid, :pid, :owner])
+    |> cast(attrs, [:uid, :gid, :owner])
+    |> validate_required([:uid, :gid, :owner])
   end
 end

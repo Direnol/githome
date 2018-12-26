@@ -3,8 +3,7 @@ defmodule Githome.Repo.Migrations.CreateGroups do
 
   def change do
     create table(:groups) do
-      add :name, :string
-      add :uid, :integer
+      add :gid, :integer
       add :pid, :integer
       add :owner, :boolean
 
