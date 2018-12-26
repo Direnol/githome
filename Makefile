@@ -99,9 +99,11 @@ raw-init: req
 	@mix phx.digest
 	# @${MIX} ecto.create
 
-raw-deb: raw-gitolite raw-init
-	@${MIX} vsn.update
+raw-deb: raw-update-vsn raw-gitolite raw-init
 	@MIX_ENV=prod ${MIX} release
+
+raw-update-vsn:
+	@${MIX} vsn.update
 
 raw-compile: raw-init raw-gitolite
 	@${MIX} compile

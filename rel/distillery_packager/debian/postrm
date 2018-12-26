@@ -10,6 +10,7 @@ remove)
 	rm -rf /opt/githome
 	rm -rf /var/lib/githome
 	rm -rf /usr/lib/githome
+    rm -f /bin/githome
 	;;
 purge)
     echo "Deleting githome user"

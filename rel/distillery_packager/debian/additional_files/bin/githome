@@ -1,0 +1,3 @@
+#!/bin/bash
+
+sudo -Hu githome /opt/githome/bin/githome ${*}

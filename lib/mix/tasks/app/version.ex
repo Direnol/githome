@@ -14,7 +14,7 @@ defmodule Mix.Tasks.App.Version do
 
   def run(["update"]) do
     vsn = Mix.Project.config[:version]
-    |> update
+      |> update
     File.write "rel/vsn", vsn
     IO.puts vsn
   end

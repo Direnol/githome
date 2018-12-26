@@ -161,7 +161,8 @@ function configure_git() {
 
     create_git_user "${GITHOME_GIT_PATH}"
 
-    if [ ! -d "${GITHOME_GIT_PATH}/admin" ]; then
+    local GH_REPO="${GITHOME_GIT_PATH}/admin"
+    if [ ! -d "${GH_REPO}" ]; then
         rm -rf /tmp/admin* || true
         rm -rf "${GITHOME_GIT_PATH}/.ssh" || true
         sudo -Hu githome ssh-keygen -t rsa -P "" -f "${GITHOME_GIT_PATH}/.ssh/id_rsa"
@@ -170,7 +171,20 @@ function configure_git() {
         sudo -Hu githome git config --global user.email "noemail@noemail.com"
         sudo -Hu githome git config --global user.name "Git admin"
         rm -rf "${GITHOME_ADMIN}/admin"
-        sudo -Hu githome git clone localhost:gitolite-admin.git "${GITHOME_GIT_PATH}/admin"
+        sudo -Hu githome git clone localhost:gitolite-admin.git "${GH_REPO}"
+        echo 'include "groups/*.conf"' > "${GH_REPO}/conf/gitolite.conf"
+        echo 'include "repos/*.conf"' >> "${GH_REPO}/conf/gitolite.conf"
+        mkdir "${GH_REPO}/conf/repos" "${GH_REPO}/conf/groups"
+        echo "repo gitolite-admin" > "${GH_REPO}/conf/repos/gitolite-admin.conf"
+        echo "  RW+     =   admin" >> "${GH_REPO}/conf/repos/gitolite-admin.conf"
+        chown -R githome:githome "${GH_REPO}"
+        pushd .
+        cd "${GH_REPO}"
+        sudo -Hu githome git add .
+        sudo -Hu githome git commit -m "Install"
+        sudo -Hu githome git push
+        popd
+        rm -rf "${GH_REPO}/repositories/testing.git"
     fi
 }
 
@@ -185,7 +199,7 @@ configure | reconfigure)
     chmod u+rwx,g+rx,o+r /opt/githome/*
     chmod u+rwx,g+rx,o+r /var/lib/githome/
     chmod u+rwx,g+rx,o+r /etc/githome/*
-    chmod +x /etc/githome/mysql.conf
+    chmod +x /etc/githome/mysql.conf /bin/githome
 
     echo "* githome: Start init database"
     InitDataBase || true
@@ -205,7 +219,7 @@ configure | reconfigure)
 
     systemctl --system daemon-reload >/dev/null || true
     deb-systemd-helper enable githome.service
-    deb-systemd-invoke restart githome.service
+    deb-systemd-invoke start githome.service
     ;;
 abort-upgrade | abort-deconfigure | abort-remove) ;;
 

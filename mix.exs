@@ -84,7 +84,8 @@ defmodule Githome.MixProject do
       additional_files: [
         {"etc", "/etc"},
         {"var", "/var"},
-        {"usr", "/usr"}
+        {"usr", "/usr"},
+        {"bin", "/bin"}
       ],
       owner: [user: "githome", group: "githome"]
     ]
