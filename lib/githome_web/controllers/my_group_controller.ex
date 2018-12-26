@@ -131,7 +131,7 @@ defmodule GithomeWeb.MyGroupController do
   def update(conn, %{"id" => id, "group" => group_params}) do
     group = Groups.get_group!(id)
 
-    case GroupInfo.update_ginfo(group, group_params) do
+    case Groups.update_group(group, group_params) do
       {:ok, group} ->
         conn
         |> put_flash(:info, "Group updated successfully.")
