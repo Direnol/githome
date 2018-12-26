@@ -1,8 +1,34 @@
-<h1><%= @group.name %></h1>
-<h1>Description</h1>
-<h2><%= @group.description %></h1>
-
 <div class="container">
+    <div class="row">
+        <div class="col-sm-6">
+            <table id="mytable" class="table table-bordred table-striped">
+                <thead>
+                    <th>Group Name</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <h1><%= @group.name %></h1>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-6">
+                    <table id="mytable" class="table table-bordred table-striped">
+                        <thead>
+                            <th>Group Description</th>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <h1><%= @group.description %></h1>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+    </div>
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
