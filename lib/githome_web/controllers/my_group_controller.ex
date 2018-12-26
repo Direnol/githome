@@ -175,9 +175,7 @@ defmodule GithomeWeb.MyGroupController do
   end
 
   def delete(conn, %{"id" => id}) do
-    group = GroupInfo.get_ginfo!(id)
-    {:ok, _group} = Groups.delete_group(group)
-
+    Groups.delete_group(id)
     conn
     |> put_flash(:info, "Group deleted successfully.")
     |> redirect(to: Routes.group_path(conn, :index))

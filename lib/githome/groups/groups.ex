@@ -130,8 +130,10 @@ defmodule Githome.Groups do
       {:error, %Ecto.Changeset{}}
 
   """
-  def delete_group(%Group{} = group) do
-    Repo.delete(group)
+  def delete_group(id) do
+    from(i in Ginfo, where: i.id == ^id) |> Repo.delete_all()
+    from(g in Group, where: g.gid == ^id) |> Repo.delete_all()
+    from(pg in Gp, where: pg.gid == ^id) |> Repo.delete_all()
   end
 
   @doc """

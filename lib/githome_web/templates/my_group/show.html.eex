@@ -32,11 +32,11 @@
     <div class="row">
         <div class="col-md-12">
             <div class="table-responsive">
-            <h3>Projects</h2>
+            <h2>Projects</h2>
                 <table id="mytable" class="table table-bordred table-striped">
                     <thead>
                     <th>Name</th>
-                    <th>Ownder</th>
+                    <th>Owner</th>
                     </thead>
                     <tbody>
                     <%= for project <- @projects do %>
