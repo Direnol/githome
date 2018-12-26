@@ -1,4 +1,4 @@
-defmodule Githome.Settrings.Parameter do
+defmodule Githome.Settings.Parameter do
   use Ecto.Schema
   import Ecto.Changeset
 

@@ -1,8 +1,8 @@
 defmodule GithomeWeb.ParameterController do
   use GithomeWeb, :controller
 
-  alias Githome.Settrings
-  alias Githome.Settrings.Parameter
+  alias Githome.Settings
+  alias Githome.Settings.Parameter
   alias Githome.Users
 
   def index(conn, _params) do
@@ -20,7 +20,7 @@ defmodule GithomeWeb.ParameterController do
         case is_map(user) do
           true ->
             user_update = Users.get_user!(user.id)
-            settings = Settrings.list_settings()
+            settings = Settings.list_settings()
 
             conn
             |> put_session(:user, user_update)
@@ -58,7 +58,7 @@ defmodule GithomeWeb.ParameterController do
           |> redirect(to: Routes.login_path(conn, :index))
         end
 
-        changeset = Settrings.change_parameter(%Parameter{})
+        changeset = Settings.change_parameter(%Parameter{})
         conn = put_session(conn, :nav_active, :settings)
 
         render(conn, "new.html",
@@ -69,7 +69,7 @@ defmodule GithomeWeb.ParameterController do
         )
     end
 
-    changeset = Settrings.change_parameter(%Parameter{})
+    changeset = Settings.change_parameter(%Parameter{})
 
     render(conn, "new.html",
       changeset: changeset,
@@ -80,7 +80,7 @@ defmodule GithomeWeb.ParameterController do
   end
 
   def create(conn, %{"parameter" => parameter_params}) do
-    case Settrings.create_parameter(parameter_params) do
+    case Settings.create_parameter(parameter_params) do
       {:ok, parameter} ->
         conn
         |> put_flash(:info, "Parameter created successfully.")
@@ -92,20 +92,20 @@ defmodule GithomeWeb.ParameterController do
   end
 
   def show(conn, %{"id" => id}) do
-    parameter = Settrings.get_parameter!(id)
+    parameter = Settings.get_parameter!(id)
     render(conn, "show.html", parameter: parameter)
   end
 
   def edit(conn, %{"id" => id}) do
-    parameter = Settrings.get_parameter!(id)
-    changeset = Settrings.change_parameter(parameter)
+    parameter = Settings.get_parameter!(id)
+    changeset = Settings.change_parameter(parameter)
     render(conn, "edit.html", parameter: parameter, changeset: changeset)
   end
 
   def update(conn, %{"id" => id, "parameter" => parameter_params}) do
-    parameter = Settrings.get_parameter!(id)
+    parameter = Settings.get_parameter!(id)
 
-    case Settrings.update_parameter(parameter, parameter_params) do
+    case Settings.update_parameter(parameter, parameter_params) do
       {:ok, parameter} ->
         conn
         |> put_flash(:info, "Parameter updated successfully.")
@@ -117,8 +117,8 @@ defmodule GithomeWeb.ParameterController do
   end
 
   def delete(conn, %{"id" => id}) do
-    parameter = Settrings.get_parameter!(id)
-    {:ok, _parameter} = Settrings.delete_parameter(parameter)
+    parameter = Settings.get_parameter!(id)
+    {:ok, _parameter} = Settings.delete_parameter(parameter)
 
     conn
     |> put_flash(:info, "Parameter deleted successfully.")

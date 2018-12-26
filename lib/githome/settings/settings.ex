@@ -1,12 +1,12 @@
-defmodule Githome.Settrings do
+defmodule Githome.Settings do
   @moduledoc """
-  The Settrings context.
+  The Settings context.
   """
 
   import Ecto.Query, warn: false
   alias Githome.Repo
 
-  alias Githome.Settrings.Parameter
+  alias Githome.Settings.Parameter
 
   @doc """
   Returns the list of settings.
