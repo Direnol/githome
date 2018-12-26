@@ -1,0 +1,3 @@
+<h1>Edit Project</h1>
+
+<%= render "description_form.html", Map.put(assigns, :action, Routes.my_project_path(@conn, :update, @id)) %>

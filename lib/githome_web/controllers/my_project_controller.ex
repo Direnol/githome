@@ -212,6 +212,43 @@ defmodule GithomeWeb.MyProjectController do
     )
   end
 
+  def edit(conn, %{"id" => id}) do
+    project = Projects.get_project!(id)
+    changeset = Projects.change_project(project)
+    conn
+    |> render("edit.html",
+         layout: {GithomeWeb.LayoutView, "main.html"},
+         id: %{"id" => project.id},
+         changeset: changeset,
+         user: get_session(conn, :user),
+         nav_active: get_session(conn, :nav_active)
+       )
+  end
+
+  def update(conn, params) do
+    IO.inspect(params)
+    id = params["id"]
+    id = case Integer.parse(id) do
+      :error ->
+        conn
+          |> put_flash(:info, "Update fail.")
+          |> Githome.redirect_back(default: "/")
+      {id, _} -> id
+    end
+    project_params = params["project"]
+    project = Projects.get_project!(id)
+
+    case Projects.update_project(project, project_params) do
+      {:ok, project} ->
+        conn
+        |> put_flash(:info, "Project updated successfully.")
+        |> redirect(to: Routes.my_project_path(conn, :index))
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, "edit.html", project: project, changeset: changeset)
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     project = Projects.get_project!(id)
     {:ok, _project} = Projects.delete_project(project)

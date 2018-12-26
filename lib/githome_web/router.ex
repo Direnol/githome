@@ -50,6 +50,7 @@ defmodule GithomeWeb.Router do
     delete "/delete", MyProjectController, :delete
     post "/create", MyProjectController, :create
     post "/update", MyProjectController, :update
+    put "/update", MyProjectController, :update
   end
 
   scope "/users", GithomeWeb do
