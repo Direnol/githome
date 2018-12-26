@@ -1,6 +1,5 @@
 defmodule GithomeWeb.LoginControllerTest do
   use GithomeWeb.ConnCase
-  #get csrf token
 
   alias Githome.Users
   import GithomeWeb.LoginController
@@ -13,27 +12,27 @@ defmodule GithomeWeb.LoginControllerTest do
       |> Map.get(:status)
       |> (fn (r) -> assert(200 == r) end).()
     end
-  end
+  end 
 
   describe "user" do
 	test "create user", %{conn: conn} do
 	  {ret, _map} = Users.create_user( %{
-		:username => "ololo",
+		:username => "ololoa",
 		:password => "ololo",
-		:password_confirmation => "ololo" 
-	  });
+		:password_confirm => "ololo" 
+	  })
 	  assert ret == :ok
 	end
-  
-	test "get user.id by name", %{conn: conn} do
-	  id = Users.get_user_by(username: "ololo")
-	  assert id != nil
+	
+ 	test "get user.id by name", %{conn: conn} do
+		id = Users.get_user_by(username: "ololo").id
+		assert id != nil
 	end
-
-	test "delete user by id", %{conn: conn} do
-	  Users.delete_user(Users.get_user_by(username: "ololo"));
-	  id1 = Users.get_user_by(username: "ololo")
-	  assert id1 == nil
-	end
+	
+ 	test "delete user by id", %{conn: conn} do
+	  {ret, _map} = Users.delete_user(Users.get_user_by(username: "ololo"))
+	  assert ret == :ok
+	end 	
+	
   end
 end
