@@ -46,11 +46,11 @@ defmodule GithomeWeb.GitController do
     git_push(project_file, "Create new project: " <> project_name)
   end
 
-  def update_projet(project_name, owner) when is_list(owner) do
+  def update_project(project_name, owner) when is_list(owner) do
     {:ok, project_file} = git_create_project(project_name, owner)
     git_push(project_file, "Update project: " <> project_name)
   end
-  def update_project(_, _), do: :no_args
+  def update_project(_, _), do: :no_ars
 
   def delete_project(name) do
     {:ok, _} =
@@ -135,7 +135,9 @@ defmodule GithomeWeb.GitController do
   def delete_group(name) do
     {:ok, _} =
       group_path(name)
+      |> IO.inspect
       |> File.rm_rf()
+      |> IO.inspect
 
     git_push(".", "Delete group:" <> name)
   end

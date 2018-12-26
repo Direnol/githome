@@ -7,7 +7,6 @@ defmodule Githome.Projects do
   alias Githome.Repo
 
   alias Githome.Projects.Project
-  alias Githome.Groups.Group
   alias Githome.GroupProject.Gp
   alias Githome.GroupInfo.Ginfo
 
@@ -33,7 +32,7 @@ defmodule Githome.Projects do
     |> Repo.all()
   end
 
-  def get_groups_by_progect(id) do
+  def get_groups_by_project(id) do
     query = from i in Ginfo,
                  right_join: gp in Gp,
                  on: i.id == gp.gid,

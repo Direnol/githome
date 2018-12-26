@@ -40,11 +40,11 @@
                     </thead>
                     <tbody>
                     <%= for project <- @projects do %>
-                    <% user = Githome.Users.get_user!(project.id) %>
+                    <% user = Githome.Users.get_user!(project.owner) %>
                     <tr>
                         <td> <%= link project.project_name,
                             to: Routes.my_project_path(@conn, :show, %{"id" => project.id}), class: "btn btn-primary btn-xs"   %></td>
-                        <td> <span class = "btn btn-xs btn-success"><%= user.username %></span>
+                        <td> <span class = "btn btn-xs btn-success"><%= user.username %> </span>
                     </tr>
                     <% end %>
                     </tbody>
