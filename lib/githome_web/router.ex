@@ -45,6 +45,8 @@ defmodule GithomeWeb.Router do
     get "/new", MyProjectController, :new
     get "/show", MyProjectController, :show
     get "/edit", MyProjectController, :edit
+    get "/view", MyProjectController, :view
+    get "/log", MyProjectController, :log
     delete "/delete", MyProjectController, :delete
     post "/create", MyProjectController, :create
     post "/update", MyProjectController, :update

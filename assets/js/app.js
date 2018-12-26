@@ -13,6 +13,7 @@ import "phoenix_html"
 import "./login"
 import "./navbar"
 import "./groups"
+import "./view"
 
 // Import local files
 //

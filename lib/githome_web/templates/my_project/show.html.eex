@@ -3,40 +3,89 @@
     <div class="left_bar">
         <ul class=" nav-tabs--vertical nav" role="navigation">
 
-            <%= for {type, branch} <- @branches do %>
-            <%= case type do %>
-            <% :cur_branch -> %>
-            <%= link branch, to: Routes.my_project_path(@conn, :show, %{"id" => @project.id, "branch" => branch}), class: "btn btn-xs btn-success nav-link active" %>
-            <% _ -> %>
-            <%= link branch, to: Routes.my_project_path(@conn, :show, %{"id" => @project.id, "branch" => branch }), class: "btn btn-xs nav-link" %>
-            <% end %>
-            <% end %>
+            <table id="mytable" class="table-bordred table-striped">
+                <thead>
+                    <th>Name</th>
+                    <th>View log</th>
+                </thead>
+                <tbody>
+                    <%= for {type, b} <- @branches do %>
+                        <tr>
+                        <td>
+                        <%= cond do %>
+                        <% b == @branch -> %>
+                            <%= link b, to: Routes.my_project_path(@conn, :show,
+                                %{"id" => @project.id, "branch" => b}),
+                                class: "btn btn-xs btn-danger nav-link active" %>
+                        <% true -> %>
+                            <%= link b, to: Routes.my_project_path(@conn, :show,
+                                %{"id" => @project.id, "branch" => b }),
+                                class: "btn btn-xs btn-success nav-link" %>
+                        <% end %>
+                        </td>
+                        <td><%= link "View log",
+                                    to: Routes.my_project_path(@conn, :log,
+                                    %{"id" => @project.id, "branch" => b,
+                                    "item" => ""}),
+                                    class: "btn btn-xs nav-link btn-primary", data_title: "View log",
+                                    data_toggle: "modal"
+                                %></td>
+                        </tr>
+                    <% end %>
+                <tbody>
+            </table>
         </ul>
     </div>
 
 
     <div class="right_bar ">
         <div class="tab-content ">
+<table id="mytable" class="table table-bordred table-striped">
 
-            <ul class=" nav-tabs--vertical nav" role="navigation">
-            <%= for {type, item} <- @files do %>
-                <li class="nav-item">
-                <%= case type do %>
-                    <% :dir -> %>
-                    <%= link item, to: Routes.my_project_path(@conn, :show,
-                            %{"id" => @project.id, "path" => Path.join(@path, item)}),
-                            class: "btn btn-xs active icon-btn" %>
-                    <% :file ->  %>
-                    <%= link item, to: Routes.my_project_path(@conn, :show,
-                            %{"id" => @project.id, "path" => @path }),
-                            class: "btn " %>
-                    <% :back -> %>
-                    <%= link "..", to: Routes.my_project_path(@conn, :show,
-                            %{"id" => @project.id, "path" => item }),
-                            class: "btn btn-xs btn-success nav-link active" %>
-                <% end %>
-                </li>
+                    <thead>
+                        <th>Type</th>
+                        <th>Name</th>
+                        <th>log</th>
+                    </thead>
+                    <tbody>
+                    <%= for {type, item} <- @files do %>
+                        <tr>
+                            <td><span class="glyphicon"><%= type %> </span></td>
+                            <td>
+                            <%= case type do %>
+                            <% :dir -> %>
+                                <%= link item, to: Routes.my_project_path(@conn, :show,
+                                    %{"id" => @project.id, "path" => Path.join(@path, item), "branch" => @branch}),
+                                    class: "btn btn-primary btn-xs" %>
+                            <% :file ->  %>
+                                <%= link item, to: Routes.my_project_path(@conn, :view,
+                                    %{"id" => @project.id, "path" => @path,
+                                        "branch" => @branch, file: item}),
+                                    class: "btn btn-xs btn-success nav-link active" %>
+                            <% :back -> %>
+                                <%= link "..", to: Routes.my_project_path(@conn, :show,
+                                    %{"id" => @project.id, "path" => item, "branch" => @branch }),
+                                    class: "btn btn-primary btn-xs" %>
+                            <% end %>
+                            </td>
+                            <td>
+                            <%= if type in [:dir, :file] do %>
+                                <%= link raw(~s(<span class="glyphicon img-circle">View log</span>)),
+                                    to: Routes.my_project_path(@conn, :log,
+                                    %{"id" => @project.id, "branch" => @branch,
+                                    "item" => Path.join(@path, item)}),
+                                    class: "btn btn-danger btn-xs", data_title: "View log",
+                                    data_toggle: "modal"
+                                %>
+                            <% end %>
+                            </td>
+                        </tr>
+
             <% end %>
+                    </tbody>
+
+                </table>
+            <ul class=" nav-tabs--vertical nav" role="navigation">
             </ul>
 
         </div>

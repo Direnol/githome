@@ -5,7 +5,7 @@ defmodule GithomeWeb.GitController do
   defp home_dir() do
     case Application.get_env(:githome, :env) do
       :prod -> System.user_home()
-      _ -> "/home/direnol/workspace"
+      _ -> Path.join System.user_home, "workspace"
     end
   end
 

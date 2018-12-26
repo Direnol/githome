@@ -61,19 +61,21 @@ defmodule GithomeWeb.MyProjectController do
           true ->
             user_update = Users.get_user!(user.id)
             project = Projects.get_project!(id)
-            branches = try do
-              Git.git_branches(project.project_name)
-            rescue
-              e ->
-                IO.inspect e
-                []
-            end
 
+            branches =
+              try do
+                Git.git_branches(project.project_name)
+              rescue
+                e ->
+                  IO.inspect(e)
+                  []
+              end
+            branch = params["branch"] || branches[:cur_branch]
             files =
               try do
                 Git.git_ls(
                   project.project_name,
-                  params["branch"] || branches[:cur_branch],
+                  branch,
                   path
                 )
               rescue
@@ -100,7 +102,8 @@ defmodule GithomeWeb.MyProjectController do
               user: user_update,
               nav_active: :projects_view_my,
               path: path,
-              branches: branches
+              branches: branches,
+              branch: branch
             )
 
           _ ->
@@ -181,6 +184,28 @@ defmodule GithomeWeb.MyProjectController do
           nav_active: get_session(conn, :nav_active)
         )
     end
+  end
+
+  def view(conn, %{"id" => id, "file" => file, "branch" => branch}) do
+    %{project_name: name} = Projects.get_project! id
+    code = Git.git_show name, branch, file
+    conn
+    |> render("view.html",
+      code: code,
+      user: get_session(conn, :user),
+      nav_active: get_session(conn, :nav_active)
+    )
+  end
+
+  def log(conn, %{"id" => id, "item" => item, "branch" => branch}) do
+    %{project_name: name} = Projects.get_project! id
+    log = Git.git_log name, branch, [item]
+    conn
+    |> render("log.html",
+      user: get_session(conn, :user),
+      nav_active: get_session(conn, :nav_active),
+      log: log
+    )
   end
 
   def delete(conn, %{"id" => id}) do
