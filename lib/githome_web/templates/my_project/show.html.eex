@@ -11,7 +11,7 @@
                     <th>View log</th>
                 </thead>
                 <tbody>
-                    <%= for {type, b} <- @branches do %>
+                    <%= for {_type, b} <- @branches do %>
                     <tr>
                         <td>
                             <%= cond do %>
