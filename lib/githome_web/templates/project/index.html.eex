@@ -6,12 +6,34 @@
                     <thead>
                         <th>Project Name</th>
                         <th>Description</th>
+                        <th>Url</th>
+                        <%= if @admin do %>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        <% end %>
                     </thead>
                     <tbody>
                          <%= for p <- @projects do %>
                         <tr>
                             <td><%= link p.project_name, to: Routes.my_project_path(@conn, :show, %{"id" => p.id}), class: "btn btn-primary btn-xs"  %></td>
                             <td><%= p.description %></td>
+                            <%= if @admin do %>
+                                <td>githome@<%= Application.get_env(:githome, GithomeWeb.Endpoint)[:url][:host]%>:<%= p.project_name %>.git</td>
+                            <td>
+                                <p data-placement="top" data-toggle="tooltip" title="Edit">
+                                    <%= link raw(~s(<span class="glyphicon glyphicon-pencil"></span>)), to: Routes.my_project_path(@conn, :edit, %{"id" => p.id}), class: "btn btn-primary btn-xs",
+                                        data_title: "Edit", data_toggle: "modal"
+                                    %>
+                                </p>
+                            </td>
+                            <td>
+                                <p data-placement="top" data-toggle="tooltip" title="Delete">
+                                    <%= link raw(~s(<span class="glyphicon glyphicon-trash"></span>)), to: Routes.my_project_path(@conn, :delete, %{"id" => p.id}), class: "btn btn-danger btn-xs",
+                                        data_title: "Delete", data_toggle: "modal", method: "DELETE"
+                                    %>
+                                </p>
+                            </td>
+                            <% end %>
                         </tr>
                         <% end %>
                     </tbody>

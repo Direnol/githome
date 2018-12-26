@@ -30,7 +30,8 @@ defmodule GithomeWeb.ProjectController do
               projects: projects,
               user: user_update,
               layout: {GithomeWeb.LayoutView, "main.html"},
-              nav_active: :projects_view_all
+              nav_active: :projects_view_all,
+              admin: user_update.admin
             )
 
           _ ->

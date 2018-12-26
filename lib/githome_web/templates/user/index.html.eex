@@ -5,11 +5,13 @@
                 <table id="mytable" class="table table-bordred table-striped">
                     <thead>
                         <th>Username</th>
-                        <th>Admin grants</th>
-                        <th>Delete user</th>
+                        <%= if @admin do %>
+                            <th>Admin grants</th>
+                            <th>Delete user</th>
+                        <% end %>
                     </thead>
                     <tbody>
-                        <%= for user <- @users do %>
+                        <%= for user <- @users, user.username != "admin" do %>
                         <tr>
                             <td>
                                 <%= user.username %>
@@ -18,7 +20,7 @@
                             <td>
                                 <%= if user.admin do %>
                                 <%= link "Delete from admin", to: Routes.user_path(@conn, :admin, %{"id" => user.id}), method: "post", target: "_blank", class: "btn btn-danger btn-xs" %>
-                                <%= else %>
+                                <% else %>
                                 <%= link "Add to admin", to: Routes.user_path(@conn, :admin, %{"id" => user.id}), method: "post", target: "_blank", class: "btn btn-primary btn-xs" %>
                                 <% end %>
                             </td>
