@@ -170,7 +170,10 @@ defmodule GithomeWeb.UserController do
       true ->
         user = get_session(conn, :user)
         extension = Path.extname(Map.get(upload, :filename))
-        avatar_path = "./priv/static/images/#{user.id}-avatar#{extension}"
+        avatar_path = case Application.get_env(:githome, :env) do
+          :prod -> "#{Application.app_dir :githome, "priv/static"}/images/#{user.id}-avatar#{extension}"
+          _ -> "./priv/static/images/#{user.id}-avatar#{extension}"
+        end
         File.cp(Map.get(upload, :path), avatar_path)
 
         changeset = %{
