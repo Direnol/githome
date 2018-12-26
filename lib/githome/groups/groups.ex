@@ -157,4 +157,13 @@ defmodule Githome.Groups do
     |> Ecto.Queryable.to_query()
     |> Repo.all()
   end
+
+  def get_owner_by_group(id) do
+    query = from g in Group,
+                 select: g,
+                 where: g.gid == ^id and g.owner == true
+    query
+    |> Ecto.Queryable.to_query()
+    |> Repo.all()
+  end
 end
