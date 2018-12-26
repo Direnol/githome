@@ -1,8 +1,7 @@
 defmodule GithomeWeb.MyGroupController do
   use GithomeWeb, :controller
 
-  alias Githome.Groups
-  alias Githome.Groups.Group
+  alias Githome.GroupInfo.Group
   alias Githome.Users
   alias Githome.Projects
 

@@ -1,4 +1,4 @@
-defmodule Githome.GroupInfo do
+defmodule Githome.GroupInfo.Group do
   use Ecto.Schema
   import Ecto.Changeset
 
