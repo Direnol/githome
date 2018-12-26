@@ -58,7 +58,7 @@ defmodule GithomeWeb.MyGroupController do
 
         case is_map(user) do
           true ->
-            changeset = Groups.change_group(%Ginfo{})
+            changeset = GroupInfo.change_ginfo(%Ginfo{})
             users = Users.list_users()
 
             list_of_users =
@@ -84,6 +84,7 @@ defmodule GithomeWeb.MyGroupController do
               users: list_of_users,
               projects: list_of_projects,
               user: user_update,
+              info: get_flash(conn, :info),
               nav_active: :groups_add_new,
               token: get_session(conn, :token)
             )
@@ -97,29 +98,31 @@ defmodule GithomeWeb.MyGroupController do
   end
 
   def create(conn, params) do
-    group_params = params["group"]
-
-    case Groups.create_group(group_params) do
+    g_params = params["ginfo"]
+    g_params = Map.put(g_params, "owner", get_session(conn, :user).id)
+    case Groups.create_group(g_params) do
       {:ok, group} ->
         conn
         |> put_flash(:info, "Group created successfully.")
-        |> redirect(to: Routes.group_path(conn, :show, group))
+        |> redirect(to: Routes.group_path(conn, :show, %{"id" => group.id}))
 
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
-        |> render("new.html",
-          changeset: changeset,
-          layout: {GithomeWeb.LayoutView, "main.html"},
-          user: get_session(conn, :user),
-          nav_active: :groups,
-          token: get_session(conn, :token)
-        )
+        |> put_flash(:info, "Group not created.")
+        |> redirect(to: Routes.my_group_path(conn, :new))
     end
   end
 
   def show(conn, %{"id" => id}) do
-    group = Groups.get_group!(id)
-    render(conn, "show.html", group: group)
+    group = GroupInfo.get_ginfo!(id)
+    conn
+    |> render("show.html",
+            group: group,
+            layout: {GithomeWeb.LayoutView, "main.html"},
+            user: get_session(conn, :user),
+            info: get_flash(conn, :info),
+            nav_active: get_session(conn, :nav_active),
+            )
   end
 
   def edit(conn, %{"id" => id}) do

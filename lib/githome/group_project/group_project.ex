@@ -1,4 +1,4 @@
-defmodule Githome.GroupProject do
+defmodule Githome.GroupProject.Gp do
   use Ecto.Schema
   import Ecto.Changeset
 

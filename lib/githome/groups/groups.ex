@@ -8,6 +8,9 @@ defmodule Githome.Groups do
 
   alias Githome.Groups.Group
   alias Githome.GroupInfo.Ginfo
+  alias Githome.GroupInfo
+  alias Githome.GroupProject.Gp
+  alias Githome.GroupProject
 
   @doc """
   Returns the list of groups.
@@ -65,6 +68,32 @@ defmodule Githome.Groups do
 
   """
   def create_group(attrs \\ %{}) do
+    name = attrs["name"]
+    members = attrs["members"] || []
+    projects = attrs["projects"] || []
+    desc = attrs["description"] || "desc default"
+    owner = attrs["owner"]
+    case GroupInfo.create_ginfo(%{"name" => name, "description" => desc}) do
+      {:ok, info} ->
+       case insert_in_group(%{"gid" => info.id, "uid" => owner, "owner" => true}) do
+         {:ok, group} ->
+           for member <- members, member != owner do
+              insert_in_group(%{"gid" => info.id, "uid" => member, "owner" => false})
+           end
+           for project <- projects do
+             GroupProject.create_gp(%{"pid" => project, "gid" => info.id})
+           end
+           {:ok, info}
+         err -> err
+       end
+
+      err -> err
+    end
+
+  end
+
+  def insert_in_group(attrs \\ %{}) do
+    IO.inspect(attrs)
     %Group{}
     |> Group.changeset(attrs)
     |> Repo.insert()
