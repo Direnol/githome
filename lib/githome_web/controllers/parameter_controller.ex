@@ -20,17 +20,26 @@ defmodule GithomeWeb.ParameterController do
         case is_map(user) do
           true ->
             user_update = Users.get_user!(user.id)
-            settings = Settings.list_settings()
 
-            conn
-            |> put_session(:user, user_update)
-            |> put_session(:nav_active, :settings)
-            |> render("index.html",
-              settings: settings,
-              layout: {GithomeWeb.LayoutView, "main.html"},
-              user: user_update,
-              nav_active: :settings
-            )
+            case user_update.admin do
+              true ->
+                settings = Settings.list_settings()
+                conn
+                |> put_session(:user, user_update)
+                |> put_session(:nav_active, :settings)
+                |> render("index.html",
+                     settings: settings,
+                     layout: {GithomeWeb.LayoutView, "main.html"},
+                     user: user_update,
+                     nav_active: :settings
+                   )
+
+               _ ->
+                 conn
+                 |> put_flash(:info, "Access deny.")
+                 |> redirect(to: Routes.login_path(conn, :index))
+            end
+
 
           _ ->
             conn

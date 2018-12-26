@@ -190,7 +190,7 @@ defmodule GithomeWeb.UserController do
 
             conn
             |> put_flash(:info, "User updated successfully")
-            |> Githome.redirect_back(default: "/")
+            |> redirect(to: Routes.user_path(conn, :show, %{"id" => user.id}))
 
           {:error, %Ecto.Changeset{} = _changeset} ->
             conn
