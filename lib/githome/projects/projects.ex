@@ -35,10 +35,11 @@ defmodule Githome.Projects do
   end
 
   def get_all_my_projects(id) do
-    for g <- Groups.list_my_groups id  do
+    projects = for g <- Groups.list_my_groups id  do
       GroupProject.get_all_project_by_group g.id
     end
     |> List.flatten
+    projects ++ list_my_projects(id)
   end
   def get_groups_by_project(id) do
     query =
@@ -120,6 +121,7 @@ defmodule Githome.Projects do
 
   """
   def delete_project(%Project{} = project) do
+    from(pg in Gp, where: pg.pid == ^project.id) |> Repo.delete_all()
     Repo.delete(project)
   end
 
