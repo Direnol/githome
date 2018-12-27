@@ -22,7 +22,7 @@ defmodule GithomeWeb.MyProjectController do
         case is_map(user) do
           true ->
             user_update = Users.get_user!(user.id)
-            projects = Projects.list_my_projects(user.id)
+            projects = Projects.get_all_my_projects(user.id)
 
             conn
             |> put_session(:user, user_update)

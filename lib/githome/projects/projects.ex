@@ -9,6 +9,8 @@ defmodule Githome.Projects do
   alias Githome.Projects.Project
   alias Githome.GroupProject.Gp
   alias Githome.GroupInfo.Ginfo
+  alias Githome.Groups
+  alias Githome.GroupProject
 
   @doc """
   Returns the list of projects.
@@ -32,6 +34,12 @@ defmodule Githome.Projects do
     |> Repo.all()
   end
 
+  def get_all_my_projects(id) do
+    for g <- Groups.list_my_groups id  do
+      GroupProject.get_all_project_by_group g.id
+    end
+    |> List.flatten
+  end
   def get_groups_by_project(id) do
     query =
       from i in Ginfo,

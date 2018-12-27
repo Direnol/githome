@@ -34,9 +34,7 @@
                             <td>
                                 <%= p.description %>
                             </td>
-                            <td>githome@
-                                <%= Application.get_env(:githome, GithomeWeb.Endpoint)[:url][:host]%>:
-                                <%= p.project_name %>.git</td>
+                            <td>githome@<%= Application.get_env(:githome, GithomeWeb.Endpoint)[:url][:host]%>:<%= p.project_name %>.git</td>
                             <td>
                                 <p data-placement="top" data-toggle="tooltip" title="Edit">
                                     <%= link raw(~s(<span class="glyphicon glyphicon-pencil"></span>)), to: Routes.my_project_path(@conn, :edit, %{"id" => p.id}), class: "btn btn-primary btn-xs",
