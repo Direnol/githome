@@ -5,3 +5,5 @@ use Mix.Config
 config :githome, GithomeWeb.Endpoint,
   http: [port: 4002],
   server: false
+
+config :comeonin, bcrypt_log_rounds: 0

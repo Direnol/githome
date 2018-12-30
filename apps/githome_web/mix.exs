@@ -51,7 +51,6 @@ defmodule GithomeWeb.Mixfile do
       {:gettext, "~> 0.11"},
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
-      {:comeonin, "~> 2.3"},
       {:navigation_history, "~> 0.0"},
       {:githome, in_umbrella: true}
     ]

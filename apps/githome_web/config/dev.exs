@@ -58,3 +58,5 @@ config :githome_web, GithomeWeb.Endpoint,
 
 # Initialize plugs at runtime for faster development compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :comeonin, bcrypt_log_rounds: 2

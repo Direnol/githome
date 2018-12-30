@@ -27,7 +27,8 @@ defmodule Githome.Mixfile do
       mod: {Githome.Application, []},
       extra_applications: [
         :logger,
-        :runtime_tools
+        :runtime_tools,
+        :comeonin
       ],
       env: [env: Mix.env()]
     ]
@@ -58,7 +59,8 @@ defmodule Githome.Mixfile do
   defp deps do
     [
       {:ecto_sql, "~> 3.0"},
-      {:mariaex, ">= 0.0.0"}
+      {:mariaex, ">= 0.0.0"},
+      {:comeonin, "~> 2.3"}
     ]
   end
 
