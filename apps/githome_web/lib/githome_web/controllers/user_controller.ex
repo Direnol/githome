@@ -205,7 +205,7 @@ defmodule GithomeWeb.UserController do
           {:error, %Ecto.Changeset{} = _changeset} ->
             conn
             |> put_flash(:info, "Sorry try again")
-            |> Githome.redirect_back(default: "/")
+            |> GithomeWeb.redirect_back(default: "/")
         end
 
       _ ->
@@ -230,7 +230,7 @@ defmodule GithomeWeb.UserController do
           {:error, %Ecto.Changeset{} = _changeset} ->
             conn
             |> put_flash(:info, "Sorry try again")
-            |> Githome.redirect_back(default: "/")
+            |> GithomeWeb.redirect_back(default: "/")
         end
     end
   end
@@ -246,7 +246,7 @@ defmodule GithomeWeb.UserController do
       {:error, %Ecto.Changeset{} = _changeset} ->
         conn
         |> put_flash(:info, "Sorry try again")
-        |> Githome.redirect_back(default: "/")
+        |> GithomeWeb.redirect_back(default: "/")
     end
   end
 
@@ -257,7 +257,7 @@ defmodule GithomeWeb.UserController do
 
     conn
     |> put_flash(:info, "User deleted successfully.")
-    |> Githome.redirect_back(default: "/")
+    |> GithomeWeb.redirect_back(default: "/")
   end
 
   def change_password(conn, _params) do
@@ -310,6 +310,6 @@ defmodule GithomeWeb.UserController do
 
     conn
     |> put_flash(:info, "Admin rules for #{user.username} has been updated")
-    |> Githome.redirect_back(default: "/")
+    |> GithomeWeb.redirect_back(default: "/")
   end
 end

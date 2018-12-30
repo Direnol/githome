@@ -66,4 +66,8 @@ defmodule GithomeWeb do
   defmacro __using__(which) when is_atom(which) do
     apply(__MODULE__, which, [])
   end
+
+  def redirect_back(conn, opts \\ []) do
+    Phoenix.Controller.redirect(conn, to: NavigationHistory.last_path(conn, opts))
+  end
 end

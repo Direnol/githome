@@ -1,24 +1,20 @@
-defmodule Githome.Application do
-  # See https://hexdocs.pm/elixir/Application.html
-  # for more information on OTP Applications
-  @moduledoc false
-
+defmodule GithomeWeb.Application do
   use Application
 
   def start(_type, _args) do
-    # List all child processes to be supervised
+    import Supervisor.Spec
+
+    # Define workers and child supervisors to be supervised
     children = [
-      # Start the Ecto repository
-      Githome.Repo,
       # Start the endpoint when the application starts
-      GithomeWeb.Endpoint
-      # Starts a worker by calling: Githome.Worker.start_link(arg)
-      # {Githome.Worker, arg},
+      supervisor(GithomeWeb.Endpoint, [])
+      # Start your own worker by calling: GithomeWeb.Worker.start_link(arg1, arg2, arg3)
+      # worker(GithomeWeb.Worker, [arg1, arg2, arg3]),
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html
     # for other strategies and supported options
-    opts = [strategy: :one_for_one, name: Githome.Supervisor]
+    opts = [strategy: :one_for_one, name: GithomeWeb.Supervisor]
     Supervisor.start_link(children, opts)
   end
 

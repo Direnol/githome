@@ -35,12 +35,15 @@ defmodule Githome.Projects do
   end
 
   def get_all_my_projects(id) do
-    projects = for g <- Groups.list_my_groups id  do
-      GroupProject.get_all_project_by_group g.id
-    end
-    |> List.flatten
+    projects =
+      for g <- Groups.list_my_groups(id) do
+        GroupProject.get_all_project_by_group(g.id)
+      end
+      |> List.flatten()
+
     projects ++ list_my_projects(id)
   end
+
   def get_groups_by_project(id) do
     query =
       from i in Ginfo,

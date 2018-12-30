@@ -143,6 +143,7 @@ check_githome_mysql_database() {
 create_githome_mysql_database() {
     /opt/githome/bin/githome db_init "${1}" "${2}"
     /opt/githome/bin/githome db_migrate
+    /opt/githome/bin/githome seed
     if [[ $? -eq 0 ]]; then
         return 0
     fi

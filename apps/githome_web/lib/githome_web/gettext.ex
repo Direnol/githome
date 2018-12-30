@@ -20,5 +20,5 @@ defmodule GithomeWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :githome
+  use Gettext, otp_app: :githome_web
 end

@@ -12,7 +12,7 @@ end
 environment :prod do
   set(include_erts: true)
   set(include_src: false)
-  set cookie: :githome
+  set cookie: :githome_web
 # File.read!("config/cookie.txt") |> String.to_atom
   set vm_args: "rel/vm.args.eex"
 end
@@ -23,7 +23,8 @@ release :githome do
   set(
     applications: [
       :runtime_tools,
-      :githome
+      :githome,
+      :githome_web
     ]
   )
   set commands: [

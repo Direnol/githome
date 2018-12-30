@@ -228,7 +228,7 @@ defmodule GithomeWeb.MyProjectController do
         :error ->
           conn
           |> put_flash(:info, "Update fail.")
-          |> Githome.redirect_back(default: "/")
+          |> GithomeWeb.redirect_back(default: "/")
 
         {id, _} ->
           id

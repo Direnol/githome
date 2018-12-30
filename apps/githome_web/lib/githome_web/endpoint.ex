@@ -1,5 +1,5 @@
 defmodule GithomeWeb.Endpoint do
-  use Phoenix.Endpoint, otp_app: :githome
+  use Phoenix.Endpoint, otp_app: :githome_web
 
   socket "/socket", GithomeWeb.UserSocket,
     websocket: true,
@@ -11,7 +11,7 @@ defmodule GithomeWeb.Endpoint do
   # when deploying your static files in production.
   plug Plug.Static,
     at: "/",
-    from: :githome,
+    from: :githome_web,
     gzip: false,
     only: ~w(css fonts images js favicon.ico robots.txt)
 
@@ -39,7 +39,7 @@ defmodule GithomeWeb.Endpoint do
   # Set :encryption_salt if you would also like to encrypt it.
   plug Plug.Session,
     store: :cookie,
-    key: "_githome_key",
+    key: "_githome_web_key",
     signing_salt: "GUVI6pp1"
 
   plug GithomeWeb.Router
