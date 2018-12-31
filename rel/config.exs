@@ -24,7 +24,8 @@ release :githome do
     applications: [
       :runtime_tools,
       :githome,
-      :githome_web
+      :githome_web,
+      :githome_shell
     ]
   )
   set commands: [

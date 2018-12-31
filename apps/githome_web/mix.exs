@@ -52,7 +52,8 @@ defmodule GithomeWeb.Mixfile do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:navigation_history, "~> 0.0"},
-      {:githome, in_umbrella: true}
+      {:githome, in_umbrella: true},
+      {:githome_ssh, in_umbrella: true}
     ]
   end
 
