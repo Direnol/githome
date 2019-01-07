@@ -19,7 +19,7 @@ build:
   before_script:
     - docker build . -t githome-build-toolchain
   script:
-    - docker run --rm githome-build-toolchain make raw-build
+    - docker run --rm githome-build-toolchain /usr/bin/make raw-deb
   when: manual
   artifacts:
       paths:
