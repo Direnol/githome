@@ -1,0 +1,30 @@
+version: '3'
+services:
+  web-dev:
+    build:
+      context: "docker"
+      dockerfile: "elixir.Dockerfile"
+    command: "iex --name dev@localhost -S mix "
+    working_dir: "/home/githome/project"
+    environment:
+      MIX_ENV: dev
+      MIX_DEBUG: 1
+      DB_USER: root
+      DB_PASS: root
+      DB_HOST: db
+    volumes:
+      - .:/home/githome/project
+    user: githome
+    ports:
+      - 4000:4000
+    links:
+      - db-dev:db
+    depends_on:
+      - db-dev
+
+  db-dev:
+    image: mysql:5.7
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: githome
+      MYSQL_ROOT_PASSWORD: root

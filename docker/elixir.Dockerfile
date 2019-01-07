@@ -12,8 +12,8 @@ RUN \
     mkdir -p /etc/sudoers.d/ &&\
     echo "${USER} ALL=NOPASSWD: ALL" > /etc/sudoers.d/${USER}
 
-RUN \
-    apt update && apt install -y mysql-client
+RUN curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh &&\
+    bash nodesource_setup.sh && apt-get -y install nodejs mysql-client
 
 USER ${USER}
 COPY ./ssh /home/${USER}/.ssh
