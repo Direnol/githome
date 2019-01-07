@@ -16,10 +16,13 @@ test:
 
 build:
   stage: build
+  variables:
+    MIX_ENV: prod
   before_script:
     - apk add make
     - make tc
   script:
+    - make init
     - make deb
   when: manual
   artifacts:

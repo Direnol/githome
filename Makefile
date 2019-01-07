@@ -22,6 +22,9 @@ USE_TTY = -ti
 ifdef CI_RUNNER_ID
 	undefine USE_TTY
 endif
+ifdef MIX_ENV
+	PARAM+=-e MIX_ENV=${MIX_ENV}
+endif
 
 docker-req: req
 req:
