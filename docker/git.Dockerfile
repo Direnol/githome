@@ -5,16 +5,13 @@ ENV USER=githome \
 
 RUN \
     apt update && apt install -y sudo curl mysql-client iputils-ping inotify-tools gnupg &&\
-    curl -O https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb &&\
-    dpkg -i erlang-solutions_1.0_all.deb && apt update &&\
-    apt install elixir -y &&\
-    rm -rf /var/lib/apt/lists/* erlang-solutions_1.0_all.deb &&\
+    rm -rf /var/lib/apt/lists/* &&\
     adduser --disabled-password --gecos '' ${USER} && \
     mkdir -p /etc/sudoers.d/ &&\
     echo "${USER} ALL=NOPASSWD: ALL" > /etc/sudoers.d/${USER}
 
 USER ${USER}
-COPY ./ssh /home/githome/.ssh
+COPY ./ssh /home/${USER}/.ssh
 
 RUN sudo apt update && sudo apt install -y libjson-perl openssh-client perl git &&\
     sudo chown -R ${USER}:${USER} /home/${USER}/ &&\
@@ -22,5 +19,5 @@ RUN sudo apt update && sudo apt install -y libjson-perl openssh-client perl git 
     mkdir /home/${USER}/bin && /home/${USER}/gitolite/install -ln &&\
     echo "PATH=${PATH}:/home/${USER}/bin" >> /home/${USER}/.bashrc
 
-WORKDIR /home/githome
+WORKDIR /home/${USER}
 RUN cp .ssh/id_rsa.pub admin.pub && bin/gitolite setup -pk admin.pub
