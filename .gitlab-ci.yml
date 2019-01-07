@@ -14,8 +14,6 @@ test:
 step-deploy-prod:
   stage: deploy
   script:
-    - sudo apt-get install -y python-pip
+    - apt-get install -y python-pip
     - pip install docker-compose
-    - sudo docker-compose up --abort-on-container-exit
-  environment: production
-  when: manual
+    - docker-compose up --abort-on-container-exit
