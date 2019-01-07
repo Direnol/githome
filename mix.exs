@@ -7,7 +7,8 @@ defmodule Githome.Umbrella.MixProject do
       description: "Git web",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      deb_package: package()
+      deb_package: package(),
+      aliases: aliases()
     ]
   end
 
@@ -57,7 +58,11 @@ defmodule Githome.Umbrella.MixProject do
   end
 
   def lsb_release do
-    {release, _} = System.cmd("lsb_release", ["-c", "-s"])
+    {release, _} = try do
+      System.cmd("lsb_release", ["-c", "-s"])
+      rescue
+        _ -> {"test", :ok}
+    end
     String.replace(release, "\n", "")
   end
 
@@ -66,7 +71,13 @@ defmodule Githome.Umbrella.MixProject do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
-      {:distillery_packager, "~> 1.0"}
+      {:distillery_packager, "~> 1.0", only: [:prod, :dev]}
+    ]
+  end
+  def aliases do
+    [
+      "vsn.update": ["app.version -u"],
+      vsn: ["app.version"]
     ]
   end
 end

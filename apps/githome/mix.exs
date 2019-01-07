@@ -2,11 +2,13 @@ defmodule Githome.Mixfile do
   use Mix.Project
 
   @major_vsn "1"
+  @minor_vsn "0"
+  @patch_vsn "0"
 
   def project do
     [
       app: :githome,
-      version: "0.0.1",
+      version: "#{@major_vsn}.#{@minor_vsn}.#{@patch_vsn}",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -32,21 +34,6 @@ defmodule Githome.Mixfile do
       ],
       env: [env: Mix.env()]
     ]
-  end
-
-  def version do
-    case File.read("rel/vsn") do
-      {:ok, vsn} ->
-        vsn
-
-      _ ->
-        minor =
-          System.cmd("git", ~w[rev-list --count HEAD])
-          |> elem(0)
-          |> String.trim()
-
-        "#{@major_vsn}.#{minor}.0"
-    end
   end
 
   # Specifies which paths to compile per environment.

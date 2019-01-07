@@ -2,6 +2,7 @@
 
 PROJECT_NAME=githome
 MIX=$(shell which mix)
+DCOMP=$(shell which docker-compose)
 VSN=latest
 TOOLCHAIN="${PROJECT_NAME}-build-toolchain:${VSN}"
 TESTS="${PROJECT_NAME}-test-toolchain:${VSN}"
@@ -21,6 +22,9 @@ USE_TTY = -ti
 ifdef CI_RUNNER_ID
 	undefine USE_TTY
 endif
+ifdef MIX_ENV
+	PARAM+=-e MIX_ENV=${MIX_ENV}
+endif
 
 docker-req: req
 req:
@@ -37,7 +41,8 @@ cli: cli-toolchain
 cli-toolchain: docker-req
 	@${DOCKER} run \
 		${PARAM} \
-		${USE_TTY} ${TOOLCHAIN}
+		${USE_TTY} ${TOOLCHAIN} \
+		/bin/bash
 
 background: docker-req
 	@${DOCKER} run \
@@ -62,10 +67,7 @@ purge: req
 	@sudo dpkg --purge githome
 
 test: docker-req
-	@${DOCKER} run \
-		${PARAM} \
-		${TOOLCHAIN}
-		${MAKE} raw-test
+	${DCOMP} up --build --abort-on-container-exit
 
 
 init: docker-req
@@ -89,15 +91,10 @@ clean:
 
 ####################################
 
-raw-test: req
-	@echo "Tests..."
-	# @${MIX} test
-
 raw-init: req
 	@mix deps.get
-	@cd assets && npm install && node node_modules/webpack/bin/webpack.js --mode development
+	@cd apps/githome_web/assets && npm install && node node_modules/webpack/bin/webpack.js --mode development
 	@mix phx.digest
-	# @${MIX} ecto.create
 
 raw-deb: raw-update-vsn raw-gitolite raw-init
 	@MIX_ENV=prod ${MIX} release --upgrade
@@ -110,4 +107,4 @@ raw-compile: raw-init raw-gitolite
 
 raw-gitolite:
 	git submodule update --init
-	cd gitolite && ./install -to ${PWD}/rel/distillery_packager/debian/additional_files/usr/lib/githome/gitolite
+	cd gitolite && ./install -to $(shell pwd)/rel/distillery_packager/debian/additional_files/usr/lib/githome/gitolite

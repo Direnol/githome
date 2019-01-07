@@ -1,54 +1,31 @@
-image: ubuntu:bionic
-
+image: docker
 services:
-  - docker:latest
-
-#variables:
-#  DOCKER_HOST: tcp://localhost:2375
-
-
-before_script:
-  - apt update
-  - apt install git npm make curl gnupg build-essential lsb-release -y
-  - curl -O https://packages.erlang-solutions.com/erlang-solutions_1.0_all.deb
-  - dpkg -i erlang-solutions_1.0_all.deb && apt install -f
-  - apt update && apt upgrade -y
-  - apt install esl-erlang elixir -y
-  - mix local.hex --force
-  - mix local.rebar --force
-  - mix archive.install https://github.com/phoenixframework/archives/raw/master/phx_new.ez --force
+  - docker:dind
 
 stages:
-  - init
-  - compile
   - test
   - build
 
-prepare:
-  stage: init
-  script:
-    - make raw-init
-
-compile:
-  stage: compile
-  script:
-    - make raw-compile
-  cache: &build-cache
-    key: ${CI_COMMIT_SHA}-build
-    paths:
-      - "_build/"
-
 test:
   stage: test
+  before_script:
+    - apk add --no-cache py-pip
+    - pip install docker-compose
+    - apk add make
   script:
-    - make raw-test
-  cache: *build-cache
+    - make test
 
 build:
   stage: build
+  variables:
+    MIX_ENV: prod
+  before_script:
+    - apk add make
+    - make tc
   script:
-    - make raw-init
-    - make raw-deb
+    - make init
+    - make deb
+  when: manual
   artifacts:
       paths:
         - "rel/*.deb"
