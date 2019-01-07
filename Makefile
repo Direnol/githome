@@ -63,7 +63,7 @@ purge: req
 	@sudo dpkg --purge githome
 
 test: docker-req
-	${DCOMP} up --abort-on-container-exit
+	${DCOMP} up --build --abort-on-container-exit
 
 
 init: docker-req
