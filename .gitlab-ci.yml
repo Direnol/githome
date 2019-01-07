@@ -4,16 +4,10 @@ services:
 
 stages:
   - test
-  - deploy
 
 test:
   stage: test
   script:
-    - echo run tests in this section
-
-step-deploy-prod:
-  stage: deploy
-  script:
-    - apt-get install -y python-pip
+    - apk add --no-cache py-pip
     - pip install docker-compose
     - docker-compose up --abort-on-container-exit
