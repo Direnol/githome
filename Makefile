@@ -38,7 +38,8 @@ cli: cli-toolchain
 cli-toolchain: docker-req
 	@${DOCKER} run \
 		${PARAM} \
-		${USE_TTY} ${TOOLCHAIN}
+		${USE_TTY} ${TOOLCHAIN} \
+		/bin/bash
 
 background: docker-req
 	@${DOCKER} run \
@@ -89,7 +90,7 @@ clean:
 
 raw-init: req
 	@mix deps.get
-	@cd assets && npm install && node node_modules/webpack/bin/webpack.js --mode development
+	@cd apps/githome_web/assets && npm install && node node_modules/webpack/bin/webpack.js --mode development
 	@mix phx.digest
 
 raw-deb: raw-update-vsn raw-gitolite raw-init
@@ -103,4 +104,4 @@ raw-compile: raw-init raw-gitolite
 
 raw-gitolite:
 	git submodule update --init
-	cd gitolite && ./install -to ${PWD}/rel/distillery_packager/debian/additional_files/usr/lib/githome/gitolite
+	cd gitolite && ./install -to $(shell pwd)/rel/distillery_packager/debian/additional_files/usr/lib/githome/gitolite

@@ -4,10 +4,23 @@ services:
 
 stages:
   - test
+  - build
 
 test:
   stage: test
-  script:
+  before_script:
     - apk add --no-cache py-pip
     - pip install docker-compose
+  script:
     - docker-compose up --abort-on-container-exit
+
+build:
+  stage: build
+  before_script:
+    - docker build . -t githome-build-toolchain
+  script:
+    - docker run --rm githome-build-toolchain make raw-build
+  when: manual
+  artifacts:
+      paths:
+        - "rel/*.deb"

@@ -54,6 +54,7 @@ defmodule Mix.Tasks.App.Version do
 
     File.write!(vsn_file, new_vsn)
     IO.puts(new_vsn)
+    new_vsn
   end
 
   defp minor_git do
