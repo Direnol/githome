@@ -1,18 +1,28 @@
-# Official docker compose image.
-image:
-  name: docker/compose:1.22.0 # update tag to whatever version you want to use.
-  entrypoint: ["/bin/sh", "-c"]
-
+image: docker
 services:
   - docker:dind
 
-before_script:
-  - docker version
-  - docker-compose version
+stages:
+  - test
+  - deploy
 
-build:
-  stage: build
+test:
+  stage: test
+  only:
+    - develop
+    - production
   script:
-    - docker-compose down
-    - docker-compose build
-    - docker-compose up
+    - echo run tests in this section
+
+step-deploy-prod:
+  stage: deploy
+  only:
+    - production
+  script:
+    - sudo apt-get install -y python-pip
+    - pip install docker-compose
+    - sudo docker image prune -f
+    - sudo docker-compose build --no-cache
+    - sudo docker-compose up -d
+  environment: production
+  when: manual
