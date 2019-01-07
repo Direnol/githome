@@ -1,4 +1,8 @@
 FROM elixir:1.7.4
+LABEL author="Roman Mingazeev"
+LABEL email="direnol@yandex.ru"
+LABEL version="1.1.0"
+LABEL description="Toolchain for tests"
 
 ENV USER=githome \
     DEBIAN_FRONTEND=noninteractive

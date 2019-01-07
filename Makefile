@@ -91,7 +91,6 @@ raw-init: req
 	@mix deps.get
 	@cd assets && npm install && node node_modules/webpack/bin/webpack.js --mode development
 	@mix phx.digest
-	# @${MIX} ecto.create
 
 raw-deb: raw-update-vsn raw-gitolite raw-init
 	@MIX_ENV=prod ${MIX} release --upgrade

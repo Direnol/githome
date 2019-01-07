@@ -1,10 +1,14 @@
 defmodule GithomeWeb.Mixfile do
   use Mix.Project
 
+  @major_vsn "1"
+  @minor_vsn "0"
+  @patch_vsn "0"
+
   def project do
     [
       app: :githome_web,
-      version: "0.0.1",
+      version: "#{@major_vsn}.#{@minor_vsn}.#{@patch_vsn}",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
