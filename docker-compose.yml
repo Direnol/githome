@@ -26,3 +26,5 @@ services:
     environment:
       MYSQL_DATABASE: githome_test
       MYSQL_ROOT_PASSWORD: root
+    logging:
+      driver: none

@@ -21,4 +21,6 @@ RUN \
     mix local.rebar --force &&\
     mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force
 
+COPY ./run.sh run.sh
+ENTRYPOINT [ "/run.sh" ]
 WORKDIR /home/${USER}

@@ -2,6 +2,7 @@
 
 PROJECT_NAME=githome
 MIX=$(shell which mix)
+DCOMP=$(shell which docker-compose)
 VSN=latest
 TOOLCHAIN="${PROJECT_NAME}-build-toolchain:${VSN}"
 TESTS="${PROJECT_NAME}-test-toolchain:${VSN}"
@@ -62,10 +63,7 @@ purge: req
 	@sudo dpkg --purge githome
 
 test: docker-req
-	@${DOCKER} run \
-		${PARAM} \
-		${TOOLCHAIN}
-		${MAKE} raw-test
+	${DCOMP} up --abort-on-container-exit
 
 
 init: docker-req
@@ -88,10 +86,6 @@ clean:
 
 
 ####################################
-
-raw-test: req
-	@echo "Tests..."
-	# @${MIX} test
 
 raw-init: req
 	@mix deps.get
