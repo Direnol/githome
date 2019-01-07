@@ -22,6 +22,7 @@ build:
   before_script:
     - apk add make
     - make tc
+    - docker-compose down
   script:
     - make init
     - make deb
