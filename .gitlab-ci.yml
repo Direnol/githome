@@ -17,9 +17,10 @@ test:
 build:
   stage: build
   before_script:
-    - docker build . -t githome-build-toolchain
+    - apk add make
+    - make tc
   script:
-    - docker run --rm githome-build-toolchain /usr/bin/make raw-deb
+    - make deb
   when: manual
   artifacts:
       paths:
