@@ -1,78 +1,72 @@
 defmodule Githome.UsersTest do
-  use Githome.DataCase
+  use Githome.DataCase, async: true
 
   alias Githome.Users
 
-  describe "users" do
-    alias Githome.Users.User
+  @valid_attrs %{
+    email: "test@noemail.com",
+    password_confirm: "pass",
+    password: "pass",
+    username: "user_test"
+  }
+  @update_attrs %{
+    email: "foobar@noemail.net",
+    username: "foobaar"
+  }
+  @update_pass %{
+    password: "new_pass",
+    password_confirm: "new_pass"
+  }
 
-    @valid_attrs %{
-      email: "some email",
-      password_confirm: "some password_digest",
-      password: "some password_digest",
-      username: "some username"
-    }
-    @update_attrs %{
-      email: "some updated email",
-      password_confirm: "some updated password_digest",
-      password: "some updated updated password_digest",
-      username: "some updated username"
-    }
-    @invalid_attrs %{email: nil, password_confirm: nil, password: nil, username: nil}
+  @invalid_attrs %{email: nil, password_confirm: nil, password: nil, username: nil}
 
-    def user_fixture(attrs \\ %{}) do
-      {:ok, user} =
-        attrs
-        |> Enum.into(@valid_attrs)
-        |> Users.create_user()
-
-      user
+  describe "Empty database" do
+    setup do
+      Githome.Repo.delete_all(Users.User)
+      :ok
     end
 
-    test "list_users/0 returns all users" do
-      user = user_fixture()
-      assert Users.list_users() == [user]
+    test "List users must be empty" do
+      assert [] == Users.list_users()
     end
 
-    test "get_user!/1 returns the user with given id" do
-      user = user_fixture()
-      assert Users.get_user!(user.id) == user
+    test "Create user" do
+      {ret, _} = Users.create_user(@valid_attrs)
+      assert ret == :ok
     end
 
-    test "create_user/1 with valid data creates a user" do
-      assert {:ok, %User{} = user} = Users.create_user(@valid_attrs)
-      assert user.email == "some email"
-      assert user.password_digest == "some password_digest"
-      assert user.username == "some username"
+    test "Create invalid user" do
+      {ret, _} = Users.create_user(@invalid_attrs)
+      refute ret == :ok
+    end
+  end
+
+  describe "Database with users" do
+    setup do
+      {:ok, user} = Users.create_user(@valid_attrs)
+      {:ok, user: user}
     end
 
-    test "create_user/1 with invalid data returns error changeset" do
-      assert {:error, %Ecto.Changeset{}} = Users.create_user(@invalid_attrs)
+    test "Get user by: username = #{@valid_attrs.username}" do
+      user = Users.get_user_by(username: "#{@valid_attrs.username}")
+      assert user.username == @valid_attrs.username
     end
 
-    test "update_user/2 with valid data updates the user" do
-      user = user_fixture()
-      assert {:ok, %User{} = user} = Users.update_user(user, @update_attrs)
-      assert user.email == "some updated email"
-      assert user.password_digest == "some updated password_digest"
-      assert user.username == "some updated username"
+    test "Delete #{@valid_attrs.username}", context do
+      Users.delete_user(context.user)
+      assert_raise Ecto.NoResultsError, fn -> Users.get_user!(context.user.id) end
     end
 
-    test "update_user/2 with invalid data returns error changeset" do
-      user = user_fixture()
-      assert {:error, %Ecto.Changeset{}} = Users.update_user(user, @invalid_attrs)
-      assert user == Users.get_user!(user.id)
+    test "Update attributes", context do
+      {:ok, _} = Users.update_user_info(context.user, @update_attrs)
+      assert Users.get_user!(context.user.id).username == @update_attrs.username
+      assert Users.get_user!(context.user.id).email == @update_attrs.email
+      assert Users.get_user!(context.user.id).password == @valid_attrs.password
     end
 
-    test "delete_user/1 deletes the user" do
-      user = user_fixture()
-      assert {:ok, %User{}} = Users.delete_user(user)
-      assert_raise Ecto.NoResultsError, fn -> Users.get_user!(user.id) end
-    end
-
-    test "change_user/1 returns a user changeset" do
-      user = user_fixture()
-      assert %Ecto.Changeset{} = Users.change_user(user)
+    test "Update password", context do
+      {:ok, _} = Users.update_user_pass(context.user, @update_pass)
+      assert Users.get_user!(context.user.id).password == @update_pass.password
     end
   end
 end
