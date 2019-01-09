@@ -79,6 +79,8 @@ defmodule Githome.Umbrella.MixProject do
 
   def aliases do
     [
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run apps/githome/priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
       "vsn.update": ["app.version -u"],
       vsn: ["app.version"]
     ]
