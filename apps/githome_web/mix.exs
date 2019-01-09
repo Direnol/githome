@@ -59,7 +59,8 @@ defmodule GithomeWeb.Mixfile do
       {:navigation_history, "~> 0.0"},
       {:githome, in_umbrella: true},
       {:githome_ssh, in_umbrella: true},
-      {:ex_machina, "~> 2.0", only: :test}
+      {:ex_machina, "~> 2.0", only: :test},
+      {:phoenix_integration, "~> 0.6.0", only: :test}
       # {:wallaby, "~> 0.21", only: :test}
     ]
   end

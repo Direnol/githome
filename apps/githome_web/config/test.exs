@@ -6,4 +6,7 @@ config :githome, GithomeWeb.Endpoint,
   http: [port: 4002],
   server: false
 
+config :phoenix_integration,
+  endpoint: GithomeWeb.Endpoint
+
 config :comeonin, bcrypt_log_rounds: 0

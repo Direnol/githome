@@ -1,9 +1,6 @@
 defmodule GithomeWeb.LoginControllerTest do
   use GithomeWeb.ConnCase
 
-  alias Githome.Users
-  alias GithomeWeb.LoginController
-
   @reg_user %{
     "username" => "user",
     "password" => "pass",
