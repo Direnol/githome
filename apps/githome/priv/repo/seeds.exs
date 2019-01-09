@@ -28,7 +28,7 @@ default = [
     name: "admins",
     description: "Admin group"
   },
-  %Githome.Groups.Group{
+  %Githome.Members.Member{
     gid: 1,
     uid: 1,
     owner: true

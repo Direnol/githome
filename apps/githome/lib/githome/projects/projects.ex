@@ -9,7 +9,7 @@ defmodule Githome.Projects do
   alias Githome.Projects.Project
   alias Githome.GroupProject.Gp
   alias Githome.GroupInfo.Ginfo
-  alias Githome.Groups
+  alias Githome.Members
   alias Githome.GroupProject
 
   @doc """
@@ -36,7 +36,7 @@ defmodule Githome.Projects do
 
   def get_all_my_projects(id) do
     projects =
-      for g <- Groups.list_my_groups(id) do
+      for g <- Members.list_my_groups(id) do
         GroupProject.get_all_project_by_group(g.id)
       end
       |> List.flatten()

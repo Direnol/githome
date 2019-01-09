@@ -19,7 +19,7 @@
                     </thead>
                     <tbody>
                         <%= for group <- @groups do %>
-                        <% [gp] = Githome.Groups.get_owner_by_group(group.id)%>
+                        <% [gp] = Githome.Members.get_owner_by_group(group.id)%>
                         <% user = Githome.Users.get_user!(gp.uid)%>
                         <tr>
                             <td>

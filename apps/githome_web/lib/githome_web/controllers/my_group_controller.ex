@@ -3,7 +3,7 @@ defmodule GithomeWeb.MyGroupController do
 
   alias Githome.GroupInfo.Ginfo
   alias Githome.GroupInfo
-  alias Githome.Groups
+  alias Githome.Members
   alias Githome.Users
   alias Githome.Projects
   alias Githome.GroupProject
@@ -25,7 +25,7 @@ defmodule GithomeWeb.MyGroupController do
 
         case is_map(user) do
           true ->
-            groups = Groups.list_my_groups(user.id)
+            groups = Members.list_my_groups(user.id)
             user_update = Users.get_user!(user.id)
 
             conn
@@ -128,7 +128,7 @@ defmodule GithomeWeb.MyGroupController do
       params["ginfo"]
       |> Map.put("owner", owner_id)
 
-    case Groups.create_group(g_params) do
+    case Members.create_group(g_params) do
       {:ok, group} ->
         set_group(
           group,
@@ -151,7 +151,7 @@ defmodule GithomeWeb.MyGroupController do
 
   def show(conn, %{"id" => id}) do
     group = GroupInfo.get_ginfo!(id)
-    members = Groups.get_all_members_by_group(group.id)
+    members = Members.get_all_members_by_group(group.id)
     projects = GroupProject.get_all_project_by_group(group.id)
 
     conn
@@ -246,7 +246,7 @@ defmodule GithomeWeb.MyGroupController do
     group = GroupInfo.get_ginfo!(id)
     projects = GroupProject.get_all_project_by_group(id)
     Git.delete_group(group.name)
-    Groups.delete_group(id)
+    Members.delete_group(id)
 
     update_projects(projects)
 

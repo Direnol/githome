@@ -1,8 +1,8 @@
-defmodule Githome.Repo.Migrations.CreateGroups do
+defmodule Githome.Repo.Migrations.CreateMembers do
   use Ecto.Migration
 
   def change do
-    create table(:groups) do
+    create table(:members) do
       add(:gid, :integer)
       add(:uid, :integer)
       add(:owner, :boolean)

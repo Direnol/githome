@@ -1,12 +1,12 @@
-defmodule Githome.Groups do
+defmodule Githome.Members do
   @moduledoc """
-  The Groups context.
+  The Members context.
   """
 
   import Ecto.Query, warn: false
   alias Githome.Repo
 
-  alias Githome.Groups.Group
+  alias Githome.Members.Member
   alias Githome.GroupInfo.Ginfo
   alias Githome.GroupInfo
   alias Githome.GroupProject.Gp
@@ -14,22 +14,22 @@ defmodule Githome.Groups do
   alias Githome.Users.User
 
   @doc """
-  Returns the list of groups.
+  Returns the list of Members.
 
   ## Examples
 
-      iex> list_groups()
-      [%Group{}, ...]
+      iex> list_members()
+      [%Member{}, ...]
 
   """
-  def list_groups do
-    Repo.all(Group)
+  def list_members do
+    Repo.all(Member)
   end
 
   def list_my_groups(id) do
     query =
       from(i in Ginfo,
-        left_join: g in Group,
+        left_join: g in Member,
         on: i.id == g.gid,
         select: i,
         where: g.uid == ^id
@@ -41,30 +41,30 @@ defmodule Githome.Groups do
   end
 
   @doc """
-  Gets a single group.
+  Gets a single Member.
 
-  Raises `Ecto.NoResultsError` if the Group does not exist.
+  Raises `Ecto.NoResultsError` if the Member does not exist.
 
   ## Examples
 
-      iex> get_group!(123)
-      %Group{}
+      iex> get_member!(123)
+      %Member{}
 
-      iex> get_group!(456)
+      iex> get_member!(456)
       ** (Ecto.NoResultsError)
 
   """
-  def get_group!(id), do: Repo.get!(Group, id)
-  def get_group_by!(search), do: Repo.get_by!(Group, search)
-  def get_group_by(search), do: Repo.get_by(Group, search)
+  def get_member!(id), do: Repo.get!(Member, id)
+  def get_member_by!(search), do: Repo.get_by!(Member, search)
+  def get_member_by(search), do: Repo.get_by(Member, search)
 
   @doc """
-  Creates a group.
+  Creates a Member.
 
   ## Examples
 
       iex> create_group(%{field: value})
-      {:ok, %Group{}}
+      {:ok, %Member{}}
 
       iex> create_group(%{field: bad_value})
       {:error, %Ecto.Changeset{}}
@@ -80,7 +80,7 @@ defmodule Githome.Groups do
     case GroupInfo.create_ginfo(%{"name" => name, "description" => desc}) do
       {:ok, info} ->
         case insert_in_group(%{"gid" => info.id, "uid" => owner, "owner" => true}) do
-          {:ok, _group} ->
+          {:ok, _member} ->
             for member <- members, member != owner do
               insert_in_group(%{"gid" => info.id, "uid" => member, "owner" => false})
             end
@@ -101,64 +101,64 @@ defmodule Githome.Groups do
   end
 
   def insert_in_group(attrs \\ %{}) do
-    %Group{}
-    |> Group.changeset(attrs)
+    %Member{}
+    |> Member.changeset(attrs)
     |> Repo.insert()
   end
 
   @doc """
-  Updates a group.
+  Updates a Member.
 
   ## Examples
 
-      iex> update_group(group, %{field: new_value})
-      {:ok, %Group{}}
+      iex> update_member(Member, %{field: new_value})
+      {:ok, %Member{}}
 
-      iex> update_group(group, %{field: bad_value})
+      iex> update_member(Member, %{field: bad_value})
       {:error, %Ecto.Changeset{}}
 
   """
-  def update_group(%Group{} = group, attrs) do
-    group
-    |> Group.changeset(attrs)
+  def update_member(%Member{} = member, attrs) do
+    member
+    |> Member.changeset(attrs)
     |> Repo.update()
   end
 
   @doc """
-  Deletes a Group.
+  Deletes a Member.
 
   ## Examples
 
-      iex> delete_group(group)
-      {:ok, %Group{}}
+      iex> delete_group(Group_id)
+      {:ok, %Member{}}
 
-      iex> delete_group(group)
+      iex> delete_member(Member)
       {:error, %Ecto.Changeset{}}
 
   """
   def delete_group(id) do
     from(i in Ginfo, where: i.id == ^id) |> Repo.delete_all()
-    from(g in Group, where: g.gid == ^id) |> Repo.delete_all()
+    from(g in Member, where: g.gid == ^id) |> Repo.delete_all()
     from(pg in Gp, where: pg.gid == ^id) |> Repo.delete_all()
   end
 
   @doc """
-  Returns an `%Ecto.Changeset{}` for tracking group changes.
+  Returns an `%Ecto.Changeset{}` for tracking Member changes.
 
   ## Examples
 
-      iex> change_group(group)
-      %Ecto.Changeset{source: %Group{}}
+      iex> change_member(Member)
+      %Ecto.Changeset{source: %Member{}}
 
   """
-  def change_group(%Group{} = group) do
-    Group.changeset(group, %{})
+  def change_member(%Member{} = member) do
+    Member.changeset(member, %{})
   end
 
   def get_all_members_by_group(id) do
     query =
       from(u in User,
-        right_join: gr in Group,
+        right_join: gr in Member,
         on: u.id == gr.uid,
         select: u,
         where: gr.gid == ^id
@@ -171,7 +171,7 @@ defmodule Githome.Groups do
 
   def get_owner_by_group(id) do
     query =
-      from(g in Group,
+      from(g in Member,
         select: g,
         where: g.gid == ^id and g.owner == true
       )
