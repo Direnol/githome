@@ -13,8 +13,7 @@
 default = [
   %Githome.Users.User{
     username: "admin",
-    password: "admin",
-    password_confirm: "admin",
+    password_digest: Comeonin.Bcrypt.hashpwsalt("admin"),
     admin: true,
     first_name: "admin",
     last_name: "admin",
