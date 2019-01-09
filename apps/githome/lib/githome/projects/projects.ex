@@ -41,7 +41,7 @@ defmodule Githome.Projects do
       end
       |> List.flatten()
 
-    projects ++ list_my_projects(id)
+    (projects ++ list_my_projects(id)) |> Enum.uniq()
   end
 
   def get_groups_by_project(id) do
