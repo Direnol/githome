@@ -27,12 +27,7 @@ defmodule Githome.Mixfile do
   def application do
     [
       mod: {Githome.Application, []},
-      extra_applications: [
-        :logger,
-        :runtime_tools,
-        :comeonin,
-        :ex_machina
-      ],
+      extra_applications: [:logger, :runtime_tools, :comeonin],
       env: [env: Mix.env()]
     ]
   end

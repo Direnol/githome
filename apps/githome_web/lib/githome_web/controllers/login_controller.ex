@@ -41,9 +41,8 @@ defmodule GithomeWeb.LoginController do
   def register(conn, param) do
     login = param["username"]
     pass = param["password"]
-    confirm_pass = param["confirm-password"]
+    confirm_pass = param["confirm"]
     token = param["_csrf_token"]
-
     case Users.get_user_by(username: login) do
       nil ->
         case pass == confirm_pass do

@@ -2,52 +2,54 @@ defmodule GithomeWeb.LoginControllerTest do
   use GithomeWeb.ConnCase
 
   @reg_user %{
-    "username" => "user",
-    "password" => "pass",
-    "confirm-password" => "pass",
-    "_csrf_token" => "token"
+    username: "user",
+    password:  "pass",
+    confirm: "pass",
+    _csrf_token: "token"
   }
 
   @log_user %{
-    "username" => "user",
-    "password" => "pass",
-    "_csrf_token" => "token"
+    username: "user",
+    password: "pass",
+    _csrf_token: "token"
   }
 
   describe "Register" do
-
     test "New user" do
-      ret = post(build_conn(), "/register", @reg_user)
-      assert "/session/new?username=user&token=token" == redirected_to(ret, 302)
-    end
+      get(build_conn(), "/")
+      |> follow_form(@reg_user, identifier: "#register-form")
+      |> assert_response(path: "/my_projects")
+      end
 
     test "Incorrect confirm pass" do
-      ret = post(build_conn(), "/register", Map.replace!(@reg_user, "confirm-password", "bad_pass"))
-      assert "/" == redirected_to(ret, 302)
+      get(build_conn(), "/")
+      |> follow_form(Map.replace!(@reg_user, :password, "pas"), identifier: "#register-form")
+      |> assert_response(path: "/", assigns: %{info: "Check your password"})
     end
   end
 
   describe "Login" do
     setup do
       post(build_conn(), "/register", @reg_user)
-      # |> IO.inspect
       :ok
     end
 
     test "Auth" do
-      ret = post(build_conn(), "/login", @log_user)
-      # |> IO.inspect
-      assert "/session/new?username=user&token=token" == redirected_to(ret, 302)
+      get(build_conn(), "/")
+      |> follow_form(@log_user, identifier: "#login-form")
+      |> assert_response(path: "/my_projects")
     end
 
     test "Bad Auth: nouser" do
-      ret = post(build_conn(), "/login", Map.replace!(@log_user, "username", "nouser"))
-      assert "/" == redirected_to(ret, 302)
+      get(build_conn(), "/")
+      |> follow_form(Map.replace!(@log_user, :username, "nouser"), identifier: "#login-form")
+      |> assert_response(path: "/", assigns: %{info: "Incorrected password or username."})
     end
 
     test "Bad Auth: incorrect pass" do
-      ret = post(build_conn(), "/login", Map.replace!(@log_user, "password", "nopass"))
-      assert "/" == redirected_to(ret, 302)
+      get(build_conn(), "/")
+      |> follow_form(Map.replace!(@log_user, :password, "pas"), identifier: "#login-form")
+      |> assert_response(path: "/", assigns: %{info: "Incorrected password or username."})
     end
   end
 end

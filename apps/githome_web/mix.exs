@@ -33,8 +33,7 @@ defmodule GithomeWeb.Mixfile do
         :runtime_tools,
         :ssl,
         :xmerl,
-        :comeonin,
-        :ex_machina
+        :comeonin
       ]
     ]
   end
