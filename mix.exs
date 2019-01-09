@@ -58,11 +58,13 @@ defmodule Githome.Umbrella.MixProject do
   end
 
   def lsb_release do
-    {release, _} = try do
-      System.cmd("lsb_release", ["-c", "-s"])
+    {release, _} =
+      try do
+        System.cmd("lsb_release", ["-c", "-s"])
       rescue
         _ -> {"test", :ok}
-    end
+      end
+
     String.replace(release, "\n", "")
   end
 
@@ -74,6 +76,7 @@ defmodule Githome.Umbrella.MixProject do
       {:distillery_packager, "~> 1.0", only: [:prod, :dev]}
     ]
   end
+
   def aliases do
     [
       "vsn.update": ["app.version -u"],

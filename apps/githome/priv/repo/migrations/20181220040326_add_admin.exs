@@ -3,7 +3,7 @@ defmodule Githome.Repo.Migrations.AddAdmin do
 
   def change do
     alter table(:users) do
-      add :admin, :boolean, default: false, null: false
+      add(:admin, :boolean, default: false, null: false)
     end
   end
 end

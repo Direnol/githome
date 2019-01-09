@@ -3,9 +3,9 @@ defmodule Githome.Groups.Group do
   import Ecto.Changeset
 
   schema "groups" do
-    field :gid, :integer
-    field :uid, :integer
-    field :owner, :boolean
+    field(:gid, :integer)
+    field(:uid, :integer)
+    field(:owner, :boolean)
 
     timestamps()
   end

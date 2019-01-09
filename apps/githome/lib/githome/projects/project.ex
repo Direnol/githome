@@ -3,9 +3,9 @@ defmodule Githome.Projects.Project do
   import Ecto.Changeset
 
   schema "projects" do
-    field :project_name, :string
-    field :description, :string
-    field :owner, :integer
+    field(:project_name, :string)
+    field(:description, :string)
+    field(:owner, :integer)
 
     timestamps()
   end

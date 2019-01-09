@@ -3,8 +3,8 @@ defmodule Githome.Repo.Migrations.CreateGroupInfo do
 
   def change do
     create table(:group_info) do
-      add :name, :string
-      add :description, :string
+      add(:name, :string)
+      add(:description, :string)
 
       timestamps()
     end

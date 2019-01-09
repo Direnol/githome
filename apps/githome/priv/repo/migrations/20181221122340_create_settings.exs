@@ -3,8 +3,8 @@ defmodule Githome.Repo.Migrations.CreateSettings do
 
   def change do
     create table(:settings) do
-      add :key, :string
-      add :value, :string
+      add(:key, :string)
+      add(:value, :string)
 
       timestamps()
     end

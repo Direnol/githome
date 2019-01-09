@@ -28,11 +28,12 @@ defmodule Githome.Groups do
 
   def list_my_groups(id) do
     query =
-      from i in Ginfo,
+      from(i in Ginfo,
         left_join: g in Group,
         on: i.id == g.gid,
         select: i,
         where: g.uid == ^id
+      )
 
     query
     |> Ecto.Queryable.to_query()
@@ -100,8 +101,6 @@ defmodule Githome.Groups do
   end
 
   def insert_in_group(attrs \\ %{}) do
-    IO.inspect(attrs)
-
     %Group{}
     |> Group.changeset(attrs)
     |> Repo.insert()
@@ -158,11 +157,12 @@ defmodule Githome.Groups do
 
   def get_all_members_by_group(id) do
     query =
-      from u in User,
+      from(u in User,
         right_join: gr in Group,
         on: u.id == gr.uid,
         select: u,
         where: gr.gid == ^id
+      )
 
     query
     |> Ecto.Queryable.to_query()
@@ -171,9 +171,10 @@ defmodule Githome.Groups do
 
   def get_owner_by_group(id) do
     query =
-      from g in Group,
+      from(g in Group,
         select: g,
         where: g.gid == ^id and g.owner == true
+      )
 
     query
     |> Ecto.Queryable.to_query()

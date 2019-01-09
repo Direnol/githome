@@ -4,19 +4,19 @@ defmodule Githome.Users.User do
   import Comeonin.Bcrypt, only: [hashpwsalt: 1]
 
   schema "users" do
-    field :username, :string
-    field :password_digest, :string
-    field :first_name, :string
-    field :last_name, :string
-    field :admin, :boolean
-    field :avatar_uri, :string
-    field :email, :string
-    field :ssh_key, :string
+    field(:username, :string)
+    field(:password_digest, :string)
+    field(:first_name, :string)
+    field(:last_name, :string)
+    field(:admin, :boolean)
+    field(:avatar_uri, :string)
+    field(:email, :string)
+    field(:ssh_key, :string)
     timestamps()
 
     # Virtual Fields
-    field :password, :string, virtual: true
-    field :password_confirm, :string, virtual: true
+    field(:password, :string, virtual: true)
+    field(:password_confirm, :string, virtual: true)
   end
 
   @cast_params [

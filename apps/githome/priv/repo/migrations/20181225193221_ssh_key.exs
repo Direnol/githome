@@ -3,7 +3,7 @@ defmodule Githome.Repo.Migrations.SshKey do
 
   def change do
     alter table(:users) do
-      modify :ssh_key, :text
+      modify(:ssh_key, :text)
     end
   end
 end

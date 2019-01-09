@@ -31,19 +31,22 @@ defmodule Mix.Tasks.App.Version do
       )
 
     vsn_file = kw[:file] || "rel/vsn"
-    old_vsn =
-    if File.exists?(vsn_file) do
-      [major, minor, patch] =
-        File.read!(vsn_file)
-        |> String.split(".")
 
-      [
-        major: Integer.parse(major) |> elem(0),
-        minor: Integer.parse(minor) |> elem(0),
-        patch: Integer.parse(patch) |> elem(0)
-      ]
-    end || []
-    kw = Keyword.merge old_vsn, kw
+    old_vsn =
+      if File.exists?(vsn_file) do
+        [major, minor, patch] =
+          File.read!(vsn_file)
+          |> String.split(".")
+
+        [
+          major: Integer.parse(major) |> elem(0),
+          minor: Integer.parse(minor) |> elem(0),
+          patch: Integer.parse(patch) |> elem(0)
+        ]
+      end || []
+
+    kw = Keyword.merge(old_vsn, kw)
+
     new_vsn =
       version(
         Keyword.get(kw, :major, 1),

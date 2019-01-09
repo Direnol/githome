@@ -3,8 +3,8 @@ defmodule Githome.GroupInfo.Ginfo do
   import Ecto.Changeset
 
   schema "group_info" do
-    field :description, :string
-    field :name, :string
+    field(:description, :string)
+    field(:name, :string)
 
     timestamps()
   end

@@ -3,8 +3,8 @@ defmodule Githome.GroupProject.Gp do
   import Ecto.Changeset
 
   schema "group_project" do
-    field :gid, :integer
-    field :pid, :integer
+    field(:gid, :integer)
+    field(:pid, :integer)
 
     timestamps()
   end

@@ -3,11 +3,11 @@ defmodule Githome.Repo.Migrations.NewFileds do
 
   def change do
     alter table(:users) do
-      add :first_name, :string
-      add :last_name, :string
-      add :avatar_uri, :string
-      add :email, :string, default: "nomail"
-      add :ssh_key, :string
+      add(:first_name, :string)
+      add(:last_name, :string)
+      add(:avatar_uri, :string)
+      add(:email, :string, default: "nomail")
+      add(:ssh_key, :string)
     end
   end
 end

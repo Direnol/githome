@@ -26,7 +26,7 @@ defmodule Githome.Projects do
   end
 
   def list_my_projects(id) do
-    query = from p in Project, select: p, where: p.owner == ^id
+    query = from(p in Project, select: p, where: p.owner == ^id)
 
     # May be User or an Ecto.Query itself
     query
@@ -46,11 +46,12 @@ defmodule Githome.Projects do
 
   def get_groups_by_project(id) do
     query =
-      from i in Ginfo,
+      from(i in Ginfo,
         right_join: gp in Gp,
         on: i.id == gp.gid,
         select: i,
         where: gp.pid == ^id
+      )
 
     query
     |> Ecto.Queryable.to_query()
