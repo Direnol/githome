@@ -13,13 +13,13 @@ defmodule GithomeWeb.SessionControllerTest do
 
   describe "New session" do
     test "User not exist" do
-      ret = get(build_conn(), "/session/new", Map.replace!(@param, :username, "bad user"))
-      assert redirected_to(ret, 302) == "/"
+      get(build_conn(), "/session/new", Map.replace!(@param, :username, "bad user"))
+      |> assert_response(redirect: "/")
     end
 
     test "User exist" do
-      ret = get(build_conn(), "/session/new", @param)
-      assert "/my_projects" == redirected_to(ret, 302)
+      get(build_conn(), "/session/new", @param)
+      |> assert_response(redirect: "/my_projects")
     end
   end
 
@@ -30,14 +30,11 @@ defmodule GithomeWeb.SessionControllerTest do
     end
 
     test "logout exist session", %{username: username} do
-      has_conn =
-        get(build_conn(), "/session/new", Map.replace!(@param, :username, username))
-        |> follow_redirect
-        |> assert_response(path: "/my_projects")
-
-      get(has_conn, "/session/logout")
+      get(build_conn(), "/session/new", Map.replace!(@param, :username, username))
       |> follow_redirect
-      |> assert_response(path: "/")
+      |> assert_response(path: "/my_projects")
+      |> get("/session/logout")
+      |> assert_response(to: "/")
     end
   end
 end
