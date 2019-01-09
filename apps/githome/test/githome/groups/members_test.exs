@@ -98,9 +98,12 @@ defmodule Githome.MembersTest do
         )
 
       GroupProject.get_all_project_by_group(id)
-      |> (fn x -> assert( length(x) == length(@projects)); x end).()
-      |> Enum.map(&(&1.owner))
-      |> Enum.each(&(assert &1 == ctx.owner))
+      |> (fn x ->
+            assert(length(x) == length(@projects))
+            x
+          end).()
+      |> Enum.map(& &1.owner)
+      |> Enum.each(&assert &1 == ctx.owner)
     end
 
     test "Create group with projects and members", ctx do
@@ -112,9 +115,12 @@ defmodule Githome.MembersTest do
         )
 
       GroupProject.get_all_project_by_group(id)
-      |> (fn x -> assert( length(x) == length(@projects)); x end).()
-      |> Enum.map(&(&1.owner))
-      |> Enum.each(&(assert &1 == ctx.owner))
+      |> (fn x ->
+            assert(length(x) == length(@projects))
+            x
+          end).()
+      |> Enum.map(& &1.owner)
+      |> Enum.each(&assert &1 == ctx.owner)
 
       all_members = ctx.members ++ [ctx.owner]
 

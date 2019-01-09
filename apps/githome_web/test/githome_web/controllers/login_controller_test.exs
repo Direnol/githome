@@ -4,53 +4,53 @@ defmodule GithomeWeb.LoginControllerTest do
   alias Githome.Users
   alias GithomeWeb.LoginController
 
-  @invalid_attrs %{login: nil, password: nil}
+  @reg_user %{
+    "username" => "user",
+    "password" => "pass",
+    "confirm-password" => "pass",
+    "_csrf_token" => "token"
+  }
 
-  describe "login" do
-    test "Get login page", %{conn: conn} do
-      get(conn, Routes.login_path(conn, :index))
-      |> Map.get(:status)
-      |> (fn r -> assert(200 == r) end).()
+  @log_user %{
+    "username" => "user",
+    "password" => "pass",
+    "_csrf_token" => "token"
+  }
+
+  describe "Register" do
+
+    test "New user" do
+      ret = post(build_conn(), "/register", @reg_user)
+      assert "/session/new?username=user&token=token" == redirected_to(ret, 302)
+    end
+
+    test "Incorrect confirm pass" do
+      ret = post(build_conn(), "/register", Map.replace!(@reg_user, "confirm-password", "bad_pass"))
+      assert "/" == redirected_to(ret, 302)
     end
   end
 
-  describe "user" do
-    test "create user", %{conn: conn} do
-      {ret, _map} =
-        Users.create_user(%{
-          :username => "ololo",
-          :password => "ololo",
-          :password_confirm => "ololo"
-        })
-
-      assert ret == :ok
+  describe "Login" do
+    setup do
+      post(build_conn(), "/register", @reg_user)
+      # |> IO.inspect
+      :ok
     end
 
-    test "get user.id by name", %{conn: conn} do
-      id = Users.get_user_by(username: "ololo")
-      assert id != nil
+    test "Auth" do
+      ret = post(build_conn(), "/login", @log_user)
+      # |> IO.inspect
+      assert "/session/new?username=user&token=token" == redirected_to(ret, 302)
     end
 
-    test "delete user by id", %{conn: conn} do
-      Users.get_user_by(username: "ololo")
-      |> IO.inspect()
-
-      # {ret, _map} = Users.delete_user(user.id)
-      assert :ok == :ok
+    test "Bad Auth: nouser" do
+      ret = post(build_conn(), "/login", Map.replace!(@log_user, "username", "nouser"))
+      assert "/" == redirected_to(ret, 302)
     end
 
-    test "register user", %{conn: conn} do
-      ret =
-        conn
-        |> clear_flash
-        |> LoginController.register(%{
-          "username" => "user",
-          "password" => "pass",
-          "confirm-password" => "pass",
-          "_csrf_token" => "token"
-        })
-
-      assert "/session/new?username=user&token=token" =~ redirected_to(ret, 302)
+    test "Bad Auth: incorrect pass" do
+      ret = post(build_conn(), "/login", Map.replace!(@log_user, "password", "nopass"))
+      assert "/" == redirected_to(ret, 302)
     end
   end
 end
