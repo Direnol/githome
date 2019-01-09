@@ -8,16 +8,16 @@ defmodule GithomeWeb.SessionController do
     token = params["token"]
     username = params["username"]
 
-    case String.valid?(token) do
-      true ->
-        conn
-        |> put_session(:token, token)
-        |> put_session(:user, Users.get_user_by(username: username))
-        |> redirect(to: Routes.my_project_path(conn, :index))
-
-      _ ->
+    case Users.get_user_by(username: username) do
+      nil ->
         conn
         |> redirect(to: Routes.login_path(conn, :index))
+
+      user ->
+        conn
+        |> put_session(:token, token)
+        |> put_session(:user, user)
+        |> redirect(to: Routes.my_project_path(conn, :index))
     end
   end
 
