@@ -33,7 +33,8 @@ defmodule GithomeWeb.Mixfile do
         :runtime_tools,
         :ssl,
         :xmerl,
-        :comeonin
+        :comeonin,
+        :ex_machina
       ]
     ]
   end
@@ -57,7 +58,8 @@ defmodule GithomeWeb.Mixfile do
       {:plug_cowboy, "~> 2.0"},
       {:navigation_history, "~> 0.0"},
       {:githome, in_umbrella: true},
-      {:githome_ssh, in_umbrella: true}
+      {:githome_ssh, in_umbrella: true},
+      {:ex_machina, "~> 2.0", only: :test}
       # {:wallaby, "~> 0.21", only: :test}
     ]
   end

@@ -30,7 +30,8 @@ defmodule Githome.Mixfile do
       extra_applications: [
         :logger,
         :runtime_tools,
-        :comeonin
+        :comeonin,
+        :ex_machina
       ],
       env: [env: Mix.env()]
     ]
@@ -47,7 +48,8 @@ defmodule Githome.Mixfile do
     [
       {:ecto_sql, "~> 3.0"},
       {:mariaex, ">= 0.0.0"},
-      {:comeonin, "~> 2.3"}
+      {:comeonin, "~> 2.3"},
+      {:ex_machina, "~> 2.0", only: :test}
     ]
   end
 
