@@ -61,12 +61,12 @@ defmodule Githome.UsersTest do
       {:ok, _} = Users.update_user_info(context.user, @update_attrs)
       assert Users.get_user!(context.user.id).username == @update_attrs.username
       assert Users.get_user!(context.user.id).email == @update_attrs.email
-      assert Users.get_user!(context.user.id).password == @valid_attrs.password
     end
 
     test "Update password", context do
+      import Comeonin.Bcrypt, only: [checkpw: 2]
       {:ok, _} = Users.update_user_pass(context.user, @update_pass)
-      assert Users.get_user!(context.user.id).password == @update_pass.password
+      assert checkpw(@update_pass.password, Users.get_user!(context.user.id).password_digest)
     end
   end
 end
