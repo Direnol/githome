@@ -43,6 +43,7 @@ defmodule GithomeWeb.LoginController do
     pass = param["password"]
     confirm_pass = param["confirm"]
     token = param["_csrf_token"]
+
     case Users.get_user_by(username: login) do
       nil ->
         case pass == confirm_pass do
