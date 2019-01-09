@@ -39,7 +39,7 @@ defmodule GithomeWeb.Mixfile do
   end
 
   # Specifies which paths to compile per environment.
-  defp elixirc_paths(:test), do: ["lib", "test/support", "../githome/test/support/factory.ex"]
+  defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_), do: ["lib"]
 
   # Specifies your project dependencies.
@@ -58,7 +58,7 @@ defmodule GithomeWeb.Mixfile do
       {:navigation_history, "~> 0.0"},
       {:githome, in_umbrella: true},
       {:githome_ssh, in_umbrella: true},
-      {:ex_machina, "~> 2.0", only: :test},
+      {:ex_machina, github: "thoughtbot/ex_machina"},
       {:phoenix_integration, "~> 0.6.0", only: :test}
       # {:wallaby, "~> 0.21", only: :test}
     ]

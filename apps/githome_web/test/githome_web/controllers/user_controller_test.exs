@@ -2,6 +2,8 @@ defmodule GithomeWeb.UserControllerTest do
   use GithomeWeb.ConnCase
 
   alias Githome.Users
+  import GithomeWeb.Factory
+  use PhoenixIntegration
 
   describe "index" do
     setup do

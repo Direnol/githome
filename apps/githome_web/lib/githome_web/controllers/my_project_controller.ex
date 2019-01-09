@@ -23,7 +23,6 @@ defmodule GithomeWeb.MyProjectController do
           true ->
             user_update = Users.get_user!(user.id)
             projects = Projects.get_all_my_projects(user.id)
-
             conn
             |> put_session(:user, user_update)
             |> put_session(:nav_active, :projects_view_my)
@@ -66,7 +65,6 @@ defmodule GithomeWeb.MyProjectController do
                 Git.git_branches(project.project_name)
               rescue
                 e ->
-                  IO.inspect(e)
                   []
               end
 
@@ -81,10 +79,8 @@ defmodule GithomeWeb.MyProjectController do
                 )
               rescue
                 e ->
-                  IO.inspect(e)
                   []
               end
-              |> IO.inspect()
 
             back =
               if path != "" do
@@ -152,7 +148,6 @@ defmodule GithomeWeb.MyProjectController do
     project_params =
       params["project"]
       |> Map.put("owner", user.id)
-      |> IO.inspect()
 
     case Projects.create_project(project_params) do
       {:ok, project} ->
@@ -163,7 +158,6 @@ defmodule GithomeWeb.MyProjectController do
         |> redirect(to: Routes.my_project_path(conn, :show, %{"id" => project.id}))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        IO.inspect(changeset)
 
         conn
         |> render("new.html",
@@ -220,7 +214,6 @@ defmodule GithomeWeb.MyProjectController do
   end
 
   def update(conn, params) do
-    IO.inspect(params)
     id = params["id"]
 
     id =

@@ -3,6 +3,8 @@ defmodule GithomeWeb.SessionControllerTest do
 
   alias Githome.Users
   alias String
+  import GithomeWeb.Factory
+  use PhoenixIntegration
 
   @param %{token: "ITc3PC05Ek9nDBMCIGcpKhQBFz9yEAAAnQqeDvU8LKkar3ekV5tM+A==", username: "user"}
 

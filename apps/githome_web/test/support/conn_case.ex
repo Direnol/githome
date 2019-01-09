@@ -19,9 +19,7 @@ defmodule GithomeWeb.ConnCase do
     quote do
       # Import conveniences for testing with connections
       use Phoenix.ConnTest
-      use PhoenixIntegration
       alias GithomeWeb.Router.Helpers, as: Routes
-      import Githome.Factory
 
       # The default endpoint for testing
       @endpoint GithomeWeb.Endpoint

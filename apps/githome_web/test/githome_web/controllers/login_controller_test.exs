@@ -1,6 +1,8 @@
 defmodule GithomeWeb.LoginControllerTest do
   use GithomeWeb.ConnCase
 
+  use PhoenixIntegration
+
   @reg_user %{
     username: "user",
     password:  "pass",
