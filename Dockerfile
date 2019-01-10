@@ -8,8 +8,8 @@ ENV USER=githome \
     DEBIAN_FRONTEND=noninteractive
 
 RUN \
-    adduser --disabled-password --gecos '' ${USER} && \
-    mkdir -p /etc/sudoers.d/ &&\
+    adduser --disabled-password --gecos '' ${USER} --home "/home/${USER}" && \
+    mkdir -p /etc/sudoers.d/ && sed -i -e 's/#alias/alias/g' "/home/${USER}/.bashrc" &&\
     echo "${USER} ALL=NOPASSWD: ALL" > /etc/sudoers.d/${USER}
 
 RUN \
