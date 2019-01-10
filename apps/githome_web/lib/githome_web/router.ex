@@ -121,5 +121,6 @@ defmodule GithomeWeb.Router do
   #   Other scopes may use custom stacks.
   scope "/api", GithomeWeb do
     pipe_through :api
+    resources "/", ApiController
   end
 end
