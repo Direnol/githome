@@ -64,7 +64,7 @@ defmodule GithomeWeb.MyProjectController do
               try do
                 Git.git_branches(project.project_name)
               rescue
-                e ->
+                _ ->
                   []
               end
 
@@ -78,7 +78,7 @@ defmodule GithomeWeb.MyProjectController do
                   path
                 )
               rescue
-                e ->
+                _ ->
                   []
               end
 

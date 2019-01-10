@@ -9,7 +9,7 @@ use Mix.Config
 config :githome_web, GithomeWeb.Endpoint,
   http: [port: 4000],
   debug_errors: true,
-  code_reloader: false,
+  code_reloader: true,
   check_origin: false,
   watchers: [
     node: [
@@ -51,6 +51,7 @@ config :githome_web, GithomeWeb.Endpoint,
     patterns: [
       ~r{priv/static/.*(js|css|png|jpeg|jpg|gif|svg)$},
       ~r{priv/gettext/.*(po)$},
+      ~r{lib/githome_web/controllers/.*(ex)$},
       ~r{lib/githome_web/views/.*(ex)$},
       ~r{lib/githome_web/templates/.*(eex)$}
     ]
