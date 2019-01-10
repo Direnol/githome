@@ -3,10 +3,7 @@ defmodule GithomeWeb.GitController do
   import GithomeWeb.GitView
 
   defp home_dir() do
-    case Application.get_env(:githome, :env) do
-      :prod -> System.user_home()
-      _ -> Path.join(System.user_home(), "workspace")
-    end
+    System.user_home()
   end
 
   defp cmd(command, args, opts \\ []) do
@@ -135,9 +132,7 @@ defmodule GithomeWeb.GitController do
   def delete_group(name) do
     {:ok, _} =
       group_path(name)
-      |> IO.inspect()
       |> File.rm_rf()
-      |> IO.inspect()
 
     git_push(".", "Delete group:" <> name)
   end

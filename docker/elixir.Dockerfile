@@ -13,15 +13,40 @@ RUN \
     echo "${USER} ALL=NOPASSWD: ALL" > /etc/sudoers.d/${USER}
 
 RUN curl -sL https://deb.nodesource.com/setup_6.x -o nodesource_setup.sh &&\
-    bash nodesource_setup.sh && apt-get -y install nodejs mysql-client
+    bash nodesource_setup.sh && apt-get -y install nodejs mysql-client sudo \
+    inotify-tools
 
 USER ${USER}
-COPY ./ssh /home/${USER}/.ssh
+
+RUN sudo apt update && sudo apt install -y libjson-perl openssh-client perl git\
+    openssh-server &&\
+    sudo chown -R ${USER}:${USER} /home/${USER}/ &&\
+    git clone https://github.com/sitaramc/gitolite /home/${USER}/gitolite &&\
+    mkdir /home/${USER}/bin && /home/${USER}/gitolite/install -ln &&\
+    echo "PATH=${PATH}:/home/${USER}/bin" >> /home/${USER}/.bashrc &&\
+    ssh-keygen -t rsa -N '' -f /home/${USER}/.ssh/id_rsa
+
+WORKDIR /home/${USER}
+RUN cp .ssh/id_rsa.pub admin.pub && bin/gitolite setup -pk admin.pub &&\
+    sudo service ssh start  && ssh -o "StrictHostKeyChecking no" localhost &&\
+    git clone localhost:gitolite-admin.git admin &&\
+    git config --global user.email "admin@noemail.com" &&\
+    git config --global user.name "admin" &&\
+    echo 'include "groups/*.conf"' > "/home/${USER}/admin/conf/gitolite.conf" &&\
+    echo 'include "repos/*.conf"' >> "/home/${USER}/admin/conf/gitolite.conf" &&\
+    mkdir "/home/${USER}/admin/conf/repos" "/home/${USER}/admin/conf/groups" &&\
+    echo "repo gitolite-admin" > "/home/${USER}/admin/conf/repos/gitolite-admin.conf" &&\
+    echo "  RW+     =   admin" >> "/home/${USER}/admin/conf/repos/gitolite-admin.conf" &&\
+    cd "/home/${USER}/admin" &&\
+    git add . &&\
+    git commit -m "Install" &&\
+    git push &&\
+    rm -rf "/home/${USER}/repositories/testing.git"
+
 RUN \
     mix local.hex --force &&\
     mix local.rebar --force &&\
     mix archive.install https://github.com/phoenixframework/archives/raw/master/phoenix_new.ez --force
 
-COPY ./run.sh run.sh
+COPY ./run.sh /run.sh
 ENTRYPOINT [ "/run.sh" ]
-WORKDIR /home/${USER}

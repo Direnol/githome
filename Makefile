@@ -25,9 +25,7 @@ endif
 ifdef MIX_ENV
 	PARAM+=-e MIX_ENV=${MIX_ENV}
 endif
-ifdef DAEMON
-	DAEMON=-d
-endif
+
 DEV_YML=-f dev.yml
 
 docker-req: req
@@ -35,13 +33,22 @@ req:
 	@echo ""
 
 dev: docker-req
-	${DCOMP} ${DEV_YML} up --build ${DAEMON}
+	${DCOMP} ${DEV_YML} up -d
+
+dev-build: docker-req
+	${DCOMP} ${DEV_YML} build
+
+dev-run: docker-req
+	${DCOMP} ${DEV_YML} up --build
 
 dev-down: docker-req
 	${DCOMP} ${DEV_YML} down
 
-dev-attach: docker-req
+dev-cli: docker-req
 	${DCOMP} ${DEV_YML} exec web-dev iex --sname attached --remsh dev@localhost
+
+dev-bash: docker-req
+	${DCOMP} ${DEV_YML} exec web-dev /bin/bash
 
 dev-logs: docker-req
 	${DCOMP} ${DEV_YML} logs ${APP}

@@ -81,8 +81,8 @@
                                         placeholder="Password">
                                 </div>
                                 <div class="form-group">
-                                    <label for="confirm-password">Confirm password</label>
-                                    <input type="password" name="confirm-password" id="confirm-password" tabindex="2"
+                                    <label for="confirm">Confirm password</label>
+                                    <input type="password" name="confirm" id="confirm" tabindex="2"
                                         class="form-control" placeholder="Confirm Password">
                                 </div>
                                 <div class="form-group">

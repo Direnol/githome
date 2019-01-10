@@ -5,6 +5,7 @@ DB_PASS=${DB_PASS:-githome}
 DB_HOST=${DB_HOST:-db}
 
 mix deps.get
+sudo service ssh start
 until mysql -u"${DB_USER}" -p"${DB_PASS}" -h "${DB_HOST}" -e '\q' 2>/dev/null ; do
   >&2 echo "Mysql is unavailable - sleeping"
   sleep 1

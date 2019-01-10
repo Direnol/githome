@@ -82,6 +82,7 @@ defmodule Githome.Umbrella.MixProject do
       "ecto.setup": ["ecto.create", "ecto.migrate", "run apps/githome/priv/repo/seeds.exs"],
       "ecto.reset": ["ecto.drop", "ecto.setup"],
       "vsn.update": ["app.version -u"],
+      dev: ["ecto.reset", "run --no-halt"],
       vsn: ["app.version"]
     ]
   end

@@ -171,6 +171,7 @@ function configure_git() {
         sudo -Hu githome git config --global user.email "noemail@noemail.com"
         sudo -Hu githome git config --global user.name "Git admin"
         rm -rf "${GITHOME_ADMIN}/admin"
+        ssh -o "StrictHostKeyChecking no" localhost
         sudo -Hu githome git clone localhost:gitolite-admin.git "${GH_REPO}"
         echo 'include "groups/*.conf"' > "${GH_REPO}/conf/gitolite.conf"
         echo 'include "repos/*.conf"' >> "${GH_REPO}/conf/gitolite.conf"

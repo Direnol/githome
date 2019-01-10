@@ -72,7 +72,7 @@ defmodule GithomeWeb.LoginController do
   defp create(conn, user_params) do
     case Users.create_user(user_params) do
       {:ok, user} ->
-        Git.create_user(user.username, "")
+        Git.create_user(user.username, Application.get_env(:githome_web, :tmp_ssh))
 
         conn
         |> put_flash(:info, "User created successfully")

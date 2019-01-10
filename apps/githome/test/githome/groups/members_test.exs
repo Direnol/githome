@@ -48,8 +48,8 @@ defmodule Githome.MembersTest do
     "owner" => 0
   }
 
-  @update_attrs %{gid: 43, owner: false, uid: 43}
-  @invalid_attrs %{gid: nil, owner: nil, uid: nil}
+  # @update_attrs %{gid: 43, owner: false, uid: 43}
+  # @invalid_attrs %{gid: nil, owner: nil, uid: nil}
   describe "Empty members" do
     setup do
       {:ok, %{id: id}} = Users.create_user(@user)

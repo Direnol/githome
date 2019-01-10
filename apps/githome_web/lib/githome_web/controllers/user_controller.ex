@@ -171,7 +171,6 @@ defmodule GithomeWeb.UserController do
       true ->
         user = get_session(conn, :user)
         extension = Path.extname(Map.get(upload, :filename))
-        IO.inspect(Application.get_env(:githome, :env))
 
         avatar_path =
           case Application.get_env(:githome, :env) do
@@ -221,7 +220,6 @@ defmodule GithomeWeb.UserController do
         case Users.update_user_info(user, changeset) do
           {:ok, user} ->
             Git.update_user(user.username, user.ssh_key)
-            |> IO.inspect()
 
             conn
             |> put_flash(:info, "User updated successfully")
