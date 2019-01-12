@@ -23,27 +23,29 @@ defmodule GithomeWeb.ParameterControllerTest do
       [admin: admin, user: user]
     end
     test "lists all settings as not admin", %{user: user} do
-      get(build_conn(), "/")
-      |> follow_form(%{
-                         username: user.username,
-                         password: user.password,
-                         _csrf_token: "token"
-                      }, identifier: "#login-form")
-      |> assert_response(path: "/my_projects")
-      |> get(Routes.parameter_path(conn, :index))
-      |> assert_response(to: Routes.login_path(conn, :index))
+      conn = get(build_conn(), "/")
+      conn
+        |> follow_form(%{
+                           username: user.username,
+                           password: user.password,
+                           _csrf_token: "token"
+                        }, identifier: "#login-form")
+        |> assert_response(path: "/my_projects")
+        |> get(Routes.parameter_path(conn, :index))
+        |> assert_response(to: Routes.login_path(conn, :index))
     end
 
     test "lists all settings as admin", %{admin: admin} do
-      get(build_conn(), "/")
-      |> follow_form(%{
-        username: admin.username,
-        password: admin.password,
-        _csrf_token: "token"
-      }, identifier: "#login-form")
-      |> assert_response(path: "/my_projects")
-      |> get(Routes.parameter_path(conn, :index))
-      |> assert_response(path: "/settings")
+      conn = get(build_conn(), "/")
+      conn
+        |> follow_form(%{
+          username: admin.username,
+          password: admin.password,
+          _csrf_token: "token"
+        }, identifier: "#login-form")
+        |> assert_response(path: "/my_projects")
+        |> get(Routes.parameter_path(conn, :index))
+        |> assert_response(path: "/settings")
     end
   end
 end
