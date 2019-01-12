@@ -19,7 +19,6 @@ defmodule GithomeWeb.ApiView do
         username: u.username
       }}
     end
-    |> IO.inspect
   end
 
   def render @template, %{projects: projects} do
@@ -28,6 +27,5 @@ defmodule GithomeWeb.ApiView do
         project_name: p.project_name
       }}
     end
-    |> IO.inspect
   end
 end

@@ -26,9 +26,9 @@ defmodule GithomeWeb.UserControllerTest do
       )
       |> assert_response(path: "/my_projects")
       |> get(Routes.user_path(conn, :index))
-      |> assert_response(path: Routes.user_path(conn, :index), body: ("#{user.username}"))
-      |> assert_response(body: ("#{admin.username}"))
-      |> refute_response(body: ("Delete"))
+      |> assert_response(path: Routes.user_path(conn, :index), body: "#{user.username}")
+      |> assert_response(body: "#{admin.username}")
+      |> refute_response(body: "Delete")
     end
 
     test "As admin", %{conn: conn, user: user, admin: admin} do
@@ -38,10 +38,9 @@ defmodule GithomeWeb.UserControllerTest do
       )
       |> assert_response(path: "/my_projects")
       |> get(Routes.user_path(conn, :index))
-      |> assert_response(path: Routes.user_path(conn, :index), body: ("#{user.username}"))
-      |> assert_response(body: ("#{admin.username}"))
-      |> assert_response(body: ("Delete"))
+      |> assert_response(path: Routes.user_path(conn, :index), body: "#{user.username}")
+      |> assert_response(body: "#{admin.username}")
+      |> assert_response(body: "Delete")
     end
   end
-
 end

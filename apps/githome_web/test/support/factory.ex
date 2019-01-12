@@ -19,7 +19,7 @@ defmodule GithomeWeb.Factory do
 
   def project_factory do
     %Project{
-      project_name: sequence(:project_name, &"Test project #{&1}"),
+      project_name: sequence(:project_name, &"Test_project_#{&1}"),
       description: sequence(:description, &"Test description #{&1}"),
       owner: 1
     }
