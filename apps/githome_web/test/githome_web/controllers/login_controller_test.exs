@@ -5,7 +5,7 @@ defmodule GithomeWeb.LoginControllerTest do
 
   @reg_user %{
     username: "user",
-    password:  "pass",
+    password: "pass",
     confirm: "pass",
     _csrf_token: "token"
   }
@@ -21,7 +21,7 @@ defmodule GithomeWeb.LoginControllerTest do
       get(build_conn(), "/")
       |> follow_form(@reg_user, identifier: "#register-form")
       |> assert_response(path: "/my_projects")
-      end
+    end
 
     test "Incorrect confirm pass" do
       get(build_conn(), "/")

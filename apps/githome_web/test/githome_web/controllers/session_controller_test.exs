@@ -1,8 +1,6 @@
 defmodule GithomeWeb.SessionControllerTest do
   use GithomeWeb.ConnCase
 
-  alias Githome.Users
-  alias String
   import GithomeWeb.Factory
   use PhoenixIntegration
 

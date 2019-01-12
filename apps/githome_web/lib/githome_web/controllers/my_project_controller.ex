@@ -23,6 +23,7 @@ defmodule GithomeWeb.MyProjectController do
           true ->
             user_update = Users.get_user!(user.id)
             projects = Projects.get_all_my_projects(user.id)
+
             conn
             |> put_session(:user, user_update)
             |> put_session(:nav_active, :projects_view_my)
@@ -158,7 +159,6 @@ defmodule GithomeWeb.MyProjectController do
         |> redirect(to: Routes.my_project_path(conn, :show, %{"id" => project.id}))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-
         conn
         |> render("new.html",
           layout: {GithomeWeb.LayoutView, "main.html"},

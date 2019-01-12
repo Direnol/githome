@@ -40,8 +40,10 @@ defmodule GithomeWeb.ProjectControllerTest do
 
     test "delete", %{uconn: conn} do
       proj = insert(:project)
+
       conn
       |> delete(Routes.my_project_path(conn, :delete, %{"id" => proj.id}))
+
       assert_raise Ecto.NoResultsError, fn -> Projects.get_project!(proj.id) end
     end
 
@@ -50,9 +52,11 @@ defmodule GithomeWeb.ProjectControllerTest do
 
       conn
       |> get(Routes.my_project_path(conn, :index))
-      |> assert_response(value: fn conn ->
-          Enum.each ps, &(assert_response(conn, body: (&1).project_name))
-      end)
+      |> assert_response(
+        value: fn conn ->
+          Enum.each(ps, &assert_response(conn, body: &1.project_name))
+        end
+      )
     end
   end
 end

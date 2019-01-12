@@ -233,7 +233,6 @@ defmodule GithomeWeb.MyGroupController do
   defp update_projects([nil]), do: nil
 
   defp update_projects(projects) do
-
     Enum.map(projects, fn p ->
       members = Enum.map(Projects.get_groups_by_project(p.id), fn x -> "@#{x.name}" end)
       Git.update_project(p.project_name, RW: [Users.get_user!(p.owner).username | members])

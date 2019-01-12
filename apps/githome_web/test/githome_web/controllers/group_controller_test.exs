@@ -6,8 +6,7 @@ defmodule GithomeWeb.GroupControllerTest do
   use PhoenixIntegration
 
   @create_attrs %{name: "some name", pid: 42, uid: 42}
-  @update_attrs %{name: "some updated name", pid: 43, uid: 43}
-  @invalid_attrs %{name: nil, pid: nil, uid: nil}
+  # @update_attrs %{name: "some updated name", pid: 43, uid: 43}
 
   def fixture(:group) do
     {:ok, group} = Groups.create_group(@create_attrs)
@@ -18,16 +17,17 @@ defmodule GithomeWeb.GroupControllerTest do
     setup do
       user = insert(:user)
 
-      uconn = get(build_conn(), "/")
-              |> follow_form(
-                   %{
-                     username: user.username,
-                     password: user.password,
-                     _csrf_token: "token"
-                   },
-                   identifier: "#login-form"
-                 )
-              |> assert_response(path: "/my_projects")
+      uconn =
+        get(build_conn(), "/")
+        |> follow_form(
+          %{
+            username: user.username,
+            password: user.password,
+            _csrf_token: "token"
+          },
+          identifier: "#login-form"
+        )
+        |> assert_response(path: "/my_projects")
 
       [uconn: uconn]
     end
@@ -37,7 +37,7 @@ defmodule GithomeWeb.GroupControllerTest do
       |> assert_response(path: "/my_projects")
       |> get(Routes.group_path(uconn, :index))
       |> assert_response(status: 200)
-      |> assert_response(body: ("All Groups"))
+      |> assert_response(body: "All Groups")
     end
   end
 
@@ -45,26 +45,27 @@ defmodule GithomeWeb.GroupControllerTest do
     setup do
       user = insert(:user)
 
-      uconn = get(build_conn(), "/")
-              |> follow_form(
-                   %{
-                     username: user.username,
-                     password: user.password,
-                     _csrf_token: "token"
-                   },
-                   identifier: "#login-form"
-                 )
-              |> assert_response(path: "/my_projects")
+      uconn =
+        get(build_conn(), "/")
+        |> follow_form(
+          %{
+            username: user.username,
+            password: user.password,
+            _csrf_token: "token"
+          },
+          identifier: "#login-form"
+        )
+        |> assert_response(path: "/my_projects")
 
       [uconn: uconn]
     end
 
-    test "renders form", %{uconn: uconn}  do
+    test "renders form", %{uconn: uconn} do
       uconn
       |> assert_response(path: "/my_projects")
       |> get(Routes.group_path(uconn, :new))
       |> assert_response(status: 200)
-      |> assert_response(body: ("New Group"))
+      |> assert_response(body: "New Group")
     end
   end
 
@@ -72,16 +73,17 @@ defmodule GithomeWeb.GroupControllerTest do
     setup do
       user = insert(:user)
 
-      uconn = get(build_conn(), "/")
-              |> follow_form(
-                   %{
-                     username: user.username,
-                     password: user.password,
-                     _csrf_token: "token"
-                   },
-                   identifier: "#login-form"
-                 )
-              |> assert_response(path: "/my_projects")
+      uconn =
+        get(build_conn(), "/")
+        |> follow_form(
+          %{
+            username: user.username,
+            password: user.password,
+            _csrf_token: "token"
+          },
+          identifier: "#login-form"
+        )
+        |> assert_response(path: "/my_projects")
 
       [uconn: uconn]
     end
@@ -90,51 +92,51 @@ defmodule GithomeWeb.GroupControllerTest do
       projects =
         Enum.map(
           build_list(5, :project, owner: uconn.assigns.user.id),
-          fn p -> uconn
-                  |> get(Routes.my_project_path(uconn, :new))
-                  |> assert_response(path: Routes.my_project_path(uconn, :new))
-                  |> follow_form(
-                       %{
-                         project: %{
-                           project_name: p.project_name,
-                           description: p.description
-                         }
-                       }
-                     )
-                  |> assert_response(path: Routes.my_project_path(uconn, :show))
-                  |> Map.get(:assigns)
-                  |> Map.get(:project)
-                  |> Map.get(:id)
+          fn p ->
+            uconn
+            |> get(Routes.my_project_path(uconn, :new))
+            |> assert_response(path: Routes.my_project_path(uconn, :new))
+            |> follow_form(%{
+              project: %{
+                project_name: p.project_name,
+                description: p.description
+              }
+            })
+            |> assert_response(path: Routes.my_project_path(uconn, :show))
+            |> Map.get(:assigns)
+            |> Map.get(:project)
+            |> Map.get(:id)
           end
         )
+
       members = Enum.map(insert_list(5, :user), fn u -> u.id end)
+
       uconn
       |> get(Routes.my_group_path(uconn, :new))
       |> assert_response(status: 200)
-      |> assert_response(body: ("New Group"))
-      |> follow_form(
-           %{
-             ginfo: %{
-               name: "name",
-               description: "desc",
-               projects: projects,
-               members: members
-             }
-           }
-         )
+      |> assert_response(body: "New Group")
+      |> follow_form(%{
+        ginfo: %{
+          name: "name",
+          description: "desc",
+          projects: projects,
+          members: members
+        }
+      })
       |> assert_response(path: Routes.my_group_path(uconn, :show))
       |> assert_response(
-           value: fn conn ->
-             Enum.each(
-               projects,
-               &(assert_response(conn, body: Routes.my_project_path(conn, :show, %{"id" => &1})))
-             )
-             Enum.each(
-               Githome.Members.get_all_members_by_group(conn.params["id"]),
-               &(assert_response(conn, body: (&1).username))
-             )
-           end
-         )
+        value: fn conn ->
+          Enum.each(
+            projects,
+            &assert_response(conn, body: Routes.my_project_path(conn, :show, %{"id" => &1}))
+          )
+
+          Enum.each(
+            Githome.Members.get_all_members_by_group(conn.params["id"]),
+            &assert_response(conn, body: &1.username)
+          )
+        end
+      )
     end
 
     #    test "renders errors when data is invalid", %{conn: conn} do
@@ -142,6 +144,7 @@ defmodule GithomeWeb.GroupControllerTest do
     #      assert html_response(conn, 200) =~ "New Group"
     #    end
   end
+
   #
   #  describe "edit group" do
   #    setup [:create_group]

@@ -9,20 +9,20 @@ defmodule GithomeWeb.ApiController do
     "users",
     "projects"
   ]
-  def index conn, _ do
+  def index(conn, _) do
     conn
-    |>render("index.json", %{api: @available_api})
+    |> render("index.json", %{api: @available_api})
   end
 
-  def show conn, %{"id" => db} do
+  def show(conn, %{"id" => db}) do
     conn
     |> render(@template, get_data(db))
   end
 
-  defp get_data name do
+  defp get_data(name) do
     case name do
-      "users" -> [users: Users.list_users]
-      "projects" -> [projects: Projects.list_projects]
+      "users" -> [users: Users.list_users()]
+      "projects" -> [projects: Projects.list_projects()]
       _ -> [error: true]
     end
   end

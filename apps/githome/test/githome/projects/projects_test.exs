@@ -11,9 +11,8 @@ defmodule Githome.ProjectsTest do
   @invalid_attrs %{project_name: nil, owner: nil}
 
   describe "Empty projects" do
-
     setup do
-      Githome.Repo.delete_all Project
+      Githome.Repo.delete_all(Project)
       :ok
     end
 
@@ -23,18 +22,17 @@ defmodule Githome.ProjectsTest do
 
     test "create_project/1 with valid data creates a project" do
       assert {:ok, project} = Projects.create_project(@valid_attrs)
-      assert [project] == Projects.list_projects
+      assert [project] == Projects.list_projects()
     end
 
     test "create_project/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Projects.create_project(@invalid_attrs)
     end
-
   end
-  describe "With projects"  do
 
+  describe "With projects" do
     setup do
-      {:ok, project} = Projects.create_project @valid_attrs
+      {:ok, project} = Projects.create_project(@valid_attrs)
       [project: project]
     end
 
