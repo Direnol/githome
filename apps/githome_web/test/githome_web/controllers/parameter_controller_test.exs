@@ -2,6 +2,8 @@ defmodule GithomeWeb.ParameterControllerTest do
   use GithomeWeb.ConnCase
 
   alias Githome.Settrings
+  import GithomeWeb.Factory
+  use PhoenixIntegration
 
   @create_attrs %{key: "some key", value: "some value"}
   @update_attrs %{key: "some updated key", value: "some updated value"}
@@ -13,77 +15,35 @@ defmodule GithomeWeb.ParameterControllerTest do
   end
 
   describe "index" do
-    test "lists all settings", %{conn: conn} do
-      conn = get(conn, Routes.parameter_path(conn, :index))
-      assert html_response(conn, 200)
+    setup do
+      admin = insert(:user, admin: true)
+
+      user = insert(:user)
+
+      [admin: admin, user: user]
     end
-  end
-
-  describe "new parameter" do
-    test "renders form", %{conn: conn} do
-      conn = get(conn, Routes.parameter_path(conn, :new))
-      assert html_response(conn, 200)
-    end
-  end
-
-  describe "create parameter" do
-    test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, Routes.parameter_path(conn, :create), parameter: @create_attrs)
-
-      assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == Routes.parameter_path(conn, :show, id)
-
-      conn = get(conn, Routes.parameter_path(conn, :show, id))
-      assert html_response(conn, 200)
+    test "lists all settings as not admin", %{user: user} do
+      get(build_conn(), "/")
+      |> follow_form(%{
+                         username: user.username,
+                         password: user.password,
+                         _csrf_token: "token"
+                      }, identifier: "#login-form")
+      |> assert_response(path: "/my_projects")
+      |> get(Routes.parameter_path(conn, :index))
+      |> assert_response(to: Routes.login_path(conn, :index))
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
-      conn = post(conn, Routes.parameter_path(conn, :create), parameter: @invalid_attrs)
-      assert html_response(conn, 200)
+    test "lists all settings as admin", %{admin: admin} do
+      get(build_conn(), "/")
+      |> follow_form(%{
+        username: admin.username,
+        password: admin.password,
+        _csrf_token: "token"
+      }, identifier: "#login-form")
+      |> assert_response(path: "/my_projects")
+      |> get(Routes.parameter_path(conn, :index))
+      |> assert_response(path: "/settings")
     end
-  end
-
-  describe "edit parameter" do
-    setup [:create_parameter]
-
-    test "renders form for editing chosen parameter", %{conn: conn, parameter: parameter} do
-      conn = get(conn, Routes.parameter_path(conn, :edit, parameter))
-      assert html_response(conn, 200)
-    end
-  end
-
-  describe "update parameter" do
-    setup [:create_parameter]
-
-    test "redirects when data is valid", %{conn: conn, parameter: parameter} do
-      conn = put(conn, Routes.parameter_path(conn, :update, parameter), parameter: @update_attrs)
-      assert redirected_to(conn) == Routes.parameter_path(conn, :show, parameter)
-
-      conn = get(conn, Routes.parameter_path(conn, :show, parameter))
-      assert html_response(conn, 200)
-    end
-
-    test "renders errors when data is invalid", %{conn: conn, parameter: parameter} do
-      conn = put(conn, Routes.parameter_path(conn, :update, parameter), parameter: @invalid_attrs)
-      assert html_response(conn, 200)
-    end
-  end
-
-  describe "delete parameter" do
-    setup [:create_parameter]
-
-    test "deletes chosen parameter", %{conn: conn, parameter: parameter} do
-      conn = delete(conn, Routes.parameter_path(conn, :delete, parameter))
-      assert redirected_to(conn) == Routes.parameter_path(conn, :index)
-
-      assert_error_sent 404, fn ->
-        get(conn, Routes.parameter_path(conn, :show, parameter))
-      end
-    end
-  end
-
-  defp create_parameter(_) do
-    parameter = fixture(:parameter)
-    {:ok, parameter: parameter}
   end
 end
