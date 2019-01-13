@@ -139,10 +139,21 @@ defmodule GithomeWeb.GroupControllerTest do
       )
     end
 
-    #    test "renders errors when data is invalid", %{conn: conn} do
-    #      conn = post(conn, Routes.group_path(conn, :create), group: @invalid_attrs)
-    #      assert html_response(conn, 200) =~ "New Group"
-    #    end
+    test "renders errors when data is invalid", %{uconn: uconn} do
+      uconn
+      |> get(Routes.my_group_path(uconn, :new))
+      |> assert_response(status: 200)
+      |> assert_response(body: "New Group")
+      |> follow_form(%{
+        ginfo: %{
+          name: nil,
+          description: nil,
+          projects: nil,
+          members: nil
+        }
+      })
+      |> assert_response(path: Routes.my_group_path(uconn, :new))
+    end
   end
 
   #
