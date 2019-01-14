@@ -2,7 +2,6 @@ defmodule GithomeWeb.SessionController do
   use GithomeWeb, :controller
 
   alias Githome.Users
-  alias String
 
   def new(conn, params) do
     token = params["token"]
@@ -11,6 +10,8 @@ defmodule GithomeWeb.SessionController do
     case Users.get_user_by(username: username) do
       nil ->
         conn
+        |> fetch_session
+        |> clear_session
         |> redirect(to: Routes.login_path(conn, :index))
 
       user ->
@@ -23,7 +24,8 @@ defmodule GithomeWeb.SessionController do
 
   def logout(conn, _) do
     conn
-    |> clear_session()
+    |> fetch_session
+    |> clear_session
     |> redirect(to: Routes.login_path(conn, :index))
   end
 end

@@ -1,8 +1,11 @@
 defmodule GithomeWeb.LoginController do
   use GithomeWeb, :controller
   alias Githome.Users
-  alias GithomeWeb.GitController, as: Git
   import Comeonin.Bcrypt, only: [checkpw: 2]
+  alias GithomeWeb.CheckAuth
+
+  plug GithomeWeb.CheckAuth, :auth when action in [:login, :register]
+  plug GithomeWeb.CheckAuth, :auth? when action in [:index]
 
   def index(conn, _params) do
     render(conn, "index.html", token: get_csrf_token(), info: get_flash(conn, :info))
@@ -33,6 +36,8 @@ defmodule GithomeWeb.LoginController do
 
       _ ->
         conn
+        |> fetch_session
+        |> clear_session
         |> put_flash(:info, "Incorrected password or username.")
         |> redirect(to: Routes.login_path(conn, :index))
     end
@@ -71,7 +76,7 @@ defmodule GithomeWeb.LoginController do
 
   defp create(conn, user_params) do
     case Users.create_user(user_params) do
-      {:ok, user} ->
+      {:ok, _user} ->
         conn
         |> put_flash(:info, "User created successfully")
 

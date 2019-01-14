@@ -10,6 +10,10 @@ defmodule GithomeWeb.Router do
     plug NavigationHistory.Tracker
   end
 
+  pipeline :verify do
+    plug GithomeWeb.CheckAuth, :verify
+  end
+
   pipeline :main_layout do
     plug :put_layout, {GithomeWeb.LayoutView, :main}
   end
@@ -23,23 +27,22 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/", GithomeWeb do
-    pipe_through [:browser, :reg_layout]
+    pipe_through ~w[browser reg_layout]a
 
     get "/", LoginController, :index
     post "/login", LoginController, :login
     post "/register", LoginController, :register
-    get "/customize", LoginController, :customize
   end
 
   scope "/session", GithomeWeb do
-    pipe_through :browser
+    pipe_through ~w[browser verify]a
 
     get "/new", SessionController, :new
     get "/logout", SessionController, :logout
   end
 
   scope "/my_projects", GithomeWeb do
-    pipe_through [:browser, :main_layout]
+    pipe_through ~w[browser main_layout verify]a
 
     get "/", MyProjectController, :index
     get "/new", MyProjectController, :new
@@ -54,7 +57,7 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/users", GithomeWeb do
-    pipe_through [:browser, :main_layout]
+    pipe_through ~w[browser main_layout]a
 
     get "/", UserController, :index
     get "/show", UserController, :show
@@ -70,7 +73,7 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/settings", GithomeWeb do
-    pipe_through [:browser, :main_layout]
+    pipe_through ~w[browser main_layout]a
 
     get "/", ParameterController, :index
     get "/show", ParameterController, :show
@@ -82,7 +85,7 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/projects", GithomeWeb do
-    pipe_through [:browser, :main_layout]
+    pipe_through ~w[browser main_layout]a
 
     get "/", ProjectController, :index
     get "/show", ProjectController, :show
@@ -94,7 +97,7 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/groups", GithomeWeb do
-    pipe_through [:browser, :main_layout]
+    pipe_through ~w[browser main_layout]a
 
     get "/", GroupController, :index
     get "/show", GroupController, :show
@@ -106,7 +109,7 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/my_groups", GithomeWeb do
-    pipe_through [:browser, :main_layout]
+    pipe_through ~w[browser main_layout]a
 
     get "/", MyGroupController, :index
     get "/show", MyGroupController, :show
@@ -120,7 +123,7 @@ defmodule GithomeWeb.Router do
 
   #   Other scopes may use custom stacks.
   scope "/api", GithomeWeb do
-    pipe_through :api
+    pipe_through ~w[api]a
     resources "/", ApiController
   end
 end

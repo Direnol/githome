@@ -3,37 +3,87 @@ defmodule GithomeWeb.SessionControllerTest do
 
   import GithomeWeb.Factory
   use PhoenixIntegration
+  import Plug.Test
+  alias Phoenix.Token
 
-  @param %{token: "ITc3PC05Ek9nDBMCIGcpKhQBFz9yEAAAnQqeDvU8LKkar3ekV5tM+A==", username: "user"}
-
-  setup do
-    insert(:user, username: @param.username)
-    :ok
-  end
+  @sault Application.get_env(:githome_web, :token_sault)
 
   describe "New session" do
-    test "User not exist" do
-      get(build_conn(), "/session/new", Map.replace!(@param, :username, "bad user"))
-      |> assert_response(redirect: "/")
+    setup do
+      usr = insert(:user)
+
+      [
+        auth_tok: Token.sign(GithomeWeb.Endpoint, @sault, usr.username),
+        auth_expired:
+          Token.sign(GithomeWeb.Endpoint, @sault, usr.username,
+            signed_at: System.system_time(:second) - 86500
+          ),
+        user: usr
+      ]
     end
 
-    test "User exist" do
-      get(build_conn(), "/session/new", @param)
-      |> assert_response(redirect: "/my_projects")
+    test "User not exist", %{conn: conn, auth_tok: auth_tok} do
+      conn
+      |> init_test_session(%{auth_token: auth_tok})
+      |> get("/session/new", %{
+        username: "bad user",
+        token: "token"
+      })
+      |> assert_response(redirect: Routes.login_path(conn, :index))
+    end
+
+    test "User exist", %{conn: conn, auth_tok: auth_tok, user: usr} do
+      conn
+      |> init_test_session(%{auth_token: auth_tok})
+      |> get("/session/new", %{
+        username: usr.username,
+        token: "token"
+      })
+      |> assert_response(to: Routes.my_project_path(conn, :index))
+    end
+
+    test "User exist, but token expired", %{conn: conn, auth_expired: auth_tok, user: usr} do
+      conn
+      |> init_test_session(%{auth_token: auth_tok})
+      |> get("/session/new", %{
+        username: usr.username,
+        token: "token"
+      })
+      |> assert_response(to: Routes.login_path(conn, :index))
+    end
+
+    test "User exist, but token is not correct", %{conn: conn, user: usr} do
+      conn
+      |> init_test_session(%{auth_token: "some token"})
+      |> get("/session/new", %{
+        username: usr.username,
+        token: "token"
+      })
+      |> assert_response(to: Routes.login_path(conn, :index))
     end
   end
 
   describe "Old session" do
     setup do
-      %{username: username} = insert(:user)
-      {:ok, username: username}
+      %{username: username, password: password} = insert(:user)
+
+      uconn =
+        get(build_conn(), "/")
+        |> follow_form(%{username: username, password: password},
+          identifier: "#login-form"
+        )
+        |> assert_response(path: "/my_projects")
+
+      [username: username, pass: password, uconn: uconn]
     end
 
-    test "logout exist session", %{username: username} do
-      get(build_conn(), "/session/new", Map.replace!(@param, :username, username))
-      |> follow_redirect
+    test "logout", %{uconn: conn} do
+      conn
       |> assert_response(path: "/my_projects")
       |> get("/session/logout")
+      |> assert_response(to: "/")
+      |> follow_redirect
+      |> get(Routes.my_project_path(conn, :index))
       |> assert_response(to: "/")
     end
   end

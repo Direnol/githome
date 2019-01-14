@@ -2,6 +2,8 @@ defmodule GithomeWeb.LoginControllerTest do
   use GithomeWeb.ConnCase
 
   use PhoenixIntegration
+  import GithomeWeb.Factory
+  alias Plug.Test, as: PT
 
   @reg_user %{
     username: "user",
@@ -52,6 +54,31 @@ defmodule GithomeWeb.LoginControllerTest do
       get(build_conn(), "/")
       |> follow_form(Map.replace!(@log_user, :password, "pas"), identifier: "#login-form")
       |> assert_response(path: "/", assigns: %{info: "Incorrected password or username."})
+    end
+  end
+
+  @sault Application.get_env(:githome_web, :token_sault)
+
+  describe "Restore old session" do
+    setup do
+      user = insert(:user)
+      [auth_tok: Phoenix.Token.sign(GithomeWeb.Endpoint, @sault, user.username)]
+    end
+
+    test "Session is restored", %{auth_tok: auth_tok, conn: conn} do
+      conn
+      |> PT.init_test_session(%{auth_token: auth_tok})
+      |> get(Routes.login_path(conn, :index))
+      |> follow_redirect
+      |> assert_response(status: 200, path: Routes.my_project_path(conn, :index))
+    end
+
+    test "Session is not restored", %{conn: conn} do
+      conn
+      |> PT.init_test_session(%{auth_token: "bad token"})
+      |> get(Routes.login_path(conn, :index))
+      |> follow_redirect
+      |> assert_response(path: Routes.login_path(conn, :index))
     end
   end
 end

@@ -9,7 +9,9 @@ use Mix.Config
 
 config :githome_web,
   namespace: GithomeWeb,
-  ecto_repos: [Githome.Repo]
+  ecto_repos: [Githome.Repo],
+  token_sault: "#{Mix.env()}",
+  token_live: 86400
 
 # Configures the endpoint
 config :githome_web, GithomeWeb.Endpoint,
