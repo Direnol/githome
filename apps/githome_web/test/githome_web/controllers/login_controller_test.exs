@@ -4,6 +4,7 @@ defmodule GithomeWeb.LoginControllerTest do
   use PhoenixIntegration
   import GithomeWeb.Factory
   alias Plug.Test, as: PT
+  alias GithomeWeb.CheckAuth, as: CA
 
   @reg_user %{
     username: "user",
@@ -62,7 +63,7 @@ defmodule GithomeWeb.LoginControllerTest do
   describe "Restore old session" do
     setup do
       user = insert(:user)
-      [auth_tok: Phoenix.Token.sign(GithomeWeb.Endpoint, @sault, user.username)]
+      [auth_tok: Phoenix.Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: user.username})]
     end
 
     test "Session is restored", %{auth_tok: auth_tok, conn: conn} do

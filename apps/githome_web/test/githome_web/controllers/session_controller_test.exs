@@ -5,6 +5,7 @@ defmodule GithomeWeb.SessionControllerTest do
   use PhoenixIntegration
   import Plug.Test
   alias Phoenix.Token
+  alias GithomeWeb.CheckAuth, as: CA
 
   @sault Application.get_env(:githome_web, :token_sault)
 
@@ -13,9 +14,9 @@ defmodule GithomeWeb.SessionControllerTest do
       usr = insert(:user)
 
       [
-        auth_tok: Token.sign(GithomeWeb.Endpoint, @sault, usr.username),
+        auth_tok: Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: usr.username}),
         auth_expired:
-          Token.sign(GithomeWeb.Endpoint, @sault, usr.username,
+          Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: usr.username},
             signed_at: System.system_time(:second) - 86500
           ),
         user: usr

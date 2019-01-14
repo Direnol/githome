@@ -3,6 +3,7 @@ defmodule GithomeWeb.CheckAuth do
   import Phoenix.Controller
   alias GithomeWeb.Router.Helpers, as: Routes
   alias Phoenix.Token
+  alias __MODULE__
   require Logger
 
   defstruct username: ""
@@ -13,7 +14,7 @@ defmodule GithomeWeb.CheckAuth do
   @verify_opts [max_age: Application.get_env(:githome_web, :token_live)]
   def init(param), do: param
 
-  defp auth(conn, info, opts \\ []) do
+  defp auth(conn, info) do
     tok = Token.sign(GithomeWeb.Endpoint, @sault, info)
 
     conn
@@ -51,7 +52,9 @@ defmodule GithomeWeb.CheckAuth do
 
   def call(conn, :auth) do
     conn
-    |> auth(conn.params["username"])
+    |> auth(%CheckAuth{
+      username: conn.params["username"]
+    })
   end
 
   def call(conn, :auth?) do
@@ -69,7 +72,7 @@ defmodule GithomeWeb.CheckAuth do
             |> redirect(
               to:
                 Routes.session_path(aconn, :new,
-                  username: get_info(aconn),
+                  username: get_info(aconn).username,
                   token: get_csrf_token()
                 )
             )

@@ -2,7 +2,6 @@ defmodule GithomeWeb.LoginController do
   use GithomeWeb, :controller
   alias Githome.Users
   import Comeonin.Bcrypt, only: [checkpw: 2]
-  alias GithomeWeb.CheckAuth
 
   plug GithomeWeb.CheckAuth, :auth when action in [:login, :register]
   plug GithomeWeb.CheckAuth, :auth? when action in [:index]
