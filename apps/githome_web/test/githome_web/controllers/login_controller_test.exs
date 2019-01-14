@@ -31,6 +31,18 @@ defmodule GithomeWeb.LoginControllerTest do
       |> follow_form(Map.replace!(@reg_user, :password, "pas"), identifier: "#register-form")
       |> assert_response(path: "/", assigns: %{info: "Check your password"})
     end
+
+    test "Already exist" do
+      usr = insert(:user)
+      get(build_conn(), "/")
+      |> follow_form(%{
+        username: usr.username,
+        password: usr.password,
+        confirm: usr.password_confirm,
+        _csrf_token: "token"
+      }, identifier: "#register-form")
+      |> assert_response(status: 200, path: "/", assigns: %{info: "Already exist"})
+    end
   end
 
   describe "Login" do

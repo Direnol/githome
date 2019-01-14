@@ -68,6 +68,8 @@ defmodule GithomeWeb.LoginController do
 
       _ ->
         conn
+        |> fetch_session
+        |> clear_session
         |> put_flash(:info, "Already exist")
         |> redirect(to: Routes.login_path(conn, :index))
     end
