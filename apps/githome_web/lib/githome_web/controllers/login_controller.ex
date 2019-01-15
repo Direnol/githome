@@ -2,6 +2,7 @@ defmodule GithomeWeb.LoginController do
   use GithomeWeb, :controller
   alias Githome.Users
   import Comeonin.Bcrypt, only: [checkpw: 2]
+  alias GithomeWeb.CheckAuth
 
   plug GithomeWeb.CheckAuth, :auth when action in [:login, :register]
   plug GithomeWeb.CheckAuth, :auth? when action in [:index]
@@ -11,20 +12,17 @@ defmodule GithomeWeb.LoginController do
   end
 
   def login(conn, param) do
-    db_hash =
-      case Users.get_user_by(username: param["username"]) do
-        nil -> nil
-        db_user -> Map.get(db_user, :password_digest)
-      end
+    user = Users.get_user_by(username: param["username"])
 
-    ret =
-      if db_hash do
-        checkpw(param["password"], db_hash)
-      end
-
-    case ret do
+    case if(user,
+           do: checkpw(param["password"], Map.get(user, :password_digest)),
+           else: false
+         ) do
       true ->
+        update_tok = %{CheckAuth.get_info(conn) | id: user.id} |> CheckAuth.auth()
+
         conn
+        |> put_session(:auth_token, update_tok)
         |> redirect(
           to:
             Routes.session_path(conn, :new,
@@ -77,8 +75,11 @@ defmodule GithomeWeb.LoginController do
 
   defp create(conn, user_params) do
     case Users.create_user(user_params) do
-      {:ok, _user} ->
+      {:ok, user} ->
+        update_tok = %{CheckAuth.get_info(conn) | id: user.id} |> CheckAuth.auth()
+
         conn
+        |> put_session(:auth_token, update_tok)
         |> put_flash(:info, "User created successfully")
 
       {:error, %Ecto.Changeset{} = _changeset} ->

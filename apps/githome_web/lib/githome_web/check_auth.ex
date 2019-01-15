@@ -3,10 +3,17 @@ defmodule GithomeWeb.CheckAuth do
   import Phoenix.Controller
   alias GithomeWeb.Router.Helpers, as: Routes
   alias Phoenix.Token
+  alias Githome.Users
   alias __MODULE__
   require Logger
 
-  defstruct username: ""
+  defstruct username: nil, id: nil, remember: false
+
+  @type t() :: %__MODULE__{
+          username: String.t(),
+          id: Integer.t(),
+          remember: true | false
+        }
 
   @behaviour Plug
 
@@ -14,11 +21,14 @@ defmodule GithomeWeb.CheckAuth do
   @verify_opts [max_age: Application.get_env(:githome_web, :token_live)]
   def init(param), do: param
 
+  def auth(%CheckAuth{} =  info) do
+    Token.sign(GithomeWeb.Endpoint, @sault, info)
+  end
   defp auth(conn, info) do
-    tok = Token.sign(GithomeWeb.Endpoint, @sault, info)
+    Logger.info("Auth #{inspect(info)}")
 
     conn
-    |> put_session(:auth_token, tok)
+    |> put_session(:auth_token, auth(info))
   end
 
   def verify(conn, tok, opts \\ []) do
@@ -30,7 +40,16 @@ defmodule GithomeWeb.CheckAuth do
         |> halt
 
       {:ok, info} ->
-        auth(conn, info)
+        case Users.get_user_by(username: info.username, id: (info.id || -1)) do
+          nil ->
+            conn
+            |> bad_auth_token("Token Owned by non-existent user: #{inspect info}")
+            |> redirect(to: Routes.login_path(conn, :index))
+            |> halt
+
+          _ ->
+            auth(conn, info)
+        end
     end
   end
 
@@ -42,7 +61,7 @@ defmodule GithomeWeb.CheckAuth do
   end
 
   defp bad_auth_token(conn, message) do
-    Logger.info("#{message}")
+    Logger.warn("#{message}")
 
     conn
     |> fetch_session

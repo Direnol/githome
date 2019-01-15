@@ -43,11 +43,13 @@
                                 </p>
                             </td>
                             <td>
+                            <%= if p.project_name  not in @exclude_delete do %>
                                 <p data-placement="top" data-toggle="tooltip" title="Delete">
                                     <%= link raw(~s(<span class="glyphicon glyphicon-trash"></span>)), to: Routes.my_project_path(@conn, :delete, %{"id" => p.id}), class: "btn btn-danger btn-xs",
                                         data_title: "Delete", data_toggle: "modal", method: "DELETE"
                                     %>
                                 </p>
+                            <% end %>
                             </td>
                         </tr>
                         <% end %>

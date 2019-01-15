@@ -11,12 +11,12 @@
                         <% end %>
                     </thead>
                     <tbody>
-                        <%= for user <- @users, user.username != "admin" do %>
+                        <%= for user <- @users do %>
                         <tr>
                             <td>
                                 <%= user.username %>
                             </td>
-                            <%= if @admin do %>
+                            <%= if @admin && user.username != "admin" do %>
                             <td>
                                 <%= if user.admin do %>
                                 <%= link "Delete from admin", to: Routes.user_path(@conn, :admin, %{"id" => user.id}), method: "post", target: "_blank", class: "btn btn-danger btn-xs" %>

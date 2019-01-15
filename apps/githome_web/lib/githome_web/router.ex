@@ -57,7 +57,7 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/users", GithomeWeb do
-    pipe_through ~w[browser main_layout]a
+    pipe_through ~w[browser main_layout verify]a
 
     get "/", UserController, :index
     get "/show", UserController, :show
@@ -73,7 +73,7 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/settings", GithomeWeb do
-    pipe_through ~w[browser main_layout]a
+    pipe_through ~w[browser main_layout verify]a
 
     get "/", ParameterController, :index
     get "/show", ParameterController, :show
@@ -85,7 +85,7 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/projects", GithomeWeb do
-    pipe_through ~w[browser main_layout]a
+    pipe_through ~w[browser main_layout verify]a
 
     get "/", ProjectController, :index
     get "/show", ProjectController, :show
@@ -97,7 +97,7 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/groups", GithomeWeb do
-    pipe_through ~w[browser main_layout]a
+    pipe_through ~w[browser main_layout verify]a
 
     get "/", GroupController, :index
     get "/show", GroupController, :show
@@ -109,7 +109,7 @@ defmodule GithomeWeb.Router do
   end
 
   scope "/my_groups", GithomeWeb do
-    pipe_through ~w[browser main_layout]a
+    pipe_through ~w[browser main_layout verify]a
 
     get "/", MyGroupController, :index
     get "/show", MyGroupController, :show

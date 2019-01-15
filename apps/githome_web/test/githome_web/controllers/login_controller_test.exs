@@ -75,7 +75,10 @@ defmodule GithomeWeb.LoginControllerTest do
   describe "Restore old session" do
     setup do
       user = insert(:user)
-      [auth_tok: Phoenix.Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: user.username})]
+      [
+        auth_tok: Phoenix.Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: user.username, id: user.id}),
+        bad_tok: Phoenix.Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: "not_register"})
+      ]
     end
 
     test "Session is restored", %{auth_tok: auth_tok, conn: conn} do
@@ -84,6 +87,14 @@ defmodule GithomeWeb.LoginControllerTest do
       |> get(Routes.login_path(conn, :index))
       |> follow_redirect
       |> assert_response(status: 200, path: Routes.my_project_path(conn, :index))
+    end
+
+    test "Session is not restored, because user not exist", %{bad_tok: auth_tok, conn: conn} do
+      conn
+      |> PT.init_test_session(%{auth_token: auth_tok})
+      |> get(Routes.login_path(conn, :index))
+      |> follow_redirect
+      |> assert_response(status: 200, path: Routes.login_path(conn, :index))
     end
 
     test "Session is not restored", %{conn: conn} do

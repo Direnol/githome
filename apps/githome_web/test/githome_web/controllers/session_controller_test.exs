@@ -14,9 +14,9 @@ defmodule GithomeWeb.SessionControllerTest do
       usr = insert(:user)
 
       [
-        auth_tok: Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: usr.username}),
+        auth_tok: Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: usr.username, id: usr.id}),
         auth_expired:
-          Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: usr.username},
+          Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: usr.username, id: usr.id},
             signed_at: System.system_time(:second) - 86500
           ),
         user: usr

@@ -6,6 +6,8 @@ defmodule GithomeWeb.ProjectController do
   alias Githome.Users
   alias GithomeWeb.GitController, as: Git
 
+  @exclude_delete ~w[gitolite-admin]
+
   def index(conn, _params) do
     token = get_session(conn, :token)
 
@@ -31,7 +33,8 @@ defmodule GithomeWeb.ProjectController do
               user: user_update,
               layout: {GithomeWeb.LayoutView, "main.html"},
               nav_active: :projects_view_all,
-              admin: user_update.admin
+              admin: user_update.admin,
+              exclude_delete: @exclude_delete
             )
 
           _ ->
