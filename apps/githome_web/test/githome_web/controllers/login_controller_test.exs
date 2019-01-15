@@ -34,13 +34,17 @@ defmodule GithomeWeb.LoginControllerTest do
 
     test "Already exist" do
       usr = insert(:user)
+
       get(build_conn(), "/")
-      |> follow_form(%{
-        username: usr.username,
-        password: usr.password,
-        confirm: usr.password_confirm,
-        _csrf_token: "token"
-      }, identifier: "#register-form")
+      |> follow_form(
+        %{
+          username: usr.username,
+          password: usr.password,
+          confirm: usr.password_confirm,
+          _csrf_token: "token"
+        },
+        identifier: "#register-form"
+      )
       |> assert_response(status: 200, path: "/", assigns: %{info: "Already exist"})
     end
   end
@@ -75,8 +79,13 @@ defmodule GithomeWeb.LoginControllerTest do
   describe "Restore old session" do
     setup do
       user = insert(:user)
+
       [
-        auth_tok: Phoenix.Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: user.username, id: user.id}),
+        auth_tok:
+          Phoenix.Token.sign(GithomeWeb.Endpoint, @sault, %CA{
+            username: user.username,
+            id: user.id
+          }),
         bad_tok: Phoenix.Token.sign(GithomeWeb.Endpoint, @sault, %CA{username: "not_register"})
       ]
     end

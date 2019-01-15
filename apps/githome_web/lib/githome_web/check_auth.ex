@@ -21,9 +21,10 @@ defmodule GithomeWeb.CheckAuth do
   @verify_opts [max_age: Application.get_env(:githome_web, :token_live)]
   def init(param), do: param
 
-  def auth(%CheckAuth{} =  info) do
+  def auth(%CheckAuth{} = info) do
     Token.sign(GithomeWeb.Endpoint, @sault, info)
   end
+
   defp auth(conn, info) do
     Logger.info("Auth #{inspect(info)}")
 
@@ -40,10 +41,10 @@ defmodule GithomeWeb.CheckAuth do
         |> halt
 
       {:ok, info} ->
-        case Users.get_user_by(username: info.username, id: (info.id || -1)) do
+        case Users.get_user_by(username: info.username, id: info.id || -1) do
           nil ->
             conn
-            |> bad_auth_token("Token Owned by non-existent user: #{inspect info}")
+            |> bad_auth_token("Token Owned by non-existent user: #{inspect(info)}")
             |> redirect(to: Routes.login_path(conn, :index))
             |> halt
 
@@ -66,7 +67,6 @@ defmodule GithomeWeb.CheckAuth do
     conn
     |> fetch_session
     |> clear_session
-    |> put_session(:info, message)
   end
 
   def call(conn, :auth) do
@@ -105,6 +105,7 @@ defmodule GithomeWeb.CheckAuth do
       nil ->
         conn
         |> bad_auth_token("Token is not founded")
+        |> put_flash(:info, "Please sign in")
         |> redirect(to: Routes.login_path(conn, :index))
         |> halt
 

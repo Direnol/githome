@@ -9,40 +9,22 @@ defmodule GithomeWeb.ProjectController do
   @exclude_delete ~w[gitolite-admin]
 
   def index(conn, _params) do
-    token = get_session(conn, :token)
+    user = get_session(conn, :user)
 
-    case token do
-      nil ->
+        user_update = Users.get_user!(user.id)
+        projects = Projects.list_projects()
+
         conn
-        |> put_flash(:info, "Please sign in")
-        |> redirect(to: Routes.login_path(conn, :index))
-
-      _ ->
-        user = get_session(conn, :user)
-
-        case is_map(user) do
-          true ->
-            user_update = Users.get_user!(user.id)
-            projects = Projects.list_projects()
-
-            conn
-            |> put_session(:user, user_update)
-            |> put_session(:nav_active, :projects_view_all)
-            |> render("index.html",
-              projects: projects,
-              user: user_update,
-              layout: {GithomeWeb.LayoutView, "main.html"},
-              nav_active: :projects_view_all,
-              admin: user_update.admin,
-              exclude_delete: @exclude_delete
-            )
-
-          _ ->
-            conn
-            |> put_flash(:info, "Please sign in")
-            |> redirect(to: Routes.login_path(conn, :index))
-        end
-    end
+        |> put_session(:user, user_update)
+        |> put_session(:nav_active, :projects_view_all)
+        |> render("index.html",
+          projects: projects,
+          user: user_update,
+          layout: {GithomeWeb.LayoutView, "main.html"},
+          nav_active: :projects_view_all,
+          admin: user_update.admin,
+          exclude_delete: @exclude_delete
+        )
   end
 
   def new(conn, _params) do

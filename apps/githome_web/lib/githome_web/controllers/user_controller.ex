@@ -9,61 +9,33 @@ defmodule GithomeWeb.UserController do
   plug :put_layout, "main.html"
 
   def index(conn, _params) do
-    token = get_session(conn, :token)
+    user = get_session(conn, :user)
 
-    case token do
-      nil ->
-        conn
-        |> put_flash(:info, "Please sign in")
-        |> redirect(to: Routes.login_path(conn, :index))
+    users = Users.list_users()
+    user_update = Users.get_user!(user.id)
 
-      _ ->
-        user = get_session(conn, :user)
-
-        case is_map(user) do
-          true ->
-            users = Users.list_users()
-            user_update = Users.get_user!(user.id)
-
-            conn
-            |> put_session(:user, user_update)
-            |> put_session(:nav_active, :users)
-            |> render("index.html",
-              users: users,
-              layout: {GithomeWeb.LayoutView, "main.html"},
-              user: user_update,
-              nav_active: :users,
-              admin: get_session(conn, :user).admin
-            )
-
-          _ ->
-            conn
-            |> put_flash(:info, "Please sign in")
-            |> redirect(to: Routes.login_path(conn, :index))
-        end
-    end
+    conn
+    |> put_session(:user, user_update)
+    |> put_session(:nav_active, :users)
+    |> render("index.html",
+      users: users,
+      layout: {GithomeWeb.LayoutView, "main.html"},
+      user: user_update,
+      nav_active: :users,
+      admin: get_session(conn, :user).admin
+    )
   end
 
   def new(conn, _params) do
-    token = get_session(conn, :token)
+    changeset = Users.change_user(%User{})
 
-    case token do
-      nil ->
-        conn
-        |> put_flash(:info, "Please sign in")
-        |> redirect(to: Routes.login_path(conn, :index))
-
-      _ ->
-        changeset = Users.change_user(%User{})
-
-        conn
-        |> render("new.html",
-          changeset: changeset,
-          user: get_session(conn, :user),
-          nav_active: get_session(conn, :nav_active),
-          token: get_session(conn, :token)
-        )
-    end
+    conn
+    |> render("new.html",
+      changeset: changeset,
+      user: get_session(conn, :user),
+      nav_active: get_session(conn, :nav_active),
+      token: get_session(conn, :token)
+    )
   end
 
   def create(conn, %{"user" => user_params}) do
@@ -81,68 +53,34 @@ defmodule GithomeWeb.UserController do
   end
 
   def show(conn, %{"id" => id}) do
-    token = get_session(conn, :token)
+    user = get_session(conn, :user)
 
-    case token do
-      nil ->
-        conn
-        |> put_flash(:info, "Please sign in")
-        |> redirect(to: Routes.login_path(conn, :index))
+    user_update = Users.get_user!(id)
 
-      _ ->
-        user = get_session(conn, :user)
-
-        case is_map(user) do
-          true ->
-            user_update = Users.get_user!(id)
-
-            conn
-            |> put_session(:user, user_update)
-            |> put_session(:nav_active, :user_my_profile)
-            |> render("show.html",
-              layout: {GithomeWeb.LayoutView, "main.html"},
-              user: user_update,
-              info: get_flash(conn, :info),
-              nav_active: :user_my_profile
-            )
-
-          _ ->
-            conn
-            |> put_flash(:info, "Please sign in")
-            |> redirect(to: Routes.login_path(conn, :index))
-        end
-    end
+    conn
+    |> put_session(:user, user_update)
+    |> put_session(:nav_active, :user_my_profile)
+    |> render("show.html",
+      layout: {GithomeWeb.LayoutView, "main.html"},
+      user: user_update,
+      info: get_flash(conn, :info),
+      nav_active: :user_my_profile
+    )
   end
 
   def edit(conn, _) do
-    token = get_session(conn, :token)
+    user = get_session(conn, :user)
 
-    case token do
-      nil ->
-        conn
-        |> put_flash(:info, "Please sign in")
-        |> redirect(to: Routes.login_path(conn, :index))
+    changeset = Users.changeset_customize_user(user)
 
-      _ ->
-        user = get_session(conn, :user)
-
-        if user == nil do
-          conn
-          |> put_flash(:info, "Please sign in")
-          |> redirect(to: Routes.login_path(conn, :index))
-        end
-
-        changeset = Users.changeset_customize_user(user)
-
-        conn
-        |> render("edit.html",
-          user: user,
-          changeset: changeset,
-          nav_active: get_session(conn, :nav_active),
-          info: get_flash(conn, :info),
-          token: get_session(conn, :token)
-        )
-    end
+    conn
+    |> render("edit.html",
+      user: user,
+      changeset: changeset,
+      nav_active: get_session(conn, :nav_active),
+      info: get_flash(conn, :info),
+      token: get_session(conn, :token)
+    )
   end
 
   def update(conn, params) do

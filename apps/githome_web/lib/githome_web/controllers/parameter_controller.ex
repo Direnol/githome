@@ -6,77 +6,46 @@ defmodule GithomeWeb.ParameterController do
   alias Githome.Users
 
   def index(conn, _params) do
-    token = get_session(conn, :token)
+    user = get_session(conn, :user)
 
-    case token do
-      nil ->
-        conn
-        |> put_flash(:info, "Please sign in")
-        |> redirect(to: Routes.login_path(conn, :index))
+    case is_map(user) do
+      true ->
+        user_update = Users.get_user!(user.id)
 
-      _ ->
-        user = get_session(conn, :user)
-
-        case is_map(user) do
+        case user_update.admin do
           true ->
-            user_update = Users.get_user!(user.id)
+            settings = Settings.list_settings()
 
-            case user_update.admin do
-              true ->
-                settings = Settings.list_settings()
-
-                conn
-                |> put_session(:user, user_update)
-                |> put_session(:nav_active, :settings)
-                |> render("index.html",
-                  settings: settings,
-                  layout: {GithomeWeb.LayoutView, "main.html"},
-                  user: user_update,
-                  nav_active: :settings
-                )
-
-              _ ->
-                conn
-                |> put_flash(:info, "Access deny.")
-                |> redirect(to: Routes.login_path(conn, :index))
-            end
+            conn
+            |> put_session(:user, user_update)
+            |> put_session(:nav_active, :settings)
+            |> render("index.html",
+              settings: settings,
+              layout: {GithomeWeb.LayoutView, "main.html"},
+              user: user_update,
+              nav_active: :settings
+            )
 
           _ ->
             conn
-            |> put_flash(:info, "Please sign in")
+            |> put_flash(:info, "Access deny.")
             |> redirect(to: Routes.login_path(conn, :index))
         end
     end
   end
 
   def new(conn, _params) do
-    token = get_session(conn, :token)
+    user = get_session(conn, :user)
 
-    case token do
-      nil ->
-        conn
-        |> put_flash(:info, "Please sign in")
-        |> redirect(to: Routes.login_path(conn, :index))
+    changeset = Settings.change_parameter(%Parameter{})
+    conn = put_session(conn, :nav_active, :settings)
 
-      _ ->
-        user = get_session(conn, :user)
-
-        if user == nil do
-          conn
-          |> put_flash(:info, "Please sign in")
-          |> redirect(to: Routes.login_path(conn, :index))
-        end
-
-        changeset = Settings.change_parameter(%Parameter{})
-        conn = put_session(conn, :nav_active, :settings)
-
-        render(conn, "new.html",
-          changeset: changeset,
-          layout: {GithomeWeb.LayoutView, "main.html"},
-          user: get_session(conn, :user),
-          nav_active: get_session(conn, :nav_active)
-        )
-    end
+    render(conn, "new.html",
+      changeset: changeset,
+      layout: {GithomeWeb.LayoutView, "main.html"},
+      user: get_session(conn, :user),
+      nav_active: get_session(conn, :nav_active)
+    )
 
     changeset = Settings.change_parameter(%Parameter{})
 

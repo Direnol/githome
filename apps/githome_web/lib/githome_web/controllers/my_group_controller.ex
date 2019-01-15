@@ -12,91 +12,55 @@ defmodule GithomeWeb.MyGroupController do
   plug :put_layout, "main.html"
 
   def index(conn, _params) do
-    token = get_session(conn, :token)
+    user = get_session(conn, :user)
 
-    case token do
-      nil ->
-        conn
-        |> put_flash(:info, "Please sign in")
-        |> redirect(to: Routes.login_path(conn, :index))
+    groups = Members.list_my_groups(user.id)
+    user_update = Users.get_user!(user.id)
 
-      _ ->
-        user = get_session(conn, :user)
-
-        case is_map(user) do
-          true ->
-            groups = Members.list_my_groups(user.id)
-            user_update = Users.get_user!(user.id)
-
-            conn
-            |> put_session(:user, user_update)
-            |> put_session(:nav_active, :groups_view_my)
-            |> render("index.html",
-              groups: groups,
-              layout: {GithomeWeb.LayoutView, "main.html"},
-              user: user_update,
-              nav_active: :groups_view_my
-            )
-
-          _ ->
-            conn
-            |> put_flash(:info, "Please sign in")
-            |> redirect(to: Routes.login_path(conn, :index))
-        end
-    end
+    conn
+    |> put_session(:user, user_update)
+    |> put_session(:nav_active, :groups_view_my)
+    |> render("index.html",
+      groups: groups,
+      layout: {GithomeWeb.LayoutView, "main.html"},
+      user: user_update,
+      nav_active: :groups_view_my
+    )
   end
 
   def new(conn, _params) do
-    token = get_session(conn, :token)
+    user = get_session(conn, :user)
 
-    case token do
-      nil ->
-        conn
-        |> put_flash(:info, "Please sign in")
-        |> redirect(to: Routes.login_path(conn, :index))
+    changeset = GroupInfo.change_ginfo(%Ginfo{})
+    users = Users.list_users()
 
-      _ ->
-        user = get_session(conn, :user)
+    list_of_users =
+      for %{username: username, id: id} <- users do
+        {username, id}
+      end
 
-        case is_map(user) do
-          true ->
-            changeset = GroupInfo.change_ginfo(%Ginfo{})
-            users = Users.list_users()
+    projects = Projects.list_projects()
 
-            list_of_users =
-              for %{username: username, id: id} <- users do
-                {username, id}
-              end
+    list_of_projects =
+      for %{project_name: project_name, id: id} <- projects do
+        {project_name, id}
+      end
 
-            projects = Projects.list_projects()
+    user_update = Users.get_user!(user.id)
 
-            list_of_projects =
-              for %{project_name: project_name, id: id} <- projects do
-                {project_name, id}
-              end
-
-            user_update = Users.get_user!(user.id)
-
-            conn
-            |> put_session(:user, user_update)
-            |> put_session(:nav_active, :groups_add_new)
-            |> render("new.html",
-              changeset: changeset,
-              layout: {GithomeWeb.LayoutView, "main.html"},
-              users: list_of_users,
-              projects: list_of_projects,
-              user: user_update,
-              info: get_flash(conn, :info),
-              nav_active: :groups_add_new,
-              token: get_session(conn, :token)
-            )
-
-          _ ->
-            conn
-            |> put_flash(:info, "Please sign in")
-            |> redirect(to: Routes.login_path(conn, :index))
-        end
-    end
+    conn
+    |> put_session(:user, user_update)
+    |> put_session(:nav_active, :groups_add_new)
+    |> render("new.html",
+      changeset: changeset,
+      layout: {GithomeWeb.LayoutView, "main.html"},
+      users: list_of_users,
+      projects: list_of_projects,
+      user: user_update,
+      info: get_flash(conn, :info),
+      nav_active: :groups_add_new,
+      token: get_session(conn, :token)
+    )
   end
 
   defp set_group(group, uname, owner_id, members, projects) do
