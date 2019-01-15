@@ -9,7 +9,7 @@ defmodule GithomeWeb.CheckAuth do
 
   defstruct username: nil, id: nil, remember: false
 
-  @type t() :: %__MODULE__{
+  @type t :: %__MODULE__{
           username: String.t(),
           id: Integer.t(),
           remember: true | false
@@ -19,12 +19,16 @@ defmodule GithomeWeb.CheckAuth do
 
   @sault Application.get_env(:githome_web, :token_sault)
   @verify_opts [max_age: Application.get_env(:githome_web, :token_live)]
+
+  @spec init(atom()) :: atom()
   def init(param), do: param
 
+  @spec auth(CheckAuth.t()) :: String.t()
   def auth(%CheckAuth{} = info) do
     Token.sign(GithomeWeb.Endpoint, @sault, info)
   end
 
+  @spec auth(Plug.Conn.t(), CheckAuth.t()) :: Plug.Conn.t()
   defp auth(conn, info) do
     Logger.info("Auth #{inspect(info)}")
 
@@ -32,6 +36,7 @@ defmodule GithomeWeb.CheckAuth do
     |> put_session(:auth_token, auth(info))
   end
 
+  @spec verify(Plug.Conn.t(), String.t(), Keyword.t() | []) :: Plug.Conn.t()
   def verify(conn, tok, opts \\ []) do
     case Token.verify(GithomeWeb.Endpoint, @sault, tok, Keyword.merge(@verify_opts, opts)) do
       {:error, reason} ->
@@ -54,13 +59,16 @@ defmodule GithomeWeb.CheckAuth do
     end
   end
 
+  @spec get_info(Plug.Conn.t()) :: __MODULE__.t() | nil
   def get_info(conn) do
-    {:ok, info} =
-      Token.verify(GithomeWeb.Endpoint, @sault, get_session(conn, :auth_token), @verify_opts)
 
-    info
+     case Token.verify(GithomeWeb.Endpoint, @sault, get_session(conn, :auth_token), @verify_opts) do
+      {:ok, info} -> info
+      _ -> nil
+     end
   end
 
+  @spec bad_auth_token(Plug.Conn.t, String.t) :: Plug.Conn.t
   defp bad_auth_token(conn, message) do
     Logger.warn("#{message}")
 
@@ -69,6 +77,7 @@ defmodule GithomeWeb.CheckAuth do
     |> clear_session
   end
 
+  @spec call(Plug.Conn.t, :auth) :: Plug.Conn.t
   def call(conn, :auth) do
     conn
     |> auth(%CheckAuth{
@@ -76,11 +85,11 @@ defmodule GithomeWeb.CheckAuth do
     })
   end
 
+  @spec call(Plug.Conn.t, :auth?) :: Plug.Conn.t
   def call(conn, :auth?) do
     case get_session(conn, :auth_token) do
       nil ->
         conn
-
       tok ->
         case verify(conn, tok) do
           %{halted: true} ->
@@ -100,6 +109,7 @@ defmodule GithomeWeb.CheckAuth do
     end
   end
 
+  @spec call(Plug.Conn.t, :verify) :: Plug.Conn.t
   def call(conn, :verify) do
     case get_session(conn, :auth_token) do
       nil ->
@@ -108,7 +118,6 @@ defmodule GithomeWeb.CheckAuth do
         |> put_flash(:info, "Please sign in")
         |> redirect(to: Routes.login_path(conn, :index))
         |> halt
-
       tok ->
         verify(conn, tok)
     end
