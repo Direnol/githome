@@ -33,25 +33,22 @@ req:
 	@echo ""
 
 dev: docker-req
-	${DCOMP} ${DEV_YML} up -d
+	${DCOMP} ${DEV_YML} up -d --build
 
 dev-build: docker-req
 	${DCOMP} ${DEV_YML} build
-
-dev-run: docker-req
-	${DCOMP} ${DEV_YML} up --build
 
 dev-down: docker-req
 	${DCOMP} ${DEV_YML} down
 
 dev-cli: docker-req
-	${DCOMP} ${DEV_YML} exec web-dev iex --sname attached --remsh dev@localhost
+	${DCOMP} ${DEV_YML} exec web-dev to_erl "/home/githome/erl/"
 
 dev-bash: docker-req
 	${DCOMP} ${DEV_YML} exec web-dev /bin/bash
 
 dev-logs: docker-req
-	${DCOMP} ${DEV_YML} logs ${APP}
+	${DCOMP} ${DEV_YML} logs dev-db
 
 tc: toolchain
 toolchain: docker-req
